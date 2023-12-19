@@ -1,9 +1,8 @@
-<!-- src/app/home/home.component.html -->
 <mat-toolbar color="primary">
-  <span>X Minute City</span>
+  <span>City in 15</span>
+    <div class="flex-stretch"></div>
+        <mat-icon class="mr-8">brightness_5</mat-icon>
+        <mat-slide-toggle [formControl]="toggleControl" class="mr-8"></mat-slide-toggle>
+    <mat-icon>bedtime</mat-icon>
 </mat-toolbar>
-
-<div class="content">
-  <p>Welcome to X Minute City!</p>
-  <google-map></google-map>
-</div>
+<google-map class="landing-page-map" #map></google-map>

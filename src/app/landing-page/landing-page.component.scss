@@ -1,9 +1,15 @@
 /* src/app/home/home.component.css */
 :host {
-  display: block;
+  display: flex;
+  flex-direction: column;
 }
 
 .content {
   text-align: center;
   padding: 20px;
+}
+
+.landing-page-map {
+  height: 50%;
+  width: 50%;
 }
