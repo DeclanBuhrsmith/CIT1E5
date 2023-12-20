@@ -13,3 +13,18 @@
   height: 50%;
   width: 50%;
 }
+
+.darkmode {
+  display: flex;
+  mat-icon {
+    padding: 2px;
+  }
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.location-form {
+  padding-top: 1%;
+}

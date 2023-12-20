@@ -5,6 +5,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatInputModule } from '@angular/material/input';
 
 
 @NgModule({
@@ -14,7 +15,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     MatToolbarModule,
     GoogleMapsModule,
     MatIconModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    MatInputModule
   ], exports: [LandingPageComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

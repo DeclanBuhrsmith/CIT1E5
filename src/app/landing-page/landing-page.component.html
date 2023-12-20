@@ -1,8 +1,16 @@
 <mat-toolbar color="primary">
-  <span>City in 15</span>
-    <div class="flex-stretch"></div>
-        <mat-icon class="mr-8">brightness_5</mat-icon>
-        <mat-slide-toggle [formControl]="toggleControl" class="mr-8"></mat-slide-toggle>
-    <mat-icon>bedtime</mat-icon>
+    <span>City in 15</span>
+    <span class="spacer"></span>
+    <div class="darkmode">
+      <mat-icon class="mr-8">brightness_5</mat-icon>
+      <mat-slide-toggle [formControl]="toggleControl" class="mr-8"></mat-slide-toggle>
+      <mat-icon>bedtime</mat-icon>
+    </div>
 </mat-toolbar>
+<form class="location-form">
+  <mat-form-field appearance="outline">
+    <mat-label>Enter a location</mat-label>
+    <input matInput placeholder="Location">
+  </mat-form-field>
+</form>
 <google-map class="landing-page-map" #map></google-map>

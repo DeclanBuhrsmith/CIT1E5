@@ -1,4 +1,4 @@
-import { Component, HostBinding, ViewChild } from '@angular/core';
+import { Component, HostBinding, Output, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { GoogleMap } from '@angular/google-maps';
 import { OverlayContainer } from '@angular/cdk/overlay';
@@ -6,12 +6,14 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 @Component({
   selector: 'landing-page',
   templateUrl: './landing-page.component.html',
-  styleUrl: './landing-page.component.scss'
+  styleUrl: './landing-page.component.scss',
 })
 export class LandingPageComponent {
   @HostBinding('class') className = '';
   @ViewChild('map') map: GoogleMap | undefined;
+
   toggleControl = new FormControl(false);
+  locationControl = new FormControl('');
 
   constructor(private overlay: OverlayContainer) { }
   ngOnInit(): void {
@@ -24,5 +26,9 @@ export class LandingPageComponent {
         this.overlay.getContainerElement().classList.remove(darkClassName);
       }
     });
+  }
+
+  searchLocation() {
+
   }
 }
