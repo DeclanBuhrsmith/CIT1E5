@@ -25,11 +25,21 @@
       (focus)="getPlaceAutocomplete()"
     />
   </mat-form-field>
-
   <button [disabled]="!address" mat-raised-button color="primary" type="submit">Search</button>
 </form>
 
-<google-map [options]="mapOptions" [center]="mapCenter">
+<div class="types-checkbox-group">
+  <div *ngFor="let type of googleMapsTypes">
+    <mat-checkbox
+      [checked]="type.selected"
+      (change)="type.selected = !type.selected"
+      >{{ type.type }}</mat-checkbox
+    >
+  </div>
+</div>
+
+
+<google-map [options]="mapOptions" [center]="mapCenter" height="60%" width="100%">
   <map-marker [options]="markerOptions" [position]="mapCenter"></map-marker>
 </google-map>
 
