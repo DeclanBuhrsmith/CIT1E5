@@ -1,16 +1,42 @@
 <mat-toolbar color="primary">
-    <span>City in 15</span>
-    <span class="spacer"></span>
-    <div class="darkmode">
-      <mat-icon class="mr-8">brightness_5</mat-icon>
-      <mat-slide-toggle [formControl]="toggleControl" class="mr-8"></mat-slide-toggle>
-      <mat-icon>bedtime</mat-icon>
-    </div>
+  <span>City in 15</span>
+  <span class="spacer"></span>
+  <div class="darkmode">
+    <mat-icon class="mr-8">brightness_5</mat-icon>
+    <mat-slide-toggle
+      [formControl]="toggleControl"
+      class="mr-8"
+    ></mat-slide-toggle>
+    <mat-icon>bedtime</mat-icon>
+  </div>
 </mat-toolbar>
-<form class="location-form">
-  <mat-form-field appearance="outline">
-    <mat-label>Enter a location</mat-label>
-    <input matInput placeholder="Location">
+
+<form (ngSubmit)="search()">
+  <mat-form-field>
+    <input
+      matInput
+      placeholder="Enter Address"
+      name="address"
+      [(ngModel)]="address"
+      required
+      googleplace
+      (change)="updateAddress(address)"
+    />
   </mat-form-field>
+
+  <button [disabled]="!address" mat-raised-button color="primary" type="submit">Search</button>
 </form>
-<google-map class="landing-page-map" #map></google-map>
+
+<google-map [options]="mapOptions" [center]="mapCenter">
+  <map-marker [options]="markerOptions" [position]="mapCenter"></map-marker>
+</google-map>
+
+<!-- Display nearby places -->
+<div *ngIf="nearbyPlaces.length > 0">
+  <h2>Nearby Places</h2>
+  <ul>
+    <li *ngFor="let place of nearbyPlaces">
+      {{ place.name }} - {{ place.vicinity }}
+    </li>
+  </ul>
+</div>

@@ -6,6 +6,9 @@ import { GoogleMapsModule } from '@angular/google-maps';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 
 @NgModule({
@@ -16,7 +19,11 @@ import { MatInputModule } from '@angular/material/input';
     GoogleMapsModule,
     MatIconModule,
     MatSlideToggleModule,
-    MatInputModule
+    MatInputModule,
+    MatButtonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    HttpClientModule
   ], exports: [LandingPageComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
