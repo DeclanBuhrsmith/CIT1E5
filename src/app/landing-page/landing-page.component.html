@@ -12,15 +12,16 @@
 </mat-toolbar>
 
 <form (ngSubmit)="search()">
-  <mat-form-field>
+  <mat-form-field class="address-form-field">
     <input
+      #addressInput
       matInput
       placeholder="Enter Address"
       name="address"
       [(ngModel)]="address"
       required
       googleplace
-      (change)="updateAddress(address)"
+      (change)="getPlaceAutocomplete()"
     />
   </mat-form-field>
 
@@ -31,12 +32,3 @@
   <map-marker [options]="markerOptions" [position]="mapCenter"></map-marker>
 </google-map>
 
-<!-- Display nearby places -->
-<div *ngIf="nearbyPlaces.length > 0">
-  <h2>Nearby Places</h2>
-  <ul>
-    <li *ngFor="let place of nearbyPlaces">
-      {{ place.name }} - {{ place.vicinity }}
-    </li>
-  </ul>
-</div>
