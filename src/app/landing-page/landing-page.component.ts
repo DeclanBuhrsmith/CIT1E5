@@ -198,7 +198,7 @@ export class LandingPageComponent {
       service.nearbySearch(
         {
           location: this.mapCenter,
-          radius: 500,
+          radius: 1000,
           type: 'restaurant',
         },
         (results, status) => {
@@ -251,25 +251,51 @@ export class LandingPageComponent {
       };
     });
     console.log(this.parsedNearbyPlaces);
-    this.setPlaceMarkers();
+    //this.setPlaceMarkers();
+    this.calculateDistanceFromNearbyPlacesToMapCenter();
   }
 
-  setPlaceMarkers() {
+  private setPlaceMarkers() {
     this.parsedNearbyPlaces.forEach((place) => {
       if (this.gmap?.googleMap) {
         const icon = {
           url: place.iconUrl,
           scaledSize: new google.maps.Size(25, 25),
-
-        }
+        };
         const marker = new google.maps.Marker({
           position: place.location,
           map: this.gmap?.googleMap,
           title: place.name,
           icon,
         });
+        marker.addListener('click', () => {
+
+        });
         marker.setMap(this.gmap.googleMap);
       }
     });
+  }
+
+  private calculateDistanceFromNearbyPlacesToMapCenter() {
+    this.parsedNearbyPlaces.forEach((place) => {
+      new google.maps.DirectionsService()
+      .route({
+        origin: this.mapCenter,
+        destination: place.location,
+        travelMode: google.maps.TravelMode.BICYCLING,
+      })
+      .then((response) => {
+        console.log(response.routes[0]?.legs[0]?.distance?.text);
+        console.log(response.routes[0]?.legs[0]?.duration?.text);
+
+        // This draws the route on the map for how to get there.
+        // const renderer = new google.maps.DirectionsRenderer();
+        // renderer.setDirections(response);
+        // if (this.gmap?.googleMap) {
+        //   renderer.setMap(this.gmap.googleMap);
+        // }
+      });
+    });
+
   }
 }
