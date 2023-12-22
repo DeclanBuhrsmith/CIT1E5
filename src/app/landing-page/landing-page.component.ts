@@ -4,7 +4,7 @@ import { GoogleMap } from '@angular/google-maps';
 import { HttpClient } from '@angular/common/http'; // Import from @angular/common/http
 import { map } from 'rxjs/operators'; // Import the map operator
 import { googleMapsTypes } from './interfaces/google-maps-types';
-
+import { nearbyPlaces } from './interfaces/nearby-places';
 
 @Component({
   selector: 'landing-page',
@@ -13,123 +13,125 @@ import { googleMapsTypes } from './interfaces/google-maps-types';
 })
 export class LandingPageComponent {
   @HostBinding('class') className = '';
-  //@ViewChild('map') map: GoogleMap | undefined;
+  @ViewChild('gmap') gmap: GoogleMap | undefined;
   @ViewChild('addressInput') addresstext: any;
-
 
   toggleControl = new FormControl(false);
   address: string = '';
   mapOptions: google.maps.MapOptions;
   markerOptions: google.maps.MarkerOptions;
-  mapCenter: google.maps.LatLngLiteral = { lat: 40, lng: -100 };
+  mapCenter: google.maps.LatLngLiteral = { lat: 45, lng: -93.19333 };
 
   apiKey = 'AIzaSyBb6q-ATX9Ih6LkWjYrmuzWwMWpY3Mr2UQ';
 
-
+  // Google Objects
   googleMapsForm: FormGroup;
   googleMapsTypesStrings: string[] = [
-    "accounting",
-    "airport",
-    "amusement_park",
-    "aquarium",
-    "art_gallery",
-    "atm",
-    "bakery",
-    "bank",
-    "bar",
-    "beauty_salon",
-    "bicycle_store",
-    "book_store",
-    "bowling_alley",
-    "bus_station",
-    "cafe",
-    "campground",
-    "car_dealer",
-    "car_rental",
-    "car_repair",
-    "car_wash",
-    "casino",
-    "cemetery",
-    "church",
-    "city_hall",
-    "clothing_store",
-    "convenience_store",
-    "courthouse",
-    "dentist",
-    "department_store",
-    "doctor",
-    "drugstore",
-    "electrician",
-    "electronics_store",
-    "embassy",
-    "fire_station",
-    "florist",
-    "funeral_home",
-    "furniture_store",
-    "gas_station",
-    "gym",
-    "hair_care",
-    "hardware_store",
-    "hindu_temple",
-    "home_goods_store",
-    "hospital",
-    "insurance_agency",
-    "jewelry_store",
-    "laundry",
-    "lawyer",
-    "library",
-    "light_rail_station",
-    "liquor_store",
-    "local_government_office",
-    "locksmith",
-    "lodging",
-    "meal_delivery",
-    "meal_takeaway",
-    "mosque",
-    "movie_rental",
-    "movie_theater",
-    "moving_company",
-    "museum",
-    "night_club",
-    "painter",
-    "park",
-    "parking",
-    "pet_store",
-    "pharmacy",
-    "physiotherapist",
-    "plumber",
-    "police",
-    "post_office",
-    "primary_school",
-    "real_estate_agency",
-    "restaurant",
-    "roofing_contractor",
-    "rv_park",
-    "school",
-    "secondary_school",
-    "shoe_store",
-    "shopping_mall",
-    "spa",
-    "stadium",
-    "storage",
-    "store",
-    "subway_station",
-    "supermarket",
-    "synagogue",
-    "taxi_stand",
-    "tourist_attraction",
-    "train_station",
-    "transit_station",
-    "travel_agency",
-    "university",
-    "veterinary_care",
-    "zoo",
+    'accounting',
+    'airport',
+    'amusement_park',
+    'aquarium',
+    'art_gallery',
+    'atm',
+    'bakery',
+    'bank',
+    'bar',
+    'beauty_salon',
+    'bicycle_store',
+    'book_store',
+    'bowling_alley',
+    'bus_station',
+    'cafe',
+    'campground',
+    'car_dealer',
+    'car_rental',
+    'car_repair',
+    'car_wash',
+    'casino',
+    'cemetery',
+    'church',
+    'city_hall',
+    'clothing_store',
+    'convenience_store',
+    'courthouse',
+    'dentist',
+    'department_store',
+    'doctor',
+    'drugstore',
+    'electrician',
+    'electronics_store',
+    'embassy',
+    'fire_station',
+    'florist',
+    'funeral_home',
+    'furniture_store',
+    'gas_station',
+    'gym',
+    'hair_care',
+    'hardware_store',
+    'hindu_temple',
+    'home_goods_store',
+    'hospital',
+    'insurance_agency',
+    'jewelry_store',
+    'laundry',
+    'lawyer',
+    'library',
+    'light_rail_station',
+    'liquor_store',
+    'local_government_office',
+    'locksmith',
+    'lodging',
+    'meal_delivery',
+    'meal_takeaway',
+    'mosque',
+    'movie_rental',
+    'movie_theater',
+    'moving_company',
+    'museum',
+    'night_club',
+    'painter',
+    'park',
+    'parking',
+    'pet_store',
+    'pharmacy',
+    'physiotherapist',
+    'plumber',
+    'police',
+    'post_office',
+    'primary_school',
+    'real_estate_agency',
+    'restaurant',
+    'roofing_contractor',
+    'rv_park',
+    'school',
+    'secondary_school',
+    'shoe_store',
+    'shopping_mall',
+    'spa',
+    'stadium',
+    'storage',
+    'store',
+    'subway_station',
+    'supermarket',
+    'synagogue',
+    'taxi_stand',
+    'tourist_attraction',
+    'train_station',
+    'transit_station',
+    'travel_agency',
+    'university',
+    'veterinary_care',
+    'zoo',
   ];
-  googleMapsTypes: googleMapsTypes[] = [];
+  nearbyPlaces: google.maps.places.PlaceResult[] | null = [];
 
   checkbox = false;
   selectedTypes: string[] = [];
 
+  // Specific interfaces
+  googleMapsTypes: googleMapsTypes[] = [];
+  parsedNearbyPlaces: nearbyPlaces[] = [];
 
   constructor(private fb: FormBuilder) {
     this.mapOptions = {
@@ -141,7 +143,7 @@ export class LandingPageComponent {
     };
 
     this.googleMapsForm = this.fb.group({
-      mapTypes: [this.googleMapsTypes] // Use an array to store the selected checkboxes
+      mapTypes: [this.googleMapsTypes], // Use an array to store the selected checkboxes
     });
   }
 
@@ -149,11 +151,10 @@ export class LandingPageComponent {
     this.googleMapsTypes = this.googleMapsTypesStrings.map((type) => {
       return {
         type: type,
-        selected: false
-      }
+        selected: false,
+      };
     });
   }
-
 
   search(addressFromAutoComplete?: string) {
     this.address = addressFromAutoComplete || this.address;
@@ -171,6 +172,7 @@ export class LandingPageComponent {
         console.error('Geocoding failed:', status);
       }
     });
+    this.getNearbyPlaces();
   }
 
   updateAddress(address: string) {
@@ -178,10 +180,96 @@ export class LandingPageComponent {
   }
 
   getPlaceAutocomplete() {
-    const autocomplete = new google.maps.places.Autocomplete(this.addresstext.nativeElement);
+    const autocomplete = new google.maps.places.Autocomplete(
+      this.addresstext.nativeElement
+    );
     google.maps.event.addListener(autocomplete, 'place_changed', () => {
-        const place = autocomplete.getPlace();
-        this.search(place.formatted_address)
-  });
-}
+      const place = autocomplete.getPlace();
+      this.search(place.formatted_address);
+    });
+  }
+
+  getNearbyPlaces() {
+    if (this.gmap?.googleMap) {
+      const service = new google.maps.places.PlacesService(this.gmap.googleMap);
+
+      // TODO depending on the checkbox, add the type to the request
+
+      service.nearbySearch(
+        {
+          location: this.mapCenter,
+          radius: 500,
+          type: 'restaurant',
+        },
+        (results, status) => {
+          if (status === 'OK') {
+            console.log('Nearby Places:', results);
+            this.nearbyPlaces = results;
+            if (this.nearbyPlaces && this.nearbyPlaces.length > 0) {
+              this.convertNearbyPlacesParsedObject(this.nearbyPlaces);
+            }
+          }
+        }
+      );
+    }
+  }
+
+  private convertNearbyPlacesParsedObject(
+    results: google.maps.places.PlaceResult[]
+  ) {
+    // Object will look like this.
+    //   {
+    //     "name": "Nicollet Island Inn",
+    //     "operational": true,
+    //     "location": {
+    //         "lng": -93.2605342,
+    //         "lat": 44.9858771
+    //     },
+    //     "rating": 4.6,
+    //     "types": [
+    //         "restaurant",
+    //         "night_club",
+    //         "bar",
+    //         "lodging",
+    //         "food",
+    //         "point_of_interest",
+    //         "establishment"
+    //     ],
+    //     "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/restaurant-71.png"
+    // }
+    this.parsedNearbyPlaces = results.map((result) => {
+      return {
+        name: result.name || '',
+        operational: result.business_status === 'OPERATIONAL',
+        location: {
+          lng: result.geometry?.location?.lng() || 0,
+          lat: result.geometry?.location?.lat() || 0,
+        },
+        rating: result.rating || 0,
+        types: result.types || [],
+        iconUrl: result.icon || '',
+      };
+    });
+    console.log(this.parsedNearbyPlaces);
+    this.setPlaceMarkers();
+  }
+
+  setPlaceMarkers() {
+    this.parsedNearbyPlaces.forEach((place) => {
+      if (this.gmap?.googleMap) {
+        const icon = {
+          url: place.iconUrl,
+          scaledSize: new google.maps.Size(25, 25),
+
+        }
+        const marker = new google.maps.Marker({
+          position: place.location,
+          map: this.gmap?.googleMap,
+          title: place.name,
+          icon,
+        });
+        marker.setMap(this.gmap.googleMap);
+      }
+    });
+  }
 }
