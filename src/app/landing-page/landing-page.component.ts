@@ -3,8 +3,8 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { GoogleMap } from '@angular/google-maps';
 import { HttpClient } from '@angular/common/http'; // Import from @angular/common/http
 import { map } from 'rxjs/operators'; // Import the map operator
-import { googleMapsTypes } from './interfaces/google-maps-types';
-import { nearbyPlaces } from './interfaces/nearby-places';
+import { TypesSelection } from './interfaces/types-selection';
+import { NearbyPlaces } from './interfaces/nearby-places';
 
 @Component({
   selector: 'landing-page',
@@ -26,7 +26,7 @@ export class LandingPageComponent {
 
   // Google Objects
   googleMapsForm: FormGroup;
-  googleMapsTypesStrings: string[] = [
+  TypesSelectionStrings: string[] = [
     'accounting',
     'airport',
     'amusement_park',
@@ -130,8 +130,8 @@ export class LandingPageComponent {
   selectedTypes: string[] = [];
 
   // Specific interfaces
-  googleMapsTypes: googleMapsTypes[] = [];
-  parsedNearbyPlaces: nearbyPlaces[] = [];
+  TypesSelection: TypesSelection[] = [];
+  parsedNearbyPlaces: NearbyPlaces[] = [];
 
   constructor(private fb: FormBuilder) {
     this.mapOptions = {
@@ -143,12 +143,12 @@ export class LandingPageComponent {
     };
 
     this.googleMapsForm = this.fb.group({
-      mapTypes: [this.googleMapsTypes], // Use an array to store the selected checkboxes
+      mapTypes: [this.TypesSelection], // Use an array to store the selected checkboxes
     });
   }
 
   ngOnInit() {
-    this.googleMapsTypes = this.googleMapsTypesStrings.map((type) => {
+    this.TypesSelection = this.TypesSelectionStrings.map((type) => {
       return {
         type: type,
         selected: false,

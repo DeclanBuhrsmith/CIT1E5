@@ -1,5 +1,5 @@
 // Purpose: Interface for nearby places.
-export interface nearbyPlaces {
+export interface NearbyPlaces {
   name: string;
   operational: boolean;
   location: {
