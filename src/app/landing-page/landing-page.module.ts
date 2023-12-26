@@ -14,6 +14,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import  {MatCardModule } from '@angular/material/card';
 import { NearbyPlaceCardComponent } from './nearby-place-card/nearby-place-card.component';
+import {MatSelectModule} from '@angular/material/select';
 
 
 
@@ -34,6 +35,7 @@ import { NearbyPlaceCardComponent } from './nearby-place-card/nearby-place-card.
     MatFormFieldModule,
     MatCheckboxModule,
     MatCardModule,
+    MatSelectModule
   ], exports: [LandingPageComponent, NearbyPlaceCardComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

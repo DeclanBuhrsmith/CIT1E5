@@ -1,10 +1,18 @@
-import { AfterViewInit, Component, HostBinding, OnInit, Output, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  HostBinding,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { GoogleMap } from '@angular/google-maps';
 import { HttpClient } from '@angular/common/http'; // Import from @angular/common/http
 import { map } from 'rxjs/operators'; // Import the map operator
 import { TypesSelection } from './interfaces/types-selection';
 import { NearbyPlaces } from './interfaces/nearby-places';
+import { TravelModeEnum } from './enums/travel-modes';
 
 @Component({
   selector: 'landing-page',
@@ -125,7 +133,8 @@ export class LandingPageComponent implements OnInit {
     'zoo',
   ];
   nearbyPlaces: google.maps.places.PlaceResult[] | null = [];
-  //travelModes = Object.keys(google.maps.TravelMode);
+  travelModes = Object.values(TravelModeEnum);
+  selectedTravelMode = TravelModeEnum.WALKING;
 
   checkbox = false;
   selectedTypes: string[] = [];
@@ -215,6 +224,14 @@ export class LandingPageComponent implements OnInit {
     }
   }
 
+  renderRoute(response: any) {
+    const renderer = new google.maps.DirectionsRenderer();
+    renderer.setDirections(response);
+    if (this.gmap?.googleMap) {
+      renderer.setMap(this.gmap.googleMap);
+    }
+  }
+
   private convertNearbyPlacesParsedObject(
     results: google.maps.places.PlaceResult[]
   ) {
@@ -269,9 +286,7 @@ export class LandingPageComponent implements OnInit {
           title: place.name,
           icon,
         });
-        marker.addListener('click', () => {
-
-        });
+        marker.addListener('click', () => {});
         marker.setMap(this.gmap.googleMap);
       }
     });
@@ -280,23 +295,21 @@ export class LandingPageComponent implements OnInit {
   private calculateDistanceFromNearbyPlacesToMapCenter() {
     this.parsedNearbyPlaces.forEach((place) => {
       new google.maps.DirectionsService()
-      .route({
-        origin: this.mapCenter,
-        destination: place.location,
-        travelMode: google.maps.TravelMode.BICYCLING,
-      })
-      .then((response) => {
-        // console.log(response.routes[0]?.legs[0]?.distance?.text);
-        // console.log(response.routes[0]?.legs[0]?.duration?.text);
-
-        // This draws the route on the map for how to get there.
-        // const renderer = new google.maps.DirectionsRenderer();
-        // renderer.setDirections(response);
-        // if (this.gmap?.googleMap) {
-        //   renderer.setMap(this.gmap.googleMap);
-        // }
-      });
+        .route({
+          origin: this.mapCenter,
+          destination: place.location,
+          travelMode: google.maps.TravelMode.BICYCLING,
+        })
+        .then((response) => {
+          // console.log(response.routes[0]?.legs[0]?.distance?.text);
+          // console.log(response.routes[0]?.legs[0]?.duration?.text);
+          // This draws the route on the map for how to get there.
+          // const renderer = new google.maps.DirectionsRenderer();
+          // renderer.setDirections(response);
+          // if (this.gmap?.googleMap) {
+          //   renderer.setMap(this.gmap.googleMap);
+          // }
+        });
     });
-
   }
 }

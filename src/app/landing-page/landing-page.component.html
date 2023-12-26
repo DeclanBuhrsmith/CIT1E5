@@ -50,4 +50,25 @@
 <map-marker [options]="markerOptions" [position]="mapCenter"></map-marker>
 </google-map>
 
-<nearby-place-card></nearby-place-card>
+<div class="travel-mode-selector">
+  <mat-form-field appearance="fill">
+    <mat-label>Travel Mode</mat-label>
+    <mat-select>
+      @for (mode of travelModes; track mode) {
+        <mat-option [value]="selectedTravelMode">{{mode}}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</div>
+
+<div class="nearby-place-cards-container">
+  @for (place of parsedNearbyPlaces; track place) {
+    <nearby-place-card
+      [mapCenter]="mapCenter"
+      [place]="place"
+      [travelMode]="selectedTravelMode"
+      (renderRoute)="renderRoute($event)"
+    ></nearby-place-card>
+  }
+</div>
+
