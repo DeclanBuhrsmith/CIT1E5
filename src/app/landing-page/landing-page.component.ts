@@ -1,4 +1,4 @@
-import { Component, HostBinding, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, HostBinding, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { GoogleMap } from '@angular/google-maps';
 import { HttpClient } from '@angular/common/http'; // Import from @angular/common/http
@@ -11,7 +11,7 @@ import { NearbyPlaces } from './interfaces/nearby-places';
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.scss',
 })
-export class LandingPageComponent {
+export class LandingPageComponent implements OnInit {
   @HostBinding('class') className = '';
   @ViewChild('gmap') gmap: GoogleMap | undefined;
   @ViewChild('addressInput') addresstext: any;
@@ -125,6 +125,7 @@ export class LandingPageComponent {
     'zoo',
   ];
   nearbyPlaces: google.maps.places.PlaceResult[] | null = [];
+  //travelModes = Object.keys(google.maps.TravelMode);
 
   checkbox = false;
   selectedTypes: string[] = [];
@@ -285,8 +286,8 @@ export class LandingPageComponent {
         travelMode: google.maps.TravelMode.BICYCLING,
       })
       .then((response) => {
-        console.log(response.routes[0]?.legs[0]?.distance?.text);
-        console.log(response.routes[0]?.legs[0]?.duration?.text);
+        // console.log(response.routes[0]?.legs[0]?.distance?.text);
+        // console.log(response.routes[0]?.legs[0]?.duration?.text);
 
         // This draws the route on the map for how to get there.
         // const renderer = new google.maps.DirectionsRenderer();

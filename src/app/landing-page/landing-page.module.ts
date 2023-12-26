@@ -12,10 +12,13 @@ import { HttpClientModule } from '@angular/common/http';
 import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import  {MatCardModule } from '@angular/material/card';
+import { NearbyPlaceCardComponent } from './nearby-place-card/nearby-place-card.component';
+
 
 
 @NgModule({
-  declarations: [LandingPageComponent],
+  declarations: [LandingPageComponent, NearbyPlaceCardComponent],
   imports: [
     CommonModule,
     MatToolbarModule,
@@ -29,8 +32,9 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     HttpClientModule,
     MatOptionModule,
     MatFormFieldModule,
-    MatCheckboxModule
-  ], exports: [LandingPageComponent],
+    MatCheckboxModule,
+    MatCardModule,
+  ], exports: [LandingPageComponent, NearbyPlaceCardComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class LandingPageModule { }

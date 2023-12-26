@@ -1,14 +1,14 @@
 <mat-toolbar color="primary">
   <span>City in 15</span>
   <span class="spacer"></span>
-  <div class="darkmode">
+  <!-- <div class="darkmode">
     <mat-icon class="mr-8">brightness_5</mat-icon>
     <mat-slide-toggle
       [formControl]="toggleControl"
       class="mr-8"
     ></mat-slide-toggle>
     <mat-icon>bedtime</mat-icon>
-  </div>
+  </div> -->
 </mat-toolbar>
 
 <form (ngSubmit)="search()">
@@ -49,3 +49,5 @@
 >
 <map-marker [options]="markerOptions" [position]="mapCenter"></map-marker>
 </google-map>
+
+<nearby-place-card></nearby-place-card>
