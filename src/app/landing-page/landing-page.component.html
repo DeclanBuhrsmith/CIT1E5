@@ -53,9 +53,9 @@
 <div class="travel-mode-selector">
   <mat-form-field appearance="fill">
     <mat-label>Travel Mode</mat-label>
-    <mat-select>
+    <mat-select [(value)]="selectedTravelMode">
       @for (mode of travelModes; track mode) {
-        <mat-option [value]="selectedTravelMode">{{mode}}</mat-option>
+        <mat-option [value]="mode">{{mode}}</mat-option>
       }
     </mat-select>
   </mat-form-field>
