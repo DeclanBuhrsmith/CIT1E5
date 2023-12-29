@@ -11,7 +11,19 @@ import { GoogleMap } from '@angular/google-maps';
 import { TypesSelection } from './interfaces/types-selection';
 import { NearbyPlaces } from './interfaces/nearby-places';
 import { TravelModeEnum } from './enums/travel-modes';
-import { Automotive, Education, EntertainmentAndRecreation, FinancialServices, FoodAndBeverage, HealthAndWellness, HomeAndGarden, PublicServicesAndGovernment, ReligiousPlaces, RetailStores, TravelAndLodging } from './enums/types';
+import {
+  Automotive,
+  Education,
+  EntertainmentAndRecreation,
+  FinancialServices,
+  FoodAndBeverage,
+  HealthAndWellness,
+  HomeAndGarden,
+  PublicServicesAndGovernment,
+  ReligiousPlaces,
+  RetailStores,
+  TravelAndLodging,
+} from './enums/types';
 
 @Component({
   selector: 'landing-page',
@@ -45,6 +57,18 @@ export class LandingPageComponent implements OnInit {
   parsedNearbyPlaces: NearbyPlaces[] = [];
 
   //TypesSelection
+  financialServicesChecked = false;
+  foodAndBeverageChecked = false;
+  retailStoresChecked = false;
+  healthAndWellnessChecked = false;
+  automotiveChecked = false;
+  publicServicesAndGovernmentChecked = false;
+  educationChecked = false;
+  entertainmentChecked = false;
+  lodgingChecked = false;
+  travelAndTourismChecked = false;
+  homeAndGardenChecked = false;
+  religiousPlacesChecked = false;
   financialServicesTypeSelection: TypesSelection[] = [];
   foodAndBeverageTypeSelection: TypesSelection[] = [];
   retailStoresTypeSelection: TypesSelection[] = [];
@@ -76,8 +100,7 @@ export class LandingPageComponent implements OnInit {
     this.initializeTypesSelection();
   }
 
-  search(addressFromAutoComplete?: string) {
-    this.address = addressFromAutoComplete || this.address;
+  centerMapOnAddress() {
     console.log('Search Address:', this.address);
 
     // Use Google Maps API to geocode the address
@@ -92,11 +115,6 @@ export class LandingPageComponent implements OnInit {
         console.error('Geocoding failed:', status);
       }
     });
-    this.getNearbyPlaces();
-  }
-
-  updateAddress(address: string) {
-    this.address = address;
   }
 
   getPlaceAutocomplete() {
@@ -105,32 +123,73 @@ export class LandingPageComponent implements OnInit {
     );
     google.maps.event.addListener(autocomplete, 'place_changed', () => {
       const place = autocomplete.getPlace();
-      this.search(place.formatted_address);
+      this.address = place.formatted_address || '';
+      this.centerMapOnAddress();
     });
   }
 
-  getNearbyPlaces() {
+  async getNearbyPlaces() {
+    // Clear the previous results
+    this.parsedNearbyPlaces = [];
+    this.nearbyPlaces = [];
+
     if (this.gmap?.googleMap) {
       const service = new google.maps.places.PlacesService(this.gmap.googleMap);
 
-      // TODO depending on the checkbox, add the type to the request
+      // // TODO depending on the checkbox, add the type to the request
+      if (this.financialServicesChecked) {
+        await this.searchNearbyPlaces(service, this.financialServicesTypeSelection);
+      }
 
-      service.nearbySearch(
-        {
-          location: this.mapCenter,
-          radius: 1000,
-          type: 'restaurant',
-        },
-        (results, status) => {
-          if (status === 'OK') {
-            console.log('Nearby Places:', results);
-            this.nearbyPlaces = results;
-            if (this.nearbyPlaces && this.nearbyPlaces.length > 0) {
-              this.convertNearbyPlacesParsedObject(this.nearbyPlaces);
-            }
-          }
-        }
-      );
+      if (this.foodAndBeverageChecked) {
+        await this.searchNearbyPlaces(service, this.foodAndBeverageTypeSelection);
+      }
+
+      if (this.retailStoresChecked) {
+        await this.searchNearbyPlaces(service, this.retailStoresTypeSelection);
+      }
+
+      if (this.healthAndWellnessChecked) {
+        await this.searchNearbyPlaces(service, this.healthAndWellnessTypeSelection);
+      }
+
+      if (this.automotiveChecked) {
+        await this.searchNearbyPlaces(service, this.automotiveTypeSelection);
+      }
+
+      if (this.publicServicesAndGovernmentChecked) {
+        await this.searchNearbyPlaces(
+          service,
+          this.publicServicesAndGovernmentTypeSelection
+        );
+      }
+
+      if (this.educationChecked) {
+        await this.searchNearbyPlaces(service, this.educationTypeSelection);
+      }
+
+      if (this.entertainmentChecked) {
+        await this.searchNearbyPlaces(service, this.entertainmentTypeSelection);
+      }
+
+      if (this.lodgingChecked) {
+        await this.searchNearbyPlaces(service, this.lodgingTypeSelection);
+      }
+
+      if (this.travelAndTourismChecked) {
+        await this.searchNearbyPlaces(service, this.travelAndTourismTypeSelection);
+      }
+
+      if (this.homeAndGardenChecked) {
+        await this.searchNearbyPlaces(service, this.homeAndGardenTypeSelection);
+      }
+
+      if (this.religiousPlacesChecked) {
+        await this.searchNearbyPlaces(service, this.religiousPlacesTypeSelection);
+      }
+    }
+    if (this.nearbyPlaces && this.nearbyPlaces.length > 0) {
+      this.convertNearbyPlacesParsedObject(this.nearbyPlaces);
     }
   }
 
@@ -143,51 +202,109 @@ export class LandingPageComponent implements OnInit {
   }
 
   toggleAllFinancialServices(event: any) {
+    this.financialServicesChecked = event.checked;
     this.toggleAllTypes(event, this.financialServicesTypeSelection);
   }
 
   toggleAllFoodAndBeverage(event: any) {
+    this.foodAndBeverageChecked = event.checked;
     this.toggleAllTypes(event, this.foodAndBeverageTypeSelection);
   }
 
   toggleAllRetailStores(event: any) {
+    this.retailStoresChecked = event.checked;
     this.toggleAllTypes(event, this.retailStoresTypeSelection);
   }
 
   toggleAllHealthAndWellness(event: any) {
+    this.healthAndWellnessChecked = event.checked;
     this.toggleAllTypes(event, this.healthAndWellnessTypeSelection);
   }
 
   toggleAllAutomotive(event: any) {
+    this.automotiveChecked = event.checked;
     this.toggleAllTypes(event, this.automotiveTypeSelection);
   }
 
   toggleAllPublicServicesAndGovernment(event: any) {
+    this.publicServicesAndGovernmentChecked = event.checked;
     this.toggleAllTypes(event, this.publicServicesAndGovernmentTypeSelection);
   }
 
   toggleAllEducation(event: any) {
+    this.educationChecked = event.checked;
     this.toggleAllTypes(event, this.educationTypeSelection);
   }
 
   toggleAllEntertainment(event: any) {
+    this.entertainmentChecked = event.checked;
     this.toggleAllTypes(event, this.entertainmentTypeSelection);
   }
 
   toggleAllLodging(event: any) {
+    this.lodgingChecked = event.checked;
     this.toggleAllTypes(event, this.lodgingTypeSelection);
   }
 
   toggleAllTravelAndTourism(event: any) {
+    this.travelAndTourismChecked = event.checked;
     this.toggleAllTypes(event, this.travelAndTourismTypeSelection);
   }
 
   toggleAllHomeAndGarden(event: any) {
+    this.homeAndGardenChecked = event.checked;
     this.toggleAllTypes(event, this.homeAndGardenTypeSelection);
   }
 
   toggleAllReligiousPlaces(event: any) {
+    this.religiousPlacesChecked = event.checked;
     this.toggleAllTypes(event, this.religiousPlacesTypeSelection);
+  }
+
+  indeterminate(parentCheckbox: boolean, typeSelection: TypesSelection[]) {
+    return parentCheckbox && typeSelection.some((type) => !type.selected);
+  }
+
+  private searchNearbyPlaces(
+    service: google.maps.places.PlacesService,
+    typeSelection: TypesSelection[]
+  ): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      const promises: Promise<void>[] = [];
+
+      typeSelection.forEach((type) => {
+        if (type.selected) {
+          const promise = new Promise<void>((resolveType) => {
+            service.nearbySearch(
+              {
+                location: this.mapCenter,
+                radius: 1000,
+                type: type.type,
+              },
+              (results, status) => {
+                if (status === 'OK') {
+                  if (results !== null) {
+                    results.forEach((result) => {
+                      this.nearbyPlaces?.push(result);
+                    });
+                  }
+                  resolveType();
+                } else {
+                  console.warn(`Nearby search failed on type: ${type}`, status);
+                  resolveType();
+                }
+              }
+            );
+          });
+
+          promises.push(promise);
+        }
+      });
+
+      Promise.all(promises)
+        .then(() => resolve())
+        .catch((error) => reject(error));
+    });
   }
 
   private convertNearbyPlacesParsedObject(
@@ -226,53 +343,13 @@ export class LandingPageComponent implements OnInit {
         iconUrl: result.icon || '',
       };
     });
-    console.log(this.parsedNearbyPlaces);
-    //this.setPlaceMarkers();
-    this.calculateDistanceFromNearbyPlacesToMapCenter();
-  }
-
-  private setPlaceMarkers() {
-    this.parsedNearbyPlaces.forEach((place) => {
-      if (this.gmap?.googleMap) {
-        const icon = {
-          url: place.iconUrl,
-          scaledSize: new google.maps.Size(25, 25),
-        };
-        const marker = new google.maps.Marker({
-          position: place.location,
-          map: this.gmap?.googleMap,
-          title: place.name,
-          icon,
-        });
-        marker.addListener('click', () => {});
-        marker.setMap(this.gmap.googleMap);
-      }
-    });
-  }
-
-  private calculateDistanceFromNearbyPlacesToMapCenter() {
-    this.parsedNearbyPlaces.forEach((place) => {
-      new google.maps.DirectionsService()
-        .route({
-          origin: this.mapCenter,
-          destination: place.location,
-          travelMode: google.maps.TravelMode.BICYCLING,
-        })
-        .then((response) => {
-          // console.log(response.routes[0]?.legs[0]?.distance?.text);
-          // console.log(response.routes[0]?.legs[0]?.duration?.text);
-          // This draws the route on the map for how to get there.
-          // const renderer = new google.maps.DirectionsRenderer();
-          // renderer.setDirections(response);
-          // if (this.gmap?.googleMap) {
-          //   renderer.setMap(this.gmap.googleMap);
-          // }
-        });
-    });
   }
 
   private initializeTypesSelection() {
-    const initializeSelection = (values: string[], selection: TypesSelection[]) => {
+    const initializeSelection = (
+      values: string[],
+      selection: TypesSelection[]
+    ) => {
       values.forEach((value) => {
         selection.push({
           type: value,
@@ -281,18 +358,51 @@ export class LandingPageComponent implements OnInit {
       });
     };
 
-    initializeSelection(Object.values(FinancialServices), this.financialServicesTypeSelection);
-    initializeSelection(Object.values(FoodAndBeverage), this.foodAndBeverageTypeSelection);
-    initializeSelection(Object.values(RetailStores), this.retailStoresTypeSelection);
-    initializeSelection(Object.values(HealthAndWellness), this.healthAndWellnessTypeSelection);
-    initializeSelection(Object.values(Automotive), this.automotiveTypeSelection);
-    initializeSelection(Object.values(PublicServicesAndGovernment), this.publicServicesAndGovernmentTypeSelection);
+    initializeSelection(
+      Object.values(FinancialServices),
+      this.financialServicesTypeSelection
+    );
+    initializeSelection(
+      Object.values(FoodAndBeverage),
+      this.foodAndBeverageTypeSelection
+    );
+    initializeSelection(
+      Object.values(RetailStores),
+      this.retailStoresTypeSelection
+    );
+    initializeSelection(
+      Object.values(HealthAndWellness),
+      this.healthAndWellnessTypeSelection
+    );
+    initializeSelection(
+      Object.values(Automotive),
+      this.automotiveTypeSelection
+    );
+    initializeSelection(
+      Object.values(PublicServicesAndGovernment),
+      this.publicServicesAndGovernmentTypeSelection
+    );
     initializeSelection(Object.values(Education), this.educationTypeSelection);
-    initializeSelection(Object.values(TravelAndLodging), this.travelAndTourismTypeSelection);
-    initializeSelection(Object.values(EntertainmentAndRecreation), this.entertainmentTypeSelection);
-    initializeSelection(Object.values(TravelAndLodging), this.lodgingTypeSelection);
-    initializeSelection(Object.values(HomeAndGarden), this.homeAndGardenTypeSelection);
-    initializeSelection(Object.values(ReligiousPlaces), this.religiousPlacesTypeSelection);
+    initializeSelection(
+      Object.values(TravelAndLodging),
+      this.travelAndTourismTypeSelection
+    );
+    initializeSelection(
+      Object.values(EntertainmentAndRecreation),
+      this.entertainmentTypeSelection
+    );
+    initializeSelection(
+      Object.values(TravelAndLodging),
+      this.lodgingTypeSelection
+    );
+    initializeSelection(
+      Object.values(HomeAndGarden),
+      this.homeAndGardenTypeSelection
+    );
+    initializeSelection(
+      Object.values(ReligiousPlaces),
+      this.religiousPlacesTypeSelection
+    );
   }
 
   private toggleAllTypes(event: any, typeSelection: TypesSelection[]) {
