@@ -189,6 +189,11 @@ export class LandingPageComponent implements OnInit {
       }
     }
     if (this.nearbyPlaces && this.nearbyPlaces.length > 0) {
+      this.nearbyPlaces = this.nearbyPlaces.filter((place, index, self) =>
+  index === self.findIndex((t) => (
+    t.place_id === place.place_id
+  ))
+);
       this.convertNearbyPlacesParsedObject(this.nearbyPlaces);
     }
   }
