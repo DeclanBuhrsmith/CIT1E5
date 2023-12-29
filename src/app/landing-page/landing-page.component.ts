@@ -8,11 +8,10 @@ import {
 } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { GoogleMap } from '@angular/google-maps';
-import { HttpClient } from '@angular/common/http'; // Import from @angular/common/http
-import { map } from 'rxjs/operators'; // Import the map operator
 import { TypesSelection } from './interfaces/types-selection';
 import { NearbyPlaces } from './interfaces/nearby-places';
 import { TravelModeEnum } from './enums/travel-modes';
+import { Automotive, Education, EntertainmentAndRecreation, FinancialServices, FoodAndBeverage, HealthAndWellness, HomeAndGarden, PublicServicesAndGovernment, ReligiousPlaces, RetailStores, TravelAndLodging } from './enums/types';
 
 @Component({
   selector: 'landing-page',
@@ -33,7 +32,7 @@ export class LandingPageComponent implements OnInit {
   apiKey = 'AIzaSyBb6q-ATX9Ih6LkWjYrmuzWwMWpY3Mr2UQ';
 
   // Google Objects
-  googleMapsForm: FormGroup;
+  //googleMapsForm: FormGroup;
   nearbyPlaces: google.maps.places.PlaceResult[] | null = [];
   travelModes = Object.values(TravelModeEnum);
   selectedTravelMode = TravelModeEnum.WALKING;
@@ -42,8 +41,22 @@ export class LandingPageComponent implements OnInit {
   selectedTypes: string[] = [];
 
   // Specific interfaces
-  TypesSelection: TypesSelection[] = [];
+  typesSelection: TypesSelection[] = [];
   parsedNearbyPlaces: NearbyPlaces[] = [];
+
+  //TypesSelection
+  financialServicesTypeSelection: TypesSelection[] = [];
+  foodAndBeverageTypeSelection: TypesSelection[] = [];
+  retailStoresTypeSelection: TypesSelection[] = [];
+  healthAndWellnessTypeSelection: TypesSelection[] = [];
+  automotiveTypeSelection: TypesSelection[] = [];
+  publicServicesAndGovernmentTypeSelection: TypesSelection[] = [];
+  educationTypeSelection: TypesSelection[] = [];
+  entertainmentTypeSelection: TypesSelection[] = [];
+  lodgingTypeSelection: TypesSelection[] = [];
+  travelAndTourismTypeSelection: TypesSelection[] = [];
+  homeAndGardenTypeSelection: TypesSelection[] = [];
+  religiousPlacesTypeSelection: TypesSelection[] = [];
 
   constructor(private fb: FormBuilder) {
     this.mapOptions = {
@@ -54,12 +67,13 @@ export class LandingPageComponent implements OnInit {
       draggable: false,
     };
 
-    this.googleMapsForm = this.fb.group({
-      mapTypes: [this.TypesSelection], // Use an array to store the selected checkboxes
-    });
+    // this.googleMapsForm = this.fb.group({
+    //   mapTypes: [this.typesSelection], // Use an array to store the selected checkboxes
+    // });
   }
 
   ngOnInit() {
+    this.initializeTypesSelection();
   }
 
   search(addressFromAutoComplete?: string) {
@@ -121,12 +135,59 @@ export class LandingPageComponent implements OnInit {
   }
 
   renderRoute(response: any) {
-    console.log(response)
     const renderer = new google.maps.DirectionsRenderer();
     if (this.gmap?.googleMap) {
       renderer.setDirections(response);
       renderer.setMap(this.gmap.googleMap);
     }
+  }
+
+  toggleAllFinancialServices(event: any) {
+    this.toggleAllTypes(event, this.financialServicesTypeSelection);
+  }
+
+  toggleAllFoodAndBeverage(event: any) {
+    this.toggleAllTypes(event, this.foodAndBeverageTypeSelection);
+  }
+
+  toggleAllRetailStores(event: any) {
+    this.toggleAllTypes(event, this.retailStoresTypeSelection);
+  }
+
+  toggleAllHealthAndWellness(event: any) {
+    this.toggleAllTypes(event, this.healthAndWellnessTypeSelection);
+  }
+
+  toggleAllAutomotive(event: any) {
+    this.toggleAllTypes(event, this.automotiveTypeSelection);
+  }
+
+  toggleAllPublicServicesAndGovernment(event: any) {
+    this.toggleAllTypes(event, this.publicServicesAndGovernmentTypeSelection);
+  }
+
+  toggleAllEducation(event: any) {
+    this.toggleAllTypes(event, this.educationTypeSelection);
+  }
+
+  toggleAllEntertainment(event: any) {
+    this.toggleAllTypes(event, this.entertainmentTypeSelection);
+  }
+
+  toggleAllLodging(event: any) {
+    this.toggleAllTypes(event, this.lodgingTypeSelection);
+  }
+
+  toggleAllTravelAndTourism(event: any) {
+    this.toggleAllTypes(event, this.travelAndTourismTypeSelection);
+  }
+
+  toggleAllHomeAndGarden(event: any) {
+    this.toggleAllTypes(event, this.homeAndGardenTypeSelection);
+  }
+
+  toggleAllReligiousPlaces(event: any) {
+    this.toggleAllTypes(event, this.religiousPlacesTypeSelection);
   }
 
   private convertNearbyPlacesParsedObject(
@@ -207,6 +268,36 @@ export class LandingPageComponent implements OnInit {
           //   renderer.setMap(this.gmap.googleMap);
           // }
         });
+    });
+  }
+
+  private initializeTypesSelection() {
+    const initializeSelection = (values: string[], selection: TypesSelection[]) => {
+      values.forEach((value) => {
+        selection.push({
+          type: value,
+          selected: false,
+        });
+      });
+    };
+
+    initializeSelection(Object.values(FinancialServices), this.financialServicesTypeSelection);
+    initializeSelection(Object.values(FoodAndBeverage), this.foodAndBeverageTypeSelection);
+    initializeSelection(Object.values(RetailStores), this.retailStoresTypeSelection);
+    initializeSelection(Object.values(HealthAndWellness), this.healthAndWellnessTypeSelection);
+    initializeSelection(Object.values(Automotive), this.automotiveTypeSelection);
+    initializeSelection(Object.values(PublicServicesAndGovernment), this.publicServicesAndGovernmentTypeSelection);
+    initializeSelection(Object.values(Education), this.educationTypeSelection);
+    initializeSelection(Object.values(TravelAndLodging), this.travelAndTourismTypeSelection);
+    initializeSelection(Object.values(EntertainmentAndRecreation), this.entertainmentTypeSelection);
+    initializeSelection(Object.values(TravelAndLodging), this.lodgingTypeSelection);
+    initializeSelection(Object.values(HomeAndGarden), this.homeAndGardenTypeSelection);
+    initializeSelection(Object.values(ReligiousPlaces), this.religiousPlacesTypeSelection);
+  }
+
+  private toggleAllTypes(event: any, typeSelection: TypesSelection[]) {
+    typeSelection.forEach((type) => {
+      type.selected = event.checked;
     });
   }
 }

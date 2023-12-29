@@ -39,6 +39,17 @@ google-map {
   width: 50%;
 }
 
+.nearby-place-cards-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
 nearby-place-card {
+  width: 30%;
+  display: flex;
   padding: 10px;
+}
+
+.childern-checkboxes {
+  padding-left: 2%;
 }

@@ -39,6 +39,44 @@
     >
   </div>
 </div> -->
+<div class="all-type-checkboxes">
+  <div class="financial-services-checkbox-group">
+    <mat-checkbox (change)="toggleAllFinancialServices($event)">
+      FinancialServices
+    </mat-checkbox>
+    <div class="childern-checkboxes">
+      @for (type of financialServicesTypeSelection; track type) {
+      <mat-checkbox
+        [checked]="type.selected"
+        (change)="type.selected = !type.selected"
+        >{{ type.type }}</mat-checkbox
+      >
+      }
+    </div>
+  </div>
+  <div class="food-checkbox-group">
+    <mat-checkbox (change)="toggleAllFoodAndBeverage($event)">Food</mat-checkbox>
+    <div class="childern-checkboxes">
+      @for (type of foodAndBeverageTypeSelection; track type) {
+      <mat-checkbox
+        [checked]="type.selected"
+        (change)="type.selected = !type.selected"
+        >{{ type.type }}</mat-checkbox
+      >
+      }
+    </div>
+  <div class="health-checkbox-group">
+    <mat-checkbox (change)="toggleAllHealthAndWellness($event)">Health</mat-checkbox>
+    <div class="childern-checkboxes">
+      @for (type of healthAndWellnessTypeSelection; track type) {
+      <mat-checkbox
+        [checked]="type.selected"
+        (change)="type.selected = !type.selected"
+        >{{ type.type }}</mat-checkbox
+      >
+      }
+    </div>
+</div>
 
 <google-map
   #gmap="googleMap"
@@ -47,7 +85,7 @@
   height="80%"
   width="100%"
 >
-<map-marker [options]="markerOptions" [position]="mapCenter"></map-marker>
+  <map-marker [options]="markerOptions" [position]="mapCenter"></map-marker>
 </google-map>
 
 <div class="travel-mode-selector">
@@ -55,7 +93,7 @@
     <mat-label>Travel Mode</mat-label>
     <mat-select [(value)]="selectedTravelMode">
       @for (mode of travelModes; track mode) {
-        <mat-option [value]="mode">{{mode}}</mat-option>
+      <mat-option [value]="mode">{{ mode }}</mat-option>
       }
     </mat-select>
   </mat-form-field>
@@ -63,12 +101,11 @@
 
 <div class="nearby-place-cards-container">
   @for (place of parsedNearbyPlaces; track place) {
-    <nearby-place-card
-      [mapCenter]="mapCenter"
-      [place]="place"
-      [travelMode]="selectedTravelMode"
-      (renderRoute)="renderRoute($event)"
-    ></nearby-place-card>
+  <nearby-place-card
+    [mapCenter]="mapCenter"
+    [place]="place"
+    [travelMode]="selectedTravelMode"
+    (renderRoute)="renderRoute($event)"
+  ></nearby-place-card>
   }
 </div>
-
