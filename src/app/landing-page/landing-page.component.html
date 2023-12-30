@@ -12,7 +12,8 @@
 </mat-toolbar>
 
 <form>
-  <mat-form-field class="address-form-field">
+  <mat-form-field class="address-form-field" appearance="outline">
+    <mat-label>Address</mat-label>
     <input
       #addressInput
       matInput
@@ -29,6 +30,7 @@
 </form>
 
 <div class="all-type-checkboxes">
+  <h3>Map search types</h3>
   <div class="financial-services-checkbox-group">
     <mat-checkbox
       (change)="toggleAllFinancialServices($event)"
@@ -143,25 +145,6 @@
       }
     </div>
   </div>
-  <div class="lodging-checkbox-group">
-    <mat-checkbox
-      (change)="toggleAllLodging($event)"
-      [indeterminate]="
-        indeterminate(lodgingChecked, lodgingTypeSelection)
-      "
-    >
-      <b>Lodging</b></mat-checkbox
-    >
-    <div class="childern-checkboxes" *ngIf="lodgingChecked">
-      @for (type of lodgingTypeSelection; track type) {
-      <mat-checkbox
-        [checked]="type.selected"
-        (change)="type.selected = !type.selected"
-        >{{ type.type }}</mat-checkbox
-      >
-      }
-    </div>
-  </div>
   <div class="public-services-and-government-checkbox-group">
     <mat-checkbox
       (change)="toggleAllPublicServicesAndGovernment($event)"
@@ -174,10 +157,7 @@
     >
       <b>Public Services and Governmentt</b></mat-checkbox
     >
-    <div
-      class="childern-checkboxes"
-      *ngIf="publicServicesAndGovernmentChecked"
-    >
+    <div class="childern-checkboxes" *ngIf="publicServicesAndGovernmentChecked">
       @for (type of publicServicesAndGovernmentTypeSelection; track type) {
       <mat-checkbox
         [checked]="type.selected"
@@ -191,10 +171,7 @@
     <mat-checkbox
       (change)="toggleAllTravelAndTourism($event)"
       [indeterminate]="
-        indeterminate(
-          travelAndTourismChecked,
-          travelAndTourismTypeSelection
-        )
+        indeterminate(travelAndTourismChecked, travelAndTourismTypeSelection)
       "
     >
       <b>Travel and Tourism</b></mat-checkbox
@@ -213,10 +190,7 @@
     <mat-checkbox
       (change)="toggleAllHomeAndGarden($event)"
       [indeterminate]="
-        indeterminate(
-          homeAndGardenChecked,
-          homeAndGardenTypeSelection
-        )
+        indeterminate(homeAndGardenChecked, homeAndGardenTypeSelection)
       "
     >
       <b>Home and Garden</b></mat-checkbox
@@ -235,10 +209,7 @@
     <mat-checkbox
       (change)="toggleAllReligiousPlaces($event)"
       [indeterminate]="
-        indeterminate(
-          religiousPlacesChecked,
-          religiousPlacesTypeSelection
-        )
+        indeterminate(religiousPlacesChecked, religiousPlacesTypeSelection)
       "
     >
       <b>Religious places</b></mat-checkbox
@@ -256,8 +227,13 @@
 </div>
 
 <div class="nearby-button">
-  <button mat-raised-button color="accent" (click)="getNearbyPlaces()">
-    Get nearby places
+  <button
+    mat-raised-button
+    color="accent"
+    (click)="getNearbyPlaces()"
+    [disabled]="areAllCheckboxesUnchecked()"
+  >
+    Search nearby places
   </button>
 </div>
 
@@ -265,14 +241,14 @@
   #gmap="googleMap"
   [options]="mapOptions"
   [center]="mapCenter"
-  height="80%"
+  height="100%"
   width="100%"
 >
   <map-marker [options]="markerOptions" [position]="mapCenter"></map-marker>
 </google-map>
 
 <div class="travel-mode-selector">
-  <mat-form-field appearance="fill">
+  <mat-form-field appearance="outline">
     <mat-label>Travel Mode</mat-label>
     <mat-select [(value)]="selectedTravelMode">
       @for (mode of travelModes; track mode) {

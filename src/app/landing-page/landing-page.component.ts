@@ -77,7 +77,6 @@ export class LandingPageComponent implements OnInit {
   publicServicesAndGovernmentTypeSelection: TypesSelection[] = [];
   educationTypeSelection: TypesSelection[] = [];
   entertainmentTypeSelection: TypesSelection[] = [];
-  lodgingTypeSelection: TypesSelection[] = [];
   travelAndTourismTypeSelection: TypesSelection[] = [];
   homeAndGardenTypeSelection: TypesSelection[] = [];
   religiousPlacesTypeSelection: TypesSelection[] = [];
@@ -172,10 +171,6 @@ export class LandingPageComponent implements OnInit {
         await this.searchNearbyPlaces(service, this.entertainmentTypeSelection);
       }
 
-      if (this.lodgingChecked) {
-        await this.searchNearbyPlaces(service, this.lodgingTypeSelection);
-      }
-
       if (this.travelAndTourismChecked) {
         await this.searchNearbyPlaces(service, this.travelAndTourismTypeSelection);
       }
@@ -246,11 +241,6 @@ export class LandingPageComponent implements OnInit {
     this.toggleAllTypes(event, this.entertainmentTypeSelection);
   }
 
-  toggleAllLodging(event: any) {
-    this.lodgingChecked = event.checked;
-    this.toggleAllTypes(event, this.lodgingTypeSelection);
-  }
-
   toggleAllTravelAndTourism(event: any) {
     this.travelAndTourismChecked = event.checked;
     this.toggleAllTypes(event, this.travelAndTourismTypeSelection);
@@ -268,6 +258,30 @@ export class LandingPageComponent implements OnInit {
 
   indeterminate(parentCheckbox: boolean, typeSelection: TypesSelection[]) {
     return parentCheckbox && typeSelection.some((type) => !type.selected);
+  }
+
+  areAllCheckboxesUnchecked(): boolean {
+    const allSelections = [
+      this.financialServicesTypeSelection,
+      this.foodAndBeverageTypeSelection,
+      this.retailStoresTypeSelection,
+      this.healthAndWellnessTypeSelection,
+      this.automotiveTypeSelection,
+      this.publicServicesAndGovernmentTypeSelection,
+      this.educationTypeSelection,
+      this.travelAndTourismTypeSelection,
+      this.entertainmentTypeSelection,
+      this.homeAndGardenTypeSelection,
+      this.religiousPlacesTypeSelection
+    ];
+
+    for (let selection of allSelections) {
+      if (selection.some(type => type.selected)) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   private searchNearbyPlaces(
@@ -397,10 +411,6 @@ export class LandingPageComponent implements OnInit {
     initializeSelection(
       Object.values(EntertainmentAndRecreation),
       this.entertainmentTypeSelection
-    );
-    initializeSelection(
-      Object.values(TravelAndLodging),
-      this.lodgingTypeSelection
     );
     initializeSelection(
       Object.values(HomeAndGarden),
