@@ -37,4 +37,24 @@ google-map {
 
 .address-form-field {
   width: 50%;
+  padding: 10px;
+}
+
+.nearby-place-cards-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+nearby-place-card {
+  width: 30%;
+  display: flex;
+  padding: 10px;
+}
+
+.childern-checkboxes {
+  padding-left: 2%;
+}
+
+.nearby-button {
+  padding: 10px;
 }

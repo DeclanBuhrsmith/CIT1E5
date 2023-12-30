@@ -1,0 +1,25 @@
+<mat-card>
+  <mat-card-header>
+    <a href="{{place?.place_url}}" class="image-with-link">
+    <img mat-card-avatar [src]="place?.iconUrl" >
+  </a>
+    <mat-card-title>{{place?.name}}</mat-card-title>
+    <mat-card-subtitle>{{place?.rating}}</mat-card-subtitle>
+  </mat-card-header>
+  <!-- <img mat-card-image [src]="place?.iconUrl" alt="Image"> -->
+  <mat-card-content>
+    <p>
+      Distance:
+      {{distance}}
+      Duration:
+      {{duration}}
+    </p>
+    <p>
+      Type:
+      {{place?.types}}
+    </p>
+  </mat-card-content>
+  <!-- <mat-card-actions>
+    <button mat-raised-button color="accent" (click)="renderRoute.emit(routeResponse)">View route</button>
+  </mat-card-actions> -->
+</mat-card>
