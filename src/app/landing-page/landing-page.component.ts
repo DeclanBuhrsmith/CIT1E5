@@ -137,11 +137,17 @@ export class LandingPageComponent implements OnInit {
 
       // // TODO depending on the checkbox, add the type to the request
       if (this.financialServicesChecked) {
-        await this.searchNearbyPlaces(service, this.financialServicesTypeSelection);
+        await this.searchNearbyPlaces(
+          service,
+          this.financialServicesTypeSelection
+        );
       }
 
       if (this.foodAndBeverageChecked) {
-        await this.searchNearbyPlaces(service, this.foodAndBeverageTypeSelection);
+        await this.searchNearbyPlaces(
+          service,
+          this.foodAndBeverageTypeSelection
+        );
       }
 
       if (this.retailStoresChecked) {
@@ -149,7 +155,10 @@ export class LandingPageComponent implements OnInit {
       }
 
       if (this.healthAndWellnessChecked) {
-        await this.searchNearbyPlaces(service, this.healthAndWellnessTypeSelection);
+        await this.searchNearbyPlaces(
+          service,
+          this.healthAndWellnessTypeSelection
+        );
       }
 
       if (this.automotiveChecked) {
@@ -172,7 +181,10 @@ export class LandingPageComponent implements OnInit {
       }
 
       if (this.travelAndTourismChecked) {
-        await this.searchNearbyPlaces(service, this.travelAndTourismTypeSelection);
+        await this.searchNearbyPlaces(
+          service,
+          this.travelAndTourismTypeSelection
+        );
       }
 
       if (this.homeAndGardenChecked) {
@@ -180,15 +192,17 @@ export class LandingPageComponent implements OnInit {
       }
 
       if (this.religiousPlacesChecked) {
-        await this.searchNearbyPlaces(service, this.religiousPlacesTypeSelection);
+        await this.searchNearbyPlaces(
+          service,
+          this.religiousPlacesTypeSelection
+        );
       }
     }
     if (this.nearbyPlaces && this.nearbyPlaces.length > 0) {
-      this.nearbyPlaces = this.nearbyPlaces.filter((place, index, self) =>
-  index === self.findIndex((t) => (
-    t.place_id === place.place_id
-  ))
-);
+      this.nearbyPlaces = this.nearbyPlaces.filter(
+        (place, index, self) =>
+          index === self.findIndex((t) => t.place_id === place.place_id)
+      );
       this.convertNearbyPlacesParsedObject(this.nearbyPlaces);
     }
   }
@@ -272,11 +286,11 @@ export class LandingPageComponent implements OnInit {
       this.travelAndTourismTypeSelection,
       this.entertainmentTypeSelection,
       this.homeAndGardenTypeSelection,
-      this.religiousPlacesTypeSelection
+      this.religiousPlacesTypeSelection,
     ];
 
     for (let selection of allSelections) {
-      if (selection.some(type => type.selected)) {
+      if (selection.some((type) => type.selected)) {
         return false;
       }
     }
@@ -309,7 +323,10 @@ export class LandingPageComponent implements OnInit {
                   }
                   resolveType();
                 } else {
-                  console.warn(`Nearby search failed on type: ${type.type}`, status);
+                  console.warn(
+                    `Nearby search failed on type: ${type.type}`,
+                    status
+                  );
                   resolveType();
                 }
               }
@@ -349,7 +366,7 @@ export class LandingPageComponent implements OnInit {
     //     ],
     //     "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/restaurant-71.png"
     // }
-    console.log('Nearby Places:', results)
+    console.log('Nearby Places:', results);
     this.parsedNearbyPlaces = results.map((result) => {
       return {
         name: result.name || '',
@@ -361,7 +378,9 @@ export class LandingPageComponent implements OnInit {
         rating: result.rating || 0,
         types: result.types || [],
         iconUrl: result.icon || '',
-        place_url: result.place_id ? `https://www.google.com/maps/place/?q=place_id:${result.place_id}` : '',
+        place_url: result.place_id
+          ? `https://www.google.com/maps/place/?q=place_id:${result.place_id}`
+          : '',
       };
     });
   }

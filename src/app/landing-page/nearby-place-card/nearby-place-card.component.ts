@@ -11,7 +11,7 @@ export class NearbyPlaceCardComponent implements OnInit, OnChanges {
 
   @Input() mapCenter: google.maps.LatLngLiteral = { lat: 0, lng: 0 };
   @Input() place: NearbyPlaces | undefined;
-  @Input() travelMode: TravelModeEnum = TravelModeEnum.BICYCLING;
+  @Input() travelMode: TravelModeEnum = TravelModeEnum.WALKING;
 
   @Output() renderRoute = new EventEmitter<any>();
 
@@ -49,19 +49,13 @@ export class NearbyPlaceCardComponent implements OnInit, OnChanges {
         travelMode: this.travelMode as any,
       })
       .then((response) => {
-        // console.log(response.routes[0]?.legs[0]?.distance?.text);
-        // console.log(response.routes[0]?.legs[0]?.duration?.text);
-
-        // This draws the route on the map for how to get there.
-        // const renderer = new google.maps.DirectionsRenderer();
-        // renderer.setDirections(response);
-        // if (this.gmap?.googleMap) {
-        //   renderer.setMap(this.gmap.googleMap);
-        // }
         this.routeResponse = response;
         this.duration = response.routes[0]?.legs[0]?.duration?.text || '';
         this.distance = response.routes[0]?.legs[0]?.distance?.text || '';
-
+        if (this.place) {
+          this.place.duration = this.duration;
+          this.place.distance = this.distance;
+        };
       });
     }
   }
