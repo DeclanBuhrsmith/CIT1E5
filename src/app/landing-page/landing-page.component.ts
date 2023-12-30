@@ -298,6 +298,18 @@ export class LandingPageComponent implements OnInit {
     return true;
   }
 
+  getScore(): number {
+    let score = 0;
+    const weight = this.selectedTravelMode === TravelModeEnum.WALKING ? 1 : this.selectedTravelMode === TravelModeEnum.BICYCLING ? 0.75 : this.selectedTravelMode === TravelModeEnum.TRANSIT ? 0.5 : 0.25;
+    this.parsedNearbyPlaces.forEach((place) => {
+      if (place.duration) {
+        score += ((1-(this.extractNumber(place.duration)/15))*weight);
+      }
+    });
+
+    return score;
+  }
+
   private searchNearbyPlaces(
     service: google.maps.places.PlacesService,
     typeSelection: TypesSelection[]
@@ -445,5 +457,10 @@ export class LandingPageComponent implements OnInit {
     typeSelection.forEach((type) => {
       type.selected = event.checked;
     });
+  }
+
+  private extractNumber(input: string): number {
+    const match = input.match(/\d+/);
+    return match ? parseInt(match[0], 10) : 0;
   }
 }

@@ -259,6 +259,7 @@
 
 <div class="nearby-place-header" *ngIf="parsedNearbyPlaces && parsedNearbyPlaces.length > 0">
   <h3>List of nearby places to {{address}}</h3>
+  <h3>15 minute city score: {{getScore()}}</h3>
 </div>
 <div class="nearby-place-cards-container" *ngIf="parsedNearbyPlaces && parsedNearbyPlaces.length > 0">
   @for (place of parsedNearbyPlaces; track place) {
