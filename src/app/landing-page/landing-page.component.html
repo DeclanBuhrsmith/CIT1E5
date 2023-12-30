@@ -27,6 +27,16 @@
       (blur)="getPlaceAutocomplete()"
     />
   </mat-form-field>
+  <div class="travel-mode-selector">
+    <mat-form-field appearance="outline">
+      <mat-label>Travel Mode</mat-label>
+      <mat-select [(value)]="selectedTravelMode">
+        @for (mode of travelModes; track mode) {
+        <mat-option [value]="mode">{{ mode }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </div>
 </form>
 
 <div class="all-type-checkboxes">
@@ -247,18 +257,10 @@
   <map-marker [options]="markerOptions" [position]="mapCenter"></map-marker>
 </google-map>
 
-<div class="travel-mode-selector">
-  <mat-form-field appearance="outline">
-    <mat-label>Travel Mode</mat-label>
-    <mat-select [(value)]="selectedTravelMode">
-      @for (mode of travelModes; track mode) {
-      <mat-option [value]="mode">{{ mode }}</mat-option>
-      }
-    </mat-select>
-  </mat-form-field>
+<div class="nearby-place-header" *ngIf="parsedNearbyPlaces && parsedNearbyPlaces.length > 0">
+  <h3>List of nearby places to {{address}}</h3>
 </div>
-
-<div class="nearby-place-cards-container">
+<div class="nearby-place-cards-container" *ngIf="parsedNearbyPlaces && parsedNearbyPlaces.length > 0">
   @for (place of parsedNearbyPlaces; track place) {
   <nearby-place-card
     [mapCenter]="mapCenter"
