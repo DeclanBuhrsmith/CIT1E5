@@ -300,14 +300,28 @@ export class LandingPageComponent implements OnInit {
 
   getScore(): number {
     let score = 0;
-    const weight = this.selectedTravelMode === TravelModeEnum.WALKING ? 1 : this.selectedTravelMode === TravelModeEnum.BICYCLING ? 0.75 : this.selectedTravelMode === TravelModeEnum.TRANSIT ? 0.5 : 0.25;
+    const weight = this.getWeightByTravelMode(this.selectedTravelMode);
+
     this.parsedNearbyPlaces.forEach((place) => {
       if (place.duration) {
-        score += ((1-(this.extractNumber(place.duration)/15))*weight);
+        score = score + ((1 - this.extractNumber(place.duration) / 15) * weight);
       }
     });
 
     return score;
+  }
+
+  private getWeightByTravelMode(travelMode: TravelModeEnum): number {
+    switch (travelMode) {
+      case TravelModeEnum.WALKING:
+        return 1;
+      case TravelModeEnum.BICYCLING:
+        return 0.75;
+      case TravelModeEnum.TRANSIT:
+        return 0.5;
+      default:
+        return 0.25;
+    }
   }
 
   private searchNearbyPlaces(
