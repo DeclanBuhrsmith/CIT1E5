@@ -1,6 +1,8 @@
 <mat-card>
   <mat-card-header>
-    <img mat-card-avatar [src]="place?.iconUrl">
+    <a href="{{place?.place_url}}" class="image-with-link">
+    <img mat-card-avatar [src]="place?.iconUrl" >
+  </a>
     <mat-card-title>{{place?.name}}</mat-card-title>
     <mat-card-subtitle>{{place?.rating}}</mat-card-subtitle>
   </mat-card-header>

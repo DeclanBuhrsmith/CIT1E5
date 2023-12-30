@@ -295,7 +295,7 @@ export class LandingPageComponent implements OnInit {
                   }
                   resolveType();
                 } else {
-                  console.warn(`Nearby search failed on type: ${type}`, status);
+                  console.warn(`Nearby search failed on type: ${type.type}`, status);
                   resolveType();
                 }
               }
@@ -335,6 +335,7 @@ export class LandingPageComponent implements OnInit {
     //     ],
     //     "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/restaurant-71.png"
     // }
+    console.log('Nearby Places:', results)
     this.parsedNearbyPlaces = results.map((result) => {
       return {
         name: result.name || '',
@@ -346,6 +347,7 @@ export class LandingPageComponent implements OnInit {
         rating: result.rating || 0,
         types: result.types || [],
         iconUrl: result.icon || '',
+        place_url: result.place_id ? `https://www.google.com/maps/place/?q=place_id:${result.place_id}` : '',
       };
     });
   }

@@ -9,4 +9,5 @@ export interface NearbyPlaces {
   rating: number;
   types: string[];
   iconUrl: string;
+  place_url: string;
 }
