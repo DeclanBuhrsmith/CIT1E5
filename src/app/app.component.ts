@@ -11,5 +11,5 @@ import { LandingPageModule } from './landing-page/landing-page.module';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'xminutecity';
+  title = 'CIT1E5';
 }

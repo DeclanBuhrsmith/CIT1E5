@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "xminutecity": {
+    "CIT1E5": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/xminutecity",
+            "outputPath": "dist/CIT1E5",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -60,6 +60,9 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
+            },
+            "github-pages": {
+              "baseHref": "/CIT1E5/"
             }
           },
           "defaultConfiguration": "production"
@@ -68,10 +71,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "xminutecity:build:production"
+              "buildTarget": "CIT1E5:build:production"
             },
             "development": {
-              "buildTarget": "xminutecity:build:development"
+              "buildTarget": "CIT1E5:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -79,7 +82,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "xminutecity:build"
+            "buildTarget": "CIT1E5:build"
           }
         },
         "test": {
@@ -101,6 +104,9 @@
             ],
             "scripts": []
           }
+        },
+        "deploy": {
+          "builder": "angular-cli-ghpages:deploy"
         }
       }
     }

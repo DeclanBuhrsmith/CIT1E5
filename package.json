@@ -1,5 +1,5 @@
 {
-  "name": "xminutecity",
+  "name": "CIT1E5",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -7,7 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:xminutecity": "node dist/xminutecity/server/server.mjs"
+    "serve:ssr:CIT1E5": "node dist/CIT1E5/server/server.mjs"
   },
   "private": true,
   "dependencies": {
@@ -25,6 +25,7 @@
     "@angular/router": "^17.0.0",
     "@angular/ssr": "^17.0.7",
     "@types/googlemaps": "^3.43.3",
+    "angular-cli-ghpages": "^1.0.7",
     "express": "^4.18.2",
     "ngx-google-places-autocomplete": "^2.0.5",
     "rxjs": "~7.8.0",
