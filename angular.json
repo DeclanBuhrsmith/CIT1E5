@@ -106,7 +106,12 @@
           }
         },
         "deploy": {
-          "builder": "angular-cli-ghpages:deploy"
+          "builder": "angular-cli-ghpages:deploy",
+          "options": {
+            "baseHref": "https://declanbuhrsmith.github.io/CIT1E5/",
+            "name": "Declan Buhrsmith",
+            "email": "DecBuhr@gmail.com"
+          }
         }
       }
     }
