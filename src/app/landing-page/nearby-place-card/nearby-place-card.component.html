@@ -4,7 +4,7 @@
     <img mat-card-avatar [src]="place?.iconUrl" >
   </a>
     <mat-card-title>{{place?.name}}</mat-card-title>
-    <mat-card-subtitle>Rating: {{place?.rating}}</mat-card-subtitle>
+    <mat-card-subtitle *ngIf="place?.score">Score: {{place?.score?.toFixed(2)}}</mat-card-subtitle>
   </mat-card-header>
   <!-- <img mat-card-image [src]="place?.iconUrl" alt="Image"> -->
   <mat-card-content>

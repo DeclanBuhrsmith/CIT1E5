@@ -300,11 +300,12 @@ export class LandingPageComponent implements OnInit {
 
   getScore(): number {
     let score = 0;
-    const weight = this.getWeightByTravelMode(this.selectedTravelMode);
+    const travelWeight = this.getWeightByTravelMode(this.selectedTravelMode);
 
     this.parsedNearbyPlaces.forEach((place) => {
-      if (place.duration) {
-        score = score + ((1 - this.extractNumber(place.duration) / 15) * weight);
+      if (place.duration && this.extractNumber(place.duration) <= 15) {
+        place.score = ((1 - this.extractNumber(place.duration) / 15));
+        score = score + (place.score * travelWeight);
       }
     });
 
