@@ -137,11 +137,17 @@ export class LandingPageComponent implements OnInit {
 
       // // TODO depending on the checkbox, add the type to the request
       if (this.financialServicesChecked) {
-        await this.searchNearbyPlaces(service, this.financialServicesTypeSelection);
+        await this.searchNearbyPlaces(
+          service,
+          this.financialServicesTypeSelection
+        );
       }
 
       if (this.foodAndBeverageChecked) {
-        await this.searchNearbyPlaces(service, this.foodAndBeverageTypeSelection);
+        await this.searchNearbyPlaces(
+          service,
+          this.foodAndBeverageTypeSelection
+        );
       }
 
       if (this.retailStoresChecked) {
@@ -149,7 +155,10 @@ export class LandingPageComponent implements OnInit {
       }
 
       if (this.healthAndWellnessChecked) {
-        await this.searchNearbyPlaces(service, this.healthAndWellnessTypeSelection);
+        await this.searchNearbyPlaces(
+          service,
+          this.healthAndWellnessTypeSelection
+        );
       }
 
       if (this.automotiveChecked) {
@@ -172,7 +181,10 @@ export class LandingPageComponent implements OnInit {
       }
 
       if (this.travelAndTourismChecked) {
-        await this.searchNearbyPlaces(service, this.travelAndTourismTypeSelection);
+        await this.searchNearbyPlaces(
+          service,
+          this.travelAndTourismTypeSelection
+        );
       }
 
       if (this.homeAndGardenChecked) {
@@ -180,15 +192,17 @@ export class LandingPageComponent implements OnInit {
       }
 
       if (this.religiousPlacesChecked) {
-        await this.searchNearbyPlaces(service, this.religiousPlacesTypeSelection);
+        await this.searchNearbyPlaces(
+          service,
+          this.religiousPlacesTypeSelection
+        );
       }
     }
     if (this.nearbyPlaces && this.nearbyPlaces.length > 0) {
-      this.nearbyPlaces = this.nearbyPlaces.filter((place, index, self) =>
-  index === self.findIndex((t) => (
-    t.place_id === place.place_id
-  ))
-);
+      this.nearbyPlaces = this.nearbyPlaces.filter(
+        (place, index, self) =>
+          index === self.findIndex((t) => t.place_id === place.place_id)
+      );
       this.convertNearbyPlacesParsedObject(this.nearbyPlaces);
     }
   }
@@ -272,16 +286,56 @@ export class LandingPageComponent implements OnInit {
       this.travelAndTourismTypeSelection,
       this.entertainmentTypeSelection,
       this.homeAndGardenTypeSelection,
-      this.religiousPlacesTypeSelection
+      this.religiousPlacesTypeSelection,
     ];
 
     for (let selection of allSelections) {
-      if (selection.some(type => type.selected)) {
+      if (selection.some((type) => type.selected)) {
         return false;
       }
     }
 
     return true;
+  }
+
+  getScore(): number {
+    let score = 0;
+    const travelWeight = this.getWeightByTravelMode(this.selectedTravelMode);
+
+    this.parsedNearbyPlaces.forEach((place) => {
+      if (place.duration && this.extractNumber(place.duration) <= 15) {
+        place.score = 1 - this.extractNumber(place.duration) / 15;
+        score = score + place.score * travelWeight;
+      }
+    });
+
+    return score;
+  }
+
+  sortParsedPlaces(nearbyPlaces: NearbyPlaces[]): NearbyPlaces[] {
+    nearbyPlaces.sort((a, b) => {
+      if (a.duration && b.duration) {
+        const durationA = this.extractNumber(a.duration);
+        const durationB = this.extractNumber(b.duration);
+        return durationA - durationB;
+      } else {
+        return 0;
+      }
+    });
+    return nearbyPlaces;
+  }
+
+  private getWeightByTravelMode(travelMode: TravelModeEnum): number {
+    switch (travelMode) {
+      case TravelModeEnum.WALKING:
+        return 1;
+      case TravelModeEnum.BICYCLING:
+        return 0.75;
+      case TravelModeEnum.TRANSIT:
+        return 0.5;
+      default:
+        return 0.25;
+    }
   }
 
   private searchNearbyPlaces(
@@ -309,7 +363,10 @@ export class LandingPageComponent implements OnInit {
                   }
                   resolveType();
                 } else {
-                  console.warn(`Nearby search failed on type: ${type.type}`, status);
+                  console.warn(
+                    `Nearby search failed on type: ${type.type}`,
+                    status
+                  );
                   resolveType();
                 }
               }
@@ -349,7 +406,7 @@ export class LandingPageComponent implements OnInit {
     //     ],
     //     "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/restaurant-71.png"
     // }
-    console.log('Nearby Places:', results)
+    console.log('Nearby Places:', results);
     this.parsedNearbyPlaces = results.map((result) => {
       return {
         name: result.name || '',
@@ -361,7 +418,9 @@ export class LandingPageComponent implements OnInit {
         rating: result.rating || 0,
         types: result.types || [],
         iconUrl: result.icon || '',
-        place_url: result.place_id ? `https://www.google.com/maps/place/?q=place_id:${result.place_id}` : '',
+        place_url: result.place_id
+          ? `https://www.google.com/maps/place/?q=place_id:${result.place_id}`
+          : '',
       };
     });
   }
@@ -426,5 +485,10 @@ export class LandingPageComponent implements OnInit {
     typeSelection.forEach((type) => {
       type.selected = event.checked;
     });
+  }
+
+  private extractNumber(input: string): number {
+    const match = input.match(/\d+/);
+    return match ? parseInt(match[0], 10) : 0;
   }
 }

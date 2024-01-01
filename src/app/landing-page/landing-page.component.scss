@@ -3,6 +3,10 @@
   flex-direction: column;
 }
 
+::ng-deep .mat-mdc-text-field-wrapper {
+  background: white;
+}
+
 .content {
   text-align: center;
   padding: 20px;
@@ -79,4 +83,10 @@ h3 {
   border-radius: 4px;
   padding: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: white;
 }
+
+.nearby-place-header {
+  padding-top: 10px;
+}
+

@@ -10,4 +10,7 @@ export interface NearbyPlaces {
   types: string[];
   iconUrl: string;
   place_url: string;
+  distance?: string;
+  duration?: string;
+  score?: number;
 }
