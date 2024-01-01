@@ -304,12 +304,25 @@ export class LandingPageComponent implements OnInit {
 
     this.parsedNearbyPlaces.forEach((place) => {
       if (place.duration && this.extractNumber(place.duration) <= 15) {
-        place.score = ((1 - this.extractNumber(place.duration) / 15));
-        score = score + (place.score * travelWeight);
+        place.score = 1 - this.extractNumber(place.duration) / 15;
+        score = score + place.score * travelWeight;
       }
     });
 
     return score;
+  }
+
+  sortParsedPlaces(nearbyPlaces: NearbyPlaces[]): NearbyPlaces[] {
+    nearbyPlaces.sort((a, b) => {
+      if (a.duration && b.duration) {
+        const durationA = this.extractNumber(a.duration);
+        const durationB = this.extractNumber(b.duration);
+        return durationA - durationB;
+      } else {
+        return 0;
+      }
+    });
+    return nearbyPlaces;
   }
 
   private getWeightByTravelMode(travelMode: TravelModeEnum): number {

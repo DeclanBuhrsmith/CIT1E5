@@ -262,12 +262,11 @@
   <h3>15 minute city score: {{getScore().toFixed(2)}}</h3>
 </div>
 <div class="nearby-place-cards-container" *ngIf="parsedNearbyPlaces && parsedNearbyPlaces.length > 0">
-  @for (place of parsedNearbyPlaces; track place) {
+  @for (place of sortParsedPlaces(parsedNearbyPlaces); track place) {
   <nearby-place-card
     [mapCenter]="mapCenter"
     [place]="place"
     [travelMode]="selectedTravelMode"
-    (renderRoute)="renderRoute($event)"
   ></nearby-place-card>
   }
 </div>
