@@ -100,8 +100,6 @@ export class LandingPageComponent implements OnInit {
   }
 
   centerMapOnAddress() {
-    console.log('Search Address:', this.address);
-
     // Use Google Maps API to geocode the address
     const geocoder = new google.maps.Geocoder();
     geocoder.geocode({ address: this.address }, (results, status) => {
@@ -406,7 +404,6 @@ export class LandingPageComponent implements OnInit {
     //     ],
     //     "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/restaurant-71.png"
     // }
-    console.log('Nearby Places:', results);
     this.parsedNearbyPlaces = results.map((result) => {
       return {
         name: result.name || '',
