@@ -24,6 +24,7 @@ import {
   RetailStores,
   TravelAndLodging,
 } from './enums/types';
+import { LocationService } from './services/location.service';
 
 @Component({
   selector: 'landing-page',
@@ -40,11 +41,9 @@ export class LandingPageComponent implements OnInit {
   mapOptions: google.maps.MapOptions;
   markerOptions: google.maps.MarkerOptions;
   mapCenter: google.maps.LatLngLiteral = { lat: 45, lng: -93.19333 };
-
-  apiKey = 'AIzaSyBb6q-ATX9Ih6LkWjYrmuzWwMWpY3Mr2UQ';
+  currentGeoLocation: any;
 
   // Google Objects
-  //googleMapsForm: FormGroup;
   nearbyPlaces: google.maps.places.PlaceResult[] | null = [];
   travelModes = Object.values(TravelModeEnum);
   selectedTravelMode = TravelModeEnum.WALKING;
@@ -81,7 +80,10 @@ export class LandingPageComponent implements OnInit {
   homeAndGardenTypeSelection: TypesSelection[] = [];
   religiousPlacesTypeSelection: TypesSelection[] = [];
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private locationService: LocationService
+  ) {
     this.mapOptions = {
       zoom: 15,
     };
@@ -115,6 +117,29 @@ export class LandingPageComponent implements OnInit {
   }
 
   getPlaceAutocomplete() {
+    // Ask for location first, and if they allow it, use that location as default.
+    if (!this.currentGeoLocation) {
+      this.locationService.getCurrentLocation().then((location) => {
+        this.currentGeoLocation = location;
+
+        // Get the formatted address from the current location
+        const geocoder = new google.maps.Geocoder();
+        geocoder.geocode(
+          { location: this.currentGeoLocation },
+          (results, status) => {
+            if (status === 'OK' && results && results.length > 0) {
+              this.address = results[0].formatted_address;
+              this.centerMapOnAddress();
+            } else {
+              console.error('Geocoding failed:', status);
+            }
+          }
+        );
+      });
+      // The latter code doesn't need to run if the user has already allowed location.
+      return;
+    }
+
     const autocomplete = new google.maps.places.Autocomplete(
       this.addresstext.nativeElement
     );
