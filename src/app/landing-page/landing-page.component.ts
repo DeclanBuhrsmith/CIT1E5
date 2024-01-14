@@ -79,6 +79,18 @@ export class LandingPageComponent implements OnInit {
   homeAndGardenTypeSelection: TypesSelection[] = [];
   religiousPlacesTypeSelection: TypesSelection[] = [];
 
+  financialServicesScore = 0;
+  foodAndBeverageScore = 0;
+  retailStoresScore = 0;
+  healthAndWellnessScore = 0;
+  automotiveScore = 0;
+  publicServicesAndGovernmentScore = 0;
+  educationScore = 0;
+  entertainmentScore = 0;
+  travelAndTourismScore = 0;
+  homeAndGardenScore = 0;
+  religiousPlacesScore = 0;
+
   constructor(
     private fb: FormBuilder,
     private locationService: LocationService
@@ -343,7 +355,7 @@ export class LandingPageComponent implements OnInit {
    * and then multiplying it by the weight of the selected travel mode.
    * @returns The calculated score.
    */
-  getScore(): number {
+  getScoreTotalScore(): number {
     let score = 0;
     const travelWeight = this.getWeightByTravelMode(this.selectedTravelMode);
 
@@ -352,6 +364,9 @@ export class LandingPageComponent implements OnInit {
         // The -1 is to make sure that the score is never 0, and also makes it so the max score per place is 1.
         place.score = 1 - (this.extractNumber(place.duration) - 1) / 15;
         score = score + place.score * travelWeight;
+
+        // Sets the score for each of the categories.
+        this.setScoreByCategory(place.categories, place.score, travelWeight);
       }
     });
 
@@ -471,6 +486,7 @@ export class LandingPageComponent implements OnInit {
         place_url: result.place_id
           ? `https://www.google.com/maps/place/?q=place_id:${result.place_id}`
           : '',
+        categories: this.setPlaceCategories(result.types || []),
       };
     });
   }
@@ -540,5 +556,74 @@ export class LandingPageComponent implements OnInit {
   private extractNumber(input: string): number {
     const match = input.match(/\d+/);
     return match ? parseInt(match[0], 10) : 0;
+  }
+
+  private setScoreByCategory(categories: string[], score: number, weight: number) {
+    categories.forEach((category) => {
+      switch (category) {
+        case 'Financial Services':
+          this.financialServicesScore = this.financialServicesScore + score * weight;
+          break;
+        case 'Food and Beverage':
+          this.foodAndBeverageScore = this.foodAndBeverageScore + score * weight;
+          break;
+        case 'Retail Stores':
+          this.retailStoresScore = this.retailStoresScore + score * weight;
+          break;
+        case 'Health and Wellness':
+          this.healthAndWellnessScore = this.healthAndWellnessScore + score * weight;
+          break;
+        case 'Automotive':
+          this.automotiveScore = this.automotiveScore + score * weight;
+          break;
+        case 'Public Services and Government':
+          this.publicServicesAndGovernmentScore =
+            this.publicServicesAndGovernmentScore + score * weight;
+          break;
+        case 'Education':
+          this.educationScore = this.educationScore + score * weight;
+          break;
+        case 'Entertainment and Recreation':
+          this.entertainmentScore = this.entertainmentScore + score * weight;
+          break;
+        case 'Travel and Tourism':
+          this.travelAndTourismScore = this.travelAndTourismScore + score * weight;
+          break;
+        case 'Home and Garden':
+          this.homeAndGardenScore = this.homeAndGardenScore + score * weight;
+          break;
+        case 'Religious Places':
+          this.religiousPlacesScore = this.religiousPlacesScore + score * weight;
+          break;
+      }
+    });
+  }
+
+  private setPlaceCategories(types: string[]): string[] {
+    const categories: string[] = [];
+
+    const categoryMappings = {
+      FinancialServices: 'Financial Services',
+      FoodAndBeverage: 'Food and Beverage',
+      RetailStores: 'Retail Stores',
+      HealthAndWellness: 'Health and Wellness',
+      Automotive: 'Automotive',
+      PublicServicesAndGovernment: 'Public Services and Government',
+      Education: 'Education',
+      EntertainmentAndRecreation: 'Entertainment and Recreation',
+      TravelAndLodging: 'Travel and Tourism',
+      HomeAndGarden: 'Home and Garden',
+      ReligiousPlaces: 'Religious Places',
+    };
+
+    types.forEach((type) => {
+      Object.entries(categoryMappings).forEach(([key, value]) => {
+        if (Object.values(eval(key)).includes(type as any)) {
+          categories.push(value);
+        }
+      });
+    });
+
+    return categories;
   }
 }

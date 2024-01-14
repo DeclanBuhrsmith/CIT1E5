@@ -251,7 +251,19 @@
 
 <div class="nearby-place-header" *ngIf="parsedNearbyPlaces && parsedNearbyPlaces.length > 0">
   <h3>List of nearby places to {{address}}</h3>
-  <h3>15 minute city score: {{getScore().toFixed(2)}}</h3>
+  <h3>15 minute city score: {{getScoreTotalScore().toFixed(2)}}</h3>
+  <div class="category-scores">
+    <h4 *ngIf="financialServicesChecked && financialServicesScore > 0">{{financialServicesScore}}</h4>
+    <h4 *ngIf="foodAndBeverageChecked && foodAndBeverageScore > 0">{{foodAndBeverageScore}}</h4>
+    <h4 *ngIf="healthAndWellnessChecked && healthAndWellnessScore > 0">{{healthAndWellnessScore}}</h4>
+    <h4 *ngIf="retailStoresChecked && retailStoresScore > 0">{{retailStoresScore}}</h4>
+    <h4 *ngIf="automotiveChecked && automotiveScore > 0">{{automotiveScore}}</h4>
+    <h4 *ngIf="entertainmentChecked && entertainmentScore > 0">{{entertainmentScore}}</h4>
+    <h4 *ngIf="publicServicesAndGovernmentChecked && publicServicesAndGovernmentScore > 0">{{publicServicesAndGovernmentScore}}</h4>
+    <h4 *ngIf="travelAndTourismChecked && travelAndTourismScore > 0">{{travelAndTourismScore}}</h4>
+    <h4 *ngIf="homeAndGardenChecked && homeAndGardenScore > 0">{{homeAndGardenScore}}</h4>
+    <h4 *ngIf="religiousPlacesChecked && religiousPlacesScore > 0">{{religiousPlacesScore}}</h4>
+  </div>
 </div>
 <div class="nearby-place-cards-container" *ngIf="parsedNearbyPlaces && parsedNearbyPlaces.length > 0">
   @for (place of sortParsedPlaces(parsedNearbyPlaces); track place) {

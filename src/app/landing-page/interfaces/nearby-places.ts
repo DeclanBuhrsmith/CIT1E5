@@ -13,4 +13,5 @@ export interface NearbyPlaces {
   distance?: string;
   duration?: string;
   score?: number;
+  categories: string[];
 }
