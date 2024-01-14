@@ -36,7 +36,6 @@ export class LandingPageComponent implements OnInit {
   @ViewChild('gmap') gmap: GoogleMap | undefined;
   @ViewChild('addressInput') addresstext: any;
 
-  toggleControl = new FormControl(false);
   address: string = '';
   mapOptions: google.maps.MapOptions;
   markerOptions: google.maps.MarkerOptions;
@@ -101,6 +100,9 @@ export class LandingPageComponent implements OnInit {
     this.initializeTypesSelection();
   }
 
+  /**
+   * Centers the map on the specified address using the Google Maps API geocoding.
+   */
   centerMapOnAddress() {
     // Use Google Maps API to geocode the address
     const geocoder = new google.maps.Geocoder();
@@ -116,6 +118,12 @@ export class LandingPageComponent implements OnInit {
     });
   }
 
+  /**
+   * Retrieves the place autocomplete suggestions based on the user's input.
+   * If the user has allowed location, it uses the current location as the default.
+   * Otherwise, it prompts the user for location permission and retrieves the current location.
+   * It also sets the formatted address and centers the map on the selected address.
+   */
   getPlaceAutocomplete() {
     // Ask for location first, and if they allow it, use that location as default.
     if (!this.currentGeoLocation) {
@@ -150,6 +158,10 @@ export class LandingPageComponent implements OnInit {
     });
   }
 
+  /**
+   * Retrieves nearby places based on the selected checkboxes and types.
+   * Clears the previous results and filters out duplicate places.
+   */
   async getNearbyPlaces() {
     // Clear the previous results
     this.parsedNearbyPlaces = [];
@@ -297,6 +309,10 @@ export class LandingPageComponent implements OnInit {
     return parentCheckbox && typeSelection.some((type) => !type.selected);
   }
 
+  /**
+   * Checks if all checkboxes are unchecked.
+   * @returns {boolean} True if all checkboxes are unchecked, false otherwise.
+   */
   areAllCheckboxesUnchecked(): boolean {
     const allSelections = [
       this.financialServicesTypeSelection,
@@ -321,13 +337,20 @@ export class LandingPageComponent implements OnInit {
     return true;
   }
 
+  /**
+   * Calculates and returns the score based on the selected travel mode and nearby places.
+   * The score is calculated by assigning a score to each nearby place based on its duration,
+   * and then multiplying it by the weight of the selected travel mode.
+   * @returns The calculated score.
+   */
   getScore(): number {
     let score = 0;
     const travelWeight = this.getWeightByTravelMode(this.selectedTravelMode);
 
     this.parsedNearbyPlaces.forEach((place) => {
       if (place.duration && this.extractNumber(place.duration) <= 15) {
-        place.score = 1 - this.extractNumber(place.duration) / 15;
+        // The -1 is to make sure that the score is never 0, and also makes it so the max score per place is 1.
+        place.score = 1 - (this.extractNumber(place.duration) - 1) / 15;
         score = score + place.score * travelWeight;
       }
     });
@@ -335,6 +358,11 @@ export class LandingPageComponent implements OnInit {
     return score;
   }
 
+  /**
+   * Sorts an array of NearbyPlaces objects based on their duration.
+   * @param nearbyPlaces - The array of NearbyPlaces objects to be sorted.
+   * @returns The sorted array of NearbyPlaces objects.
+   */
   sortParsedPlaces(nearbyPlaces: NearbyPlaces[]): NearbyPlaces[] {
     nearbyPlaces.sort((a, b) => {
       if (a.duration && b.duration) {
