@@ -599,27 +599,39 @@ export class LandingPageComponent implements OnInit {
   private setPlaceCategories(types: string[]): string[] {
     const categories: string[] = [];
 
-    const categoryMappings = {
-      FinancialServices: 'Financial Services',
-      FoodAndBeverage: 'Food and Beverage',
-      RetailStores: 'Retail Stores',
-      HealthAndWellness: 'Health and Wellness',
-      Automotive: 'Automotive',
-      PublicServicesAndGovernment: 'Public Services and Government',
-      Education: 'Education',
-      EntertainmentAndRecreation: 'Entertainment and Recreation',
-      TravelAndLodging: 'Travel and Tourism',
-      HomeAndGarden: 'Home and Garden',
-      ReligiousPlaces: 'Religious Places',
-    };
-
-    types.forEach((type) => {
-      Object.entries(categoryMappings).forEach(([key, value]) => {
-        if (Object.values(eval(key)).includes(type as any)) {
-          categories.push(value);
-        }
-      });
-    });
+    if (types.some((type) => Object.values(FinancialServices).includes(type as FinancialServices))) {
+      categories.push('Financial Services');
+    }
+    if (types.some((type) => Object.values(FoodAndBeverage).includes(type as FoodAndBeverage))) {
+      categories.push('Food and Beverage');
+    }
+    if (types.some((type) => Object.values(RetailStores).includes(type as RetailStores))) {
+      categories.push('Retail Stores');
+    }
+    if (types.some((type) => Object.values(HealthAndWellness).includes(type as HealthAndWellness))) {
+      categories.push('Health and Wellness');
+    }
+    if (types.some((type) => Object.values(Automotive).includes(type as Automotive))) {
+      categories.push('Automotive');
+    }
+    if (types.some((type) => Object.values(PublicServicesAndGovernment).includes(type as PublicServicesAndGovernment))) {
+      categories.push('Public Services and Government');
+    }
+    if (types.some((type) => Object.values(Education).includes(type as Education))) {
+      categories.push('Education');
+    }
+    if (types.some((type) => Object.values(EntertainmentAndRecreation).includes(type as EntertainmentAndRecreation))) {
+      categories.push('Entertainment and Recreation');
+    }
+    if (types.some((type) => Object.values(TravelAndLodging).includes(type as TravelAndLodging))) {
+      categories.push('Travel and Tourism');
+    }
+    if (types.some((type) => Object.values(HomeAndGarden).includes(type as HomeAndGarden))) {
+      categories.push('Home and Garden');
+    }
+    if (types.some((type) => Object.values(ReligiousPlaces).includes(type as ReligiousPlaces))) {
+      categories.push('Religious Places');
+    }
 
     return categories;
   }
