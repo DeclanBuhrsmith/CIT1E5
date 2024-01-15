@@ -250,19 +250,21 @@
 </google-map>
 
 <div class="nearby-place-header" *ngIf="parsedNearbyPlaces && parsedNearbyPlaces.length > 0">
-  <h3>List of nearby places to {{address}}</h3>
-  <h3>15 minute city score: {{totalScore.toFixed(2)}}</h3>
+  <div class="score-container">
+    <h3 class="score">15 minute city score: {{totalScore.toFixed(2)}}</h3>
+    <h4 class="score">Number of nearby places: {{parsedNearbyPlaces.length}}</h4>
+  </div>
   <div class="category-scores">
-    <h4 *ngIf="financialServicesChecked && financialServicesScore > 0">Financal score: {{financialServicesScore.toFixed(2)}}</h4>
-    <h4 *ngIf="foodAndBeverageChecked && foodAndBeverageScore > 0">Food and Beverage score: {{foodAndBeverageScore.toFixed(2)}}</h4>
-    <h4 *ngIf="healthAndWellnessChecked && healthAndWellnessScore > 0"> Health and Wellness score: {{healthAndWellnessScore.toFixed(2)}}</h4>
-    <h4 *ngIf="retailStoresChecked && retailStoresScore > 0">Retail score: {{retailStoresScore.toFixed(2)}}</h4>
-    <h4 *ngIf="automotiveChecked && automotiveScore > 0">Automotive score: {{automotiveScore.toFixed(2)}}</h4>
-    <h4 *ngIf="entertainmentChecked && entertainmentScore > 0">Entertainment score: {{entertainmentScore.toFixed(2)}}</h4>
-    <h4 *ngIf="publicServicesAndGovernmentChecked && publicServicesAndGovernmentScore > 0">Public services and Government score: {{publicServicesAndGovernmentScore.toFixed(2)}}</h4>
-    <h4 *ngIf="travelAndTourismChecked && travelAndTourismScore > 0">Travel and tourism score: {{travelAndTourismScore.toFixed(2)}}</h4>
-    <h4 *ngIf="homeAndGardenChecked && homeAndGardenScore > 0">Home and garden score: {{homeAndGardenScore.toFixed(2)}}</h4>
-    <h4 *ngIf="religiousPlacesChecked && religiousPlacesScore > 0">Religious places score: {{religiousPlacesScore.toFixed(2)}}</h4>
+    <h4 *ngIf="financialServicesChecked">Financal score: {{financialServicesScore.toFixed(2)}}</h4>
+    <h4 *ngIf="foodAndBeverageChecked">Food and Beverage score: {{foodAndBeverageScore.toFixed(2)}}</h4>
+    <h4 *ngIf="healthAndWellnessChecked"> Health and Wellness score: {{healthAndWellnessScore.toFixed(2)}}</h4>
+    <h4 *ngIf="retailStoresChecked">Retail score: {{retailStoresScore.toFixed(2)}}</h4>
+    <h4 *ngIf="automotiveChecked">Automotive score: {{automotiveScore.toFixed(2)}}</h4>
+    <h4 *ngIf="entertainmentChecked">Entertainment score: {{entertainmentScore.toFixed(2)}}</h4>
+    <h4 *ngIf="publicServicesAndGovernmentChecked">Public services and Government score: {{publicServicesAndGovernmentScore.toFixed(2)}}</h4>
+    <h4 *ngIf="travelAndTourismChecked">Travel and tourism score: {{travelAndTourismScore.toFixed(2)}}</h4>
+    <h4 *ngIf="homeAndGardenChecked">Home and garden score: {{homeAndGardenScore.toFixed(2)}}</h4>
+    <h4 *ngIf="religiousPlacesChecked">Religious places score: {{religiousPlacesScore.toFixed(2)}}</h4>
   </div>
 </div>
 <div class="nearby-place-cards-container" *ngIf="parsedNearbyPlaces && parsedNearbyPlaces.length > 0">

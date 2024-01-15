@@ -137,26 +137,10 @@ export class LandingPageComponent implements OnInit {
    * Otherwise, it prompts the user for location permission and retrieves the current location.
    * It also sets the formatted address and centers the map on the selected address.
    */
-  getPlaceAutocomplete() {
+  async getPlaceAutocomplete() {
     // Ask for location first, and if they allow it, use that location as default.
     if (!this.currentGeoLocation) {
-      this.locationService.getCurrentLocation().then((location) => {
-        this.currentGeoLocation = location;
-
-        // Get the formatted address from the current location
-        const geocoder = new google.maps.Geocoder();
-        geocoder.geocode(
-          { location: this.currentGeoLocation },
-          (results, status) => {
-            if (status === 'OK' && results && results.length > 0) {
-              this.address = results[0].formatted_address;
-              this.centerMapOnAddress();
-            } else {
-              console.error('Geocoding failed:', status);
-            }
-          }
-        );
-      });
+      await this.getCurrentGeolocation();
       // The latter code doesn't need to run if the user has already allowed location.
       return;
     }
@@ -654,5 +638,25 @@ export class LandingPageComponent implements OnInit {
     this.homeAndGardenScore = 0;
     this.religiousPlacesScore = 0;
     this.totalScore = 0;
+  }
+
+  private async getCurrentGeolocation() {
+    await this.locationService.getCurrentLocation().then((location) => {
+      this.currentGeoLocation = location;
+
+      // Get the formatted address from the current location
+      const geocoder = new google.maps.Geocoder();
+      geocoder.geocode(
+        { location: this.currentGeoLocation },
+        (results, status) => {
+          if (status === 'OK' && results && results.length > 0) {
+            this.address = results[0].formatted_address;
+            this.centerMapOnAddress();
+          } else {
+            console.error('Geocoding failed:', status);
+          }
+        }
+      );
+    });
   }
 }

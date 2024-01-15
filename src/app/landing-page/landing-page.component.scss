@@ -48,6 +48,8 @@ google-map {
 .nearby-place-cards-container {
   display: flex;
   flex-wrap: wrap;
+  max-height: 400px;
+  overflow-y: auto;
 }
 
 nearby-place-card {
@@ -78,7 +80,11 @@ h3 {
   font-weight: bold;
   color: #333;
   margin-bottom: 10px;
-  padding-left: 10px;
+}
+
+h4 {
+  font-size: 20px;
+  color: #333;
 }
 
 .all-type-checkboxes {
@@ -91,6 +97,14 @@ h3 {
 
 .nearby-place-header {
   padding-top: 10px;
+}
+
+.score-container {
+  display: flex;
+  h4 {
+    margin-left: 10px;
+    margin-top: 3px;
+  }
 }
 
 

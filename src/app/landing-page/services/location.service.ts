@@ -9,7 +9,7 @@ export class LocationService {
   getCurrentLocation() {
     return new Promise((resolve, reject) => {
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
+        navigator.geolocation.watchPosition(
           (position) => {
             if (position) {
               let lat = position.coords.latitude;
