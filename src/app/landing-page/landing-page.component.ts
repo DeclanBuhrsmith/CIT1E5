@@ -90,6 +90,7 @@ export class LandingPageComponent implements OnInit {
   travelAndTourismScore = 0;
   homeAndGardenScore = 0;
   religiousPlacesScore = 0;
+  totalScore = 0;
 
   constructor(
     private fb: FormBuilder,
@@ -175,9 +176,7 @@ export class LandingPageComponent implements OnInit {
    * Clears the previous results and filters out duplicate places.
    */
   async getNearbyPlaces() {
-    // Clear the previous results
-    this.parsedNearbyPlaces = [];
-    this.nearbyPlaces = [];
+    this.clearScoresAndNearbyPlaces();
 
     if (this.gmap?.googleMap) {
       const service = new google.maps.places.PlacesService(this.gmap.googleMap);
@@ -355,29 +354,13 @@ export class LandingPageComponent implements OnInit {
    * and then multiplying it by the weight of the selected travel mode.
    * @returns The calculated score.
    */
-  getScoreTotalScore(): number {
-    let score = 0;
+  setScoreTotalScore(place: NearbyPlaces): void {
     const travelWeight = this.getWeightByTravelMode(this.selectedTravelMode);
-
-    this.parsedNearbyPlaces.forEach((place) => {
-      if (place.duration && this.extractNumber(place.duration) <= 15) {
-        // The -1 is to make sure that the score is never 0, and also makes it so the max score per place is 1.
-        place.score = 1 - (this.extractNumber(place.duration) - 1) / 15;
-        score = score + place.score * travelWeight;
-
-        // Sets the score for each of the categories.
-        this.setScoreByCategory(place.categories, place.score, travelWeight);
-      }
-    });
-
-    return score;
+    this.totalScore = this.totalScore + place.score * travelWeight;
+    // Sets the score for each of the categories.
+    this.setScoreByCategory(place.categories, place.score, travelWeight);
   }
 
-  /**
-   * Sorts an array of NearbyPlaces objects based on their duration.
-   * @param nearbyPlaces - The array of NearbyPlaces objects to be sorted.
-   * @returns The sorted array of NearbyPlaces objects.
-   */
   sortParsedPlaces(nearbyPlaces: NearbyPlaces[]): NearbyPlaces[] {
     nearbyPlaces.sort((a, b) => {
       if (a.duration && b.duration) {
@@ -486,6 +469,7 @@ export class LandingPageComponent implements OnInit {
         place_url: result.place_id
           ? `https://www.google.com/maps/place/?q=place_id:${result.place_id}`
           : '',
+        score: 0,
         categories: this.setPlaceCategories(result.types || []),
       };
     });
@@ -547,6 +531,10 @@ export class LandingPageComponent implements OnInit {
     );
   }
 
+  setScoreForPlace(place: NearbyPlaces) {
+    this.setScoreTotalScore(place);
+  }
+
   private toggleAllTypes(event: any, typeSelection: TypesSelection[]) {
     typeSelection.forEach((type) => {
       type.selected = event.checked;
@@ -558,43 +546,52 @@ export class LandingPageComponent implements OnInit {
     return match ? parseInt(match[0], 10) : 0;
   }
 
-  private setScoreByCategory(categories: string[], score: number, weight: number) {
+  private setScoreByCategory(
+    categories: string[],
+    score: number,
+    weight: number
+  ) {
     categories.forEach((category) => {
       switch (category) {
         case 'Financial Services':
-          this.financialServicesScore = this.financialServicesScore + score * weight;
-          break;
+          this.financialServicesScore =
+            this.financialServicesScore + score * weight;
+          return;
         case 'Food and Beverage':
-          this.foodAndBeverageScore = this.foodAndBeverageScore + score * weight;
-          break;
+          this.foodAndBeverageScore =
+            this.foodAndBeverageScore + score * weight;
+          return;
         case 'Retail Stores':
           this.retailStoresScore = this.retailStoresScore + score * weight;
-          break;
+          return;
         case 'Health and Wellness':
-          this.healthAndWellnessScore = this.healthAndWellnessScore + score * weight;
-          break;
+          this.healthAndWellnessScore =
+            this.healthAndWellnessScore + score * weight;
+          return;
         case 'Automotive':
           this.automotiveScore = this.automotiveScore + score * weight;
-          break;
+          return;
         case 'Public Services and Government':
           this.publicServicesAndGovernmentScore =
             this.publicServicesAndGovernmentScore + score * weight;
-          break;
+          return;
         case 'Education':
           this.educationScore = this.educationScore + score * weight;
-          break;
+          return;
         case 'Entertainment and Recreation':
           this.entertainmentScore = this.entertainmentScore + score * weight;
-          break;
+          return;
         case 'Travel and Tourism':
-          this.travelAndTourismScore = this.travelAndTourismScore + score * weight;
-          break;
+          this.travelAndTourismScore =
+            this.travelAndTourismScore + score * weight;
+          return;
         case 'Home and Garden':
           this.homeAndGardenScore = this.homeAndGardenScore + score * weight;
-          break;
+          return;
         case 'Religious Places':
-          this.religiousPlacesScore = this.religiousPlacesScore + score * weight;
-          break;
+          this.religiousPlacesScore =
+            this.religiousPlacesScore + score * weight;
+          return;
       }
     });
   }
@@ -625,5 +622,25 @@ export class LandingPageComponent implements OnInit {
     });
 
     return categories;
+  }
+
+  private clearScoresAndNearbyPlaces() {
+    // Clear the previous results
+    this.parsedNearbyPlaces = [];
+    this.nearbyPlaces = [];
+
+    // Clear the previous scores
+    this.financialServicesScore = 0;
+    this.foodAndBeverageScore = 0;
+    this.retailStoresScore = 0;
+    this.healthAndWellnessScore = 0;
+    this.automotiveScore = 0;
+    this.publicServicesAndGovernmentScore = 0;
+    this.educationScore = 0;
+    this.entertainmentScore = 0;
+    this.travelAndTourismScore = 0;
+    this.homeAndGardenScore = 0;
+    this.religiousPlacesScore = 0;
+    this.totalScore = 0;
   }
 }

@@ -1,4 +1,4 @@
-<mat-card [ngClass]="{'highlight-cards-with-score': place?.score !== undefined}">
+<mat-card [ngClass]="{'highlight-cards-with-score': place?.score !== 0}">
   <mat-card-header>
     <a href="{{place?.place_url}}" class="image-with-link">
       <img mat-card-avatar [src]="place?.iconUrl">
