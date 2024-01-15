@@ -5,7 +5,7 @@ $ErrorActionPreference = "Stop"
 
 # Run the build command
 Write-Host "Running build command..."
-ng build --configuration production
+ng deploy
 
 # Run the deployment command
 Write-Host "Running deployment command..."
