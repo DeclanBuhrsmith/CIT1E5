@@ -24,6 +24,7 @@ import {
   RetailStores,
   TravelAndLodging,
 } from './enums/types';
+import { LocationService } from './services/location.service';
 
 @Component({
   selector: 'landing-page',
@@ -35,16 +36,13 @@ export class LandingPageComponent implements OnInit {
   @ViewChild('gmap') gmap: GoogleMap | undefined;
   @ViewChild('addressInput') addresstext: any;
 
-  toggleControl = new FormControl(false);
   address: string = '';
   mapOptions: google.maps.MapOptions;
   markerOptions: google.maps.MarkerOptions;
   mapCenter: google.maps.LatLngLiteral = { lat: 45, lng: -93.19333 };
-
-  apiKey = 'AIzaSyBb6q-ATX9Ih6LkWjYrmuzWwMWpY3Mr2UQ';
+  currentGeoLocation: any;
 
   // Google Objects
-  //googleMapsForm: FormGroup;
   nearbyPlaces: google.maps.places.PlaceResult[] | null = [];
   travelModes = Object.values(TravelModeEnum);
   selectedTravelMode = TravelModeEnum.WALKING;
@@ -81,7 +79,23 @@ export class LandingPageComponent implements OnInit {
   homeAndGardenTypeSelection: TypesSelection[] = [];
   religiousPlacesTypeSelection: TypesSelection[] = [];
 
-  constructor(private fb: FormBuilder) {
+  financialServicesScore = 0;
+  foodAndBeverageScore = 0;
+  retailStoresScore = 0;
+  healthAndWellnessScore = 0;
+  automotiveScore = 0;
+  publicServicesAndGovernmentScore = 0;
+  educationScore = 0;
+  entertainmentScore = 0;
+  travelAndTourismScore = 0;
+  homeAndGardenScore = 0;
+  religiousPlacesScore = 0;
+  totalScore = 0;
+
+  constructor(
+    private fb: FormBuilder,
+    private locationService: LocationService
+  ) {
     this.mapOptions = {
       zoom: 15,
     };
@@ -99,6 +113,9 @@ export class LandingPageComponent implements OnInit {
     this.initializeTypesSelection();
   }
 
+  /**
+   * Centers the map on the specified address using the Google Maps API geocoding.
+   */
   centerMapOnAddress() {
     // Use Google Maps API to geocode the address
     const geocoder = new google.maps.Geocoder();
@@ -114,7 +131,36 @@ export class LandingPageComponent implements OnInit {
     });
   }
 
+  /**
+   * Retrieves the place autocomplete suggestions based on the user's input.
+   * If the user has allowed location, it uses the current location as the default.
+   * Otherwise, it prompts the user for location permission and retrieves the current location.
+   * It also sets the formatted address and centers the map on the selected address.
+   */
   getPlaceAutocomplete() {
+    // Ask for location first, and if they allow it, use that location as default.
+    if (!this.currentGeoLocation) {
+      this.locationService.getCurrentLocation().then((location) => {
+        this.currentGeoLocation = location;
+
+        // Get the formatted address from the current location
+        const geocoder = new google.maps.Geocoder();
+        geocoder.geocode(
+          { location: this.currentGeoLocation },
+          (results, status) => {
+            if (status === 'OK' && results && results.length > 0) {
+              this.address = results[0].formatted_address;
+              this.centerMapOnAddress();
+            } else {
+              console.error('Geocoding failed:', status);
+            }
+          }
+        );
+      });
+      // The latter code doesn't need to run if the user has already allowed location.
+      return;
+    }
+
     const autocomplete = new google.maps.places.Autocomplete(
       this.addresstext.nativeElement
     );
@@ -125,10 +171,12 @@ export class LandingPageComponent implements OnInit {
     });
   }
 
+  /**
+   * Retrieves nearby places based on the selected checkboxes and types.
+   * Clears the previous results and filters out duplicate places.
+   */
   async getNearbyPlaces() {
-    // Clear the previous results
-    this.parsedNearbyPlaces = [];
-    this.nearbyPlaces = [];
+    this.clearScoresAndNearbyPlaces();
 
     if (this.gmap?.googleMap) {
       const service = new google.maps.places.PlacesService(this.gmap.googleMap);
@@ -272,6 +320,10 @@ export class LandingPageComponent implements OnInit {
     return parentCheckbox && typeSelection.some((type) => !type.selected);
   }
 
+  /**
+   * Checks if all checkboxes are unchecked.
+   * @returns {boolean} True if all checkboxes are unchecked, false otherwise.
+   */
   areAllCheckboxesUnchecked(): boolean {
     const allSelections = [
       this.financialServicesTypeSelection,
@@ -296,18 +348,17 @@ export class LandingPageComponent implements OnInit {
     return true;
   }
 
-  getScore(): number {
-    let score = 0;
+  /**
+   * Calculates and returns the score based on the selected travel mode and nearby places.
+   * The score is calculated by assigning a score to each nearby place based on its duration,
+   * and then multiplying it by the weight of the selected travel mode.
+   * @returns The calculated score.
+   */
+  setScoreTotalScore(place: NearbyPlaces): void {
     const travelWeight = this.getWeightByTravelMode(this.selectedTravelMode);
-
-    this.parsedNearbyPlaces.forEach((place) => {
-      if (place.duration && this.extractNumber(place.duration) <= 15) {
-        place.score = 1 - this.extractNumber(place.duration) / 15;
-        score = score + place.score * travelWeight;
-      }
-    });
-
-    return score;
+    this.totalScore = this.totalScore + place.score * travelWeight;
+    // Sets the score for each of the categories.
+    this.setScoreByCategory(place.categories, place.score, travelWeight);
   }
 
   sortParsedPlaces(nearbyPlaces: NearbyPlaces[]): NearbyPlaces[] {
@@ -418,6 +469,8 @@ export class LandingPageComponent implements OnInit {
         place_url: result.place_id
           ? `https://www.google.com/maps/place/?q=place_id:${result.place_id}`
           : '',
+        score: 0,
+        categories: this.setPlaceCategories(result.types || []),
       };
     });
   }
@@ -478,6 +531,10 @@ export class LandingPageComponent implements OnInit {
     );
   }
 
+  setScoreForPlace(place: NearbyPlaces) {
+    this.setScoreTotalScore(place);
+  }
+
   private toggleAllTypes(event: any, typeSelection: TypesSelection[]) {
     typeSelection.forEach((type) => {
       type.selected = event.checked;
@@ -487,5 +544,103 @@ export class LandingPageComponent implements OnInit {
   private extractNumber(input: string): number {
     const match = input.match(/\d+/);
     return match ? parseInt(match[0], 10) : 0;
+  }
+
+  private setScoreByCategory(
+    categories: string[],
+    score: number,
+    weight: number
+  ) {
+    categories.forEach((category) => {
+      switch (category) {
+        case 'Financial Services':
+          this.financialServicesScore =
+            this.financialServicesScore + score * weight;
+          return;
+        case 'Food and Beverage':
+          this.foodAndBeverageScore =
+            this.foodAndBeverageScore + score * weight;
+          return;
+        case 'Retail Stores':
+          this.retailStoresScore = this.retailStoresScore + score * weight;
+          return;
+        case 'Health and Wellness':
+          this.healthAndWellnessScore =
+            this.healthAndWellnessScore + score * weight;
+          return;
+        case 'Automotive':
+          this.automotiveScore = this.automotiveScore + score * weight;
+          return;
+        case 'Public Services and Government':
+          this.publicServicesAndGovernmentScore =
+            this.publicServicesAndGovernmentScore + score * weight;
+          return;
+        case 'Education':
+          this.educationScore = this.educationScore + score * weight;
+          return;
+        case 'Entertainment and Recreation':
+          this.entertainmentScore = this.entertainmentScore + score * weight;
+          return;
+        case 'Travel and Tourism':
+          this.travelAndTourismScore =
+            this.travelAndTourismScore + score * weight;
+          return;
+        case 'Home and Garden':
+          this.homeAndGardenScore = this.homeAndGardenScore + score * weight;
+          return;
+        case 'Religious Places':
+          this.religiousPlacesScore =
+            this.religiousPlacesScore + score * weight;
+          return;
+      }
+    });
+  }
+
+  private setPlaceCategories(types: string[]): string[] {
+    const categories: string[] = [];
+
+    const categoryMappings = {
+      FinancialServices: 'Financial Services',
+      FoodAndBeverage: 'Food and Beverage',
+      RetailStores: 'Retail Stores',
+      HealthAndWellness: 'Health and Wellness',
+      Automotive: 'Automotive',
+      PublicServicesAndGovernment: 'Public Services and Government',
+      Education: 'Education',
+      EntertainmentAndRecreation: 'Entertainment and Recreation',
+      TravelAndLodging: 'Travel and Tourism',
+      HomeAndGarden: 'Home and Garden',
+      ReligiousPlaces: 'Religious Places',
+    };
+
+    types.forEach((type) => {
+      Object.entries(categoryMappings).forEach(([key, value]) => {
+        if (Object.values(eval(key)).includes(type as any)) {
+          categories.push(value);
+        }
+      });
+    });
+
+    return categories;
+  }
+
+  private clearScoresAndNearbyPlaces() {
+    // Clear the previous results
+    this.parsedNearbyPlaces = [];
+    this.nearbyPlaces = [];
+
+    // Clear the previous scores
+    this.financialServicesScore = 0;
+    this.foodAndBeverageScore = 0;
+    this.retailStoresScore = 0;
+    this.healthAndWellnessScore = 0;
+    this.automotiveScore = 0;
+    this.publicServicesAndGovernmentScore = 0;
+    this.educationScore = 0;
+    this.entertainmentScore = 0;
+    this.travelAndTourismScore = 0;
+    this.homeAndGardenScore = 0;
+    this.religiousPlacesScore = 0;
+    this.totalScore = 0;
   }
 }
