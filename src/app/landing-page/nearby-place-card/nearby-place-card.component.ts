@@ -47,6 +47,14 @@ export class NearbyPlaceCardComponent implements OnInit, OnChanges {
   //       }
   // }
 
+  getHighlightColor(score: number): string {
+    if (score <= 0) {
+      return 'transparent';  // No highlight for score 0
+    } else {
+      return `rgba(255, 0, 0, ${score * 0.5})`;  // Return a color in the RGB format
+    }
+  }
+
   private calculateDistanceFromNearbyPlacesToMapCenter() {
     if (this.place) {
       new google.maps.DirectionsService()
