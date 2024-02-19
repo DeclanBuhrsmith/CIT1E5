@@ -106,21 +106,35 @@ h4 {
   width: 40%
 }
 
-.nearby-place-header {
-  padding-top: 10px;
-}
-
-.score-container {
-  display: flex;
-  h4 {
-    margin-left: 10px;
-    margin-top: 3px;
-  }
-}
-
 .checkboxes-map-container {
   display: flex
 }
+
+.score-and-calculation {
+  display: flex;
+  .score-container, .calculation {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background: white;
+    margin-top: 10px;
+    width: 50%
+  }
+  .calculation {
+    margin-left: 10px;
+    .forumla-explanation {
+      font-size: 18px;
+      color: #333;
+      margin-bottom: 10px;
+      margin-top: 10px;
+    }
+  }
+}
+
+
+
+
 
 
 

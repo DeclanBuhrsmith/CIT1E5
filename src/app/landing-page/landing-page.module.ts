@@ -15,11 +15,13 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import  {MatCardModule } from '@angular/material/card';
 import { NearbyPlaceCardComponent } from './nearby-place-card/nearby-place-card.component';
 import {MatSelectModule} from '@angular/material/select';
+import {MatChipsModule} from '@angular/material/chips';
+import { ScoreComponent } from './score/score.component';
 
 
 
 @NgModule({
-  declarations: [LandingPageComponent, NearbyPlaceCardComponent],
+  declarations: [LandingPageComponent, NearbyPlaceCardComponent, ScoreComponent],
   imports: [
     CommonModule,
     MatToolbarModule,
@@ -35,8 +37,9 @@ import {MatSelectModule} from '@angular/material/select';
     MatFormFieldModule,
     MatCheckboxModule,
     MatCardModule,
-    MatSelectModule
-  ], exports: [LandingPageComponent, NearbyPlaceCardComponent],
+    MatSelectModule,
+    MatChipsModule
+  ], exports: [LandingPageComponent, NearbyPlaceCardComponent, ScoreComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class LandingPageModule { }
