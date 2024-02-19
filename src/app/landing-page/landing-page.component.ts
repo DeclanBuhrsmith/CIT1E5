@@ -35,12 +35,14 @@ export class LandingPageComponent implements OnInit {
   @HostBinding('class') className = '';
   @ViewChild('gmap') gmap: GoogleMap | undefined;
   @ViewChild('addressInput') addresstext: any;
+  @ViewChild('checkboxContainer') checkboxContainer: any;
 
   address: string = '';
   mapOptions: google.maps.MapOptions;
   markerOptions: google.maps.MarkerOptions;
   mapCenter: google.maps.LatLngLiteral = { lat: 45, lng: -93.19333 };
   currentGeoLocation: any;
+  googleMapHeight = 500;
 
   // Google Objects
   nearbyPlaces: google.maps.places.PlaceResult[] | null = [];
@@ -328,7 +330,6 @@ export class LandingPageComponent implements OnInit {
         return false;
       }
     }
-
     return true;
   }
 
@@ -371,6 +372,45 @@ export class LandingPageComponent implements OnInit {
     }
   }
 
+  private getTravelRadiusByTravelMode(travelMode: TravelModeEnum): number {
+    switch (travelMode) {
+      case TravelModeEnum.WALKING:
+        return 500;
+      case TravelModeEnum.BICYCLING:
+        return 1500;
+      case TravelModeEnum.TRANSIT:
+        return 2500;
+      default:
+        return 5000;
+    }
+  }
+
+  private countCheckboxesChecked(): number {
+    let count = 0;
+    const values = [
+        this.financialServicesChecked,
+        this.foodAndBeverageChecked,
+        this.retailStoresChecked,
+        this.healthAndWellnessChecked,
+        this.automotiveChecked,
+        this.publicServicesAndGovernmentChecked,
+        this.educationChecked,
+        this.entertainmentChecked,
+        this.lodgingChecked,
+        this.travelAndTourismChecked,
+        this.homeAndGardenChecked,
+        this.religiousPlacesChecked
+    ];
+
+    values.forEach(value => {
+        if (value === true) {
+            count++;
+        }
+    });
+
+    return count;
+}
+
   private searchNearbyPlaces(
     service: google.maps.places.PlacesService,
     typeSelection: TypesSelection[]
@@ -384,7 +424,7 @@ export class LandingPageComponent implements OnInit {
             service.nearbySearch(
               {
                 location: this.mapCenter,
-                radius: 1000,
+                radius: this.getTravelRadiusByTravelMode(this.selectedTravelMode),
                 type: type.type,
               },
               (results, status) => {
@@ -523,6 +563,7 @@ export class LandingPageComponent implements OnInit {
     typeSelection.forEach((type) => {
       type.selected = event.checked;
     });
+    this.googleMapHeight = 500 + (this.countCheckboxesChecked() * 100);
   }
 
   private extractNumber(input: string): number {

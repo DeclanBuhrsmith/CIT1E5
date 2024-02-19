@@ -33,16 +33,22 @@
 }
 
 google-map {
-  display: block;
   width: 100%;
-  height: 500px; /* Adjust the height as per your preference */
-  border: 2px solid black; /* Add a border with the primary color of the theme */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-left: 10px;
 }
 
 .address-form-field {
   width: 100%;
   padding-top: 10px;
   margin-bottom: -10px;
+}
+
+.address-travel-mode-container-form {
+  display: flex;
 }
 
 .nearby-place-cards-container {
@@ -66,13 +72,17 @@ nearby-place-card {
 }
 
 .nearby-button {
-  padding-top: 10px;
+  padding-top: 20px;
   padding-bottom: 10px;
+  margin-left: 10px;
+  width: 300px;
 }
 
 .travel-mode-selector {
   padding-top: 10px;
   margin-bottom: -10px;
+  margin-left: 10px;
+  width: 300px;
 }
 
 h3 {
@@ -93,6 +103,7 @@ h4 {
   padding: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   background: white;
+  width: 40%
 }
 
 .nearby-place-header {
@@ -105,6 +116,10 @@ h4 {
     margin-left: 10px;
     margin-top: 3px;
   }
+}
+
+.checkboxes-map-container {
+  display: flex
 }
 
 
