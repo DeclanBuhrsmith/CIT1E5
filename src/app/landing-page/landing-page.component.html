@@ -3,7 +3,7 @@
   <span class="spacer"></span>
 </mat-toolbar>
 
-<form>
+<form class="address-travel-mode-container-form">
   <mat-form-field class="address-form-field" appearance="outline">
     <mat-label>Address</mat-label>
     <input
@@ -29,245 +29,284 @@
       </mat-select>
     </mat-form-field>
   </div>
+  <div class="nearby-button">
+    <button
+      mat-raised-button
+      color="accent"
+      (click)="getNearbyPlaces()"
+      [disabled]="areAllCheckboxesUnchecked()"
+    >
+      Search nearby places
+    </button>
+  </div>
 </form>
 
-<div class="all-type-checkboxes">
-  <h3>Map search types</h3>
-  <div class="financial-services-checkbox-group">
-    <mat-checkbox
-      (change)="toggleAllFinancialServices($event)"
-      [indeterminate]="
-        indeterminate(financialServicesChecked, financialServicesTypeSelection)
-      "
-    >
-      <b>Financial Services</b>
-    </mat-checkbox>
-    <div class="childern-checkboxes" *ngIf="financialServicesChecked">
-      @for (type of financialServicesTypeSelection; track type) {
+<div class="checkboxes-map-container">
+  <div class="all-type-checkboxes" #checkboxContainer>
+    <h3>Map search types</h3>
+    <div class="financial-services-checkbox-group">
       <mat-checkbox
-        [checked]="type.selected"
-        (change)="type.selected = !type.selected"
-        >{{ type.type }}</mat-checkbox
+        (change)="toggleAllFinancialServices($event)"
+        [indeterminate]="
+          indeterminate(
+            financialServicesChecked,
+            financialServicesTypeSelection
+          )
+        "
       >
-      }
+        <b>Financial Services</b>
+      </mat-checkbox>
+      <div class="childern-checkboxes" *ngIf="financialServicesChecked">
+        @for (type of financialServicesTypeSelection; track type) {
+        <mat-checkbox
+          [checked]="type.selected"
+          (change)="type.selected = !type.selected"
+          >{{ type.type }}</mat-checkbox
+        >
+        }
+      </div>
+    </div>
+    <div class="health-checkbox-group">
+      <mat-checkbox
+        (change)="toggleAllHealthAndWellness($event)"
+        [indeterminate]="
+          indeterminate(
+            healthAndWellnessChecked,
+            healthAndWellnessTypeSelection
+          )
+        "
+      >
+        <b>Health and Wellness</b></mat-checkbox
+      >
+      <div class="childern-checkboxes" *ngIf="healthAndWellnessChecked">
+        @for (type of healthAndWellnessTypeSelection; track type) {
+        <mat-checkbox
+          [checked]="type.selected"
+          (change)="type.selected = !type.selected"
+          >{{ type.type }}</mat-checkbox
+        >
+        }
+      </div>
+    </div>
+    <div class="retail-and-shopping-checkbox-group">
+      <mat-checkbox
+        (change)="toggleAllRetailStores($event)"
+        [indeterminate]="
+          indeterminate(retailStoresChecked, retailStoresTypeSelection)
+        "
+      >
+        <b>Retail and shopping</b></mat-checkbox
+      >
+      <div class="childern-checkboxes" *ngIf="retailStoresChecked">
+        @for (type of retailStoresTypeSelection; track type) {
+        <mat-checkbox
+          [checked]="type.selected"
+          (change)="type.selected = !type.selected"
+          >{{ type.type }}</mat-checkbox
+        >
+        }
+      </div>
+    </div>
+    <div class="food-checkbox-group">
+      <mat-checkbox
+        (change)="toggleAllFoodAndBeverage($event)"
+        [indeterminate]="
+          indeterminate(foodAndBeverageChecked, foodAndBeverageTypeSelection)
+        "
+      >
+        <b>Food and Beverage</b></mat-checkbox
+      >
+      <div class="childern-checkboxes" *ngIf="foodAndBeverageChecked">
+        @for (type of foodAndBeverageTypeSelection; track type) {
+        <mat-checkbox
+          [checked]="type.selected"
+          (change)="type.selected = !type.selected"
+          >{{ type.type }}</mat-checkbox
+        >
+        }
+      </div>
+    </div>
+    <div class="automotive-checkbox-group">
+      <mat-checkbox
+        (change)="toggleAllAutomotive($event)"
+        [indeterminate]="
+          indeterminate(automotiveChecked, automotiveTypeSelection)
+        "
+      >
+        <b>Automotive</b></mat-checkbox
+      >
+      <div class="childern-checkboxes" *ngIf="automotiveChecked">
+        @for (type of automotiveTypeSelection; track type) {
+        <mat-checkbox
+          [checked]="type.selected"
+          (change)="type.selected = !type.selected"
+          >{{ type.type }}</mat-checkbox
+        >
+        }
+      </div>
+    </div>
+    <div class="entertainment-checkbox-group">
+      <mat-checkbox
+        (change)="toggleAllEntertainment($event)"
+        [indeterminate]="
+          indeterminate(entertainmentChecked, entertainmentTypeSelection)
+        "
+      >
+        <b>Entertainment</b></mat-checkbox
+      >
+      <div class="childern-checkboxes" *ngIf="entertainmentChecked">
+        @for (type of entertainmentTypeSelection; track type) {
+        <mat-checkbox
+          [checked]="type.selected"
+          (change)="type.selected = !type.selected"
+          >{{ type.type }}</mat-checkbox
+        >
+        }
+      </div>
+    </div>
+    <div class="public-services-and-government-checkbox-group">
+      <mat-checkbox
+        (change)="toggleAllPublicServicesAndGovernment($event)"
+        [indeterminate]="
+          indeterminate(
+            publicServicesAndGovernmentChecked,
+            publicServicesAndGovernmentTypeSelection
+          )
+        "
+      >
+        <b>Public Services and Governmentt</b></mat-checkbox
+      >
+      <div
+        class="childern-checkboxes"
+        *ngIf="publicServicesAndGovernmentChecked"
+      >
+        @for (type of publicServicesAndGovernmentTypeSelection; track type) {
+        <mat-checkbox
+          [checked]="type.selected"
+          (change)="type.selected = !type.selected"
+          >{{ type.type }}</mat-checkbox
+        >
+        }
+      </div>
+    </div>
+    <div class="travel-and-tourism-checkbox-group">
+      <mat-checkbox
+        (change)="toggleAllTravelAndTourism($event)"
+        [indeterminate]="
+          indeterminate(travelAndTourismChecked, travelAndTourismTypeSelection)
+        "
+      >
+        <b>Travel and Tourism</b></mat-checkbox
+      >
+      <div class="childern-checkboxes" *ngIf="travelAndTourismChecked">
+        @for (type of travelAndTourismTypeSelection; track type) {
+        <mat-checkbox
+          [checked]="type.selected"
+          (change)="type.selected = !type.selected"
+          >{{ type.type }}</mat-checkbox
+        >
+        }
+      </div>
+    </div>
+    <div class="home-and-garden-checkbox-group">
+      <mat-checkbox
+        (change)="toggleAllHomeAndGarden($event)"
+        [indeterminate]="
+          indeterminate(homeAndGardenChecked, homeAndGardenTypeSelection)
+        "
+      >
+        <b>Home and Garden</b></mat-checkbox
+      >
+      <div class="childern-checkboxes" *ngIf="homeAndGardenChecked">
+        @for (type of homeAndGardenTypeSelection; track type) {
+        <mat-checkbox
+          [checked]="type.selected"
+          (change)="type.selected = !type.selected"
+          >{{ type.type }}</mat-checkbox
+        >
+        }
+      </div>
+    </div>
+    <div class="religious-places-checkbox-group">
+      <mat-checkbox
+        (change)="toggleAllReligiousPlaces($event)"
+        [indeterminate]="
+          indeterminate(religiousPlacesChecked, religiousPlacesTypeSelection)
+        "
+      >
+        <b>Religious places</b></mat-checkbox
+      >
+      <div class="childern-checkboxes" *ngIf="religiousPlacesChecked">
+        @for (type of religiousPlacesTypeSelection; track type) {
+        <mat-checkbox
+          [checked]="type.selected"
+          (change)="type.selected = !type.selected"
+          >{{ type.type }}</mat-checkbox
+        >
+        }
+      </div>
     </div>
   </div>
-  <div class="health-checkbox-group">
-    <mat-checkbox
-      (change)="toggleAllHealthAndWellness($event)"
-      [indeterminate]="
-        indeterminate(healthAndWellnessChecked, healthAndWellnessTypeSelection)
-      "
-    >
-      <b>Health and Wellness</b></mat-checkbox
-    >
-    <div class="childern-checkboxes" *ngIf="healthAndWellnessChecked">
-      @for (type of healthAndWellnessTypeSelection; track type) {
-      <mat-checkbox
-        [checked]="type.selected"
-        (change)="type.selected = !type.selected"
-        >{{ type.type }}</mat-checkbox
-      >
-      }
-    </div>
-  </div>
-  <div class="retail-and-shopping-checkbox-group">
-    <mat-checkbox
-      (change)="toggleAllRetailStores($event)"
-      [indeterminate]="
-        indeterminate(retailStoresChecked, retailStoresTypeSelection)
-      "
-    >
-      <b>Retail and shopping</b></mat-checkbox
-    >
-    <div class="childern-checkboxes" *ngIf="retailStoresChecked">
-      @for (type of retailStoresTypeSelection; track type) {
-      <mat-checkbox
-        [checked]="type.selected"
-        (change)="type.selected = !type.selected"
-        >{{ type.type }}</mat-checkbox
-      >
-      }
-    </div>
-  </div>
-  <div class="food-checkbox-group">
-    <mat-checkbox
-      (change)="toggleAllFoodAndBeverage($event)"
-      [indeterminate]="
-        indeterminate(foodAndBeverageChecked, foodAndBeverageTypeSelection)
-      "
-    >
-      <b>Food and Beverage</b></mat-checkbox
-    >
-    <div class="childern-checkboxes" *ngIf="foodAndBeverageChecked">
-      @for (type of foodAndBeverageTypeSelection; track type) {
-      <mat-checkbox
-        [checked]="type.selected"
-        (change)="type.selected = !type.selected"
-        >{{ type.type }}</mat-checkbox
-      >
-      }
-    </div>
-  </div>
-  <div class="automotive-checkbox-group">
-    <mat-checkbox
-      (change)="toggleAllAutomotive($event)"
-      [indeterminate]="
-        indeterminate(automotiveChecked, automotiveTypeSelection)
-      "
-    >
-      <b>Automotive</b></mat-checkbox
-    >
-    <div class="childern-checkboxes" *ngIf="automotiveChecked">
-      @for (type of automotiveTypeSelection; track type) {
-      <mat-checkbox
-        [checked]="type.selected"
-        (change)="type.selected = !type.selected"
-        >{{ type.type }}</mat-checkbox
-      >
-      }
-    </div>
-  </div>
-  <div class="entertainment-checkbox-group">
-    <mat-checkbox
-      (change)="toggleAllEntertainment($event)"
-      [indeterminate]="
-        indeterminate(entertainmentChecked, entertainmentTypeSelection)
-      "
-    >
-      <b>Entertainment</b></mat-checkbox
-    >
-    <div class="childern-checkboxes" *ngIf="entertainmentChecked">
-      @for (type of entertainmentTypeSelection; track type) {
-      <mat-checkbox
-        [checked]="type.selected"
-        (change)="type.selected = !type.selected"
-        >{{ type.type }}</mat-checkbox
-      >
-      }
-    </div>
-  </div>
-  <div class="public-services-and-government-checkbox-group">
-    <mat-checkbox
-      (change)="toggleAllPublicServicesAndGovernment($event)"
-      [indeterminate]="
-        indeterminate(
-          publicServicesAndGovernmentChecked,
-          publicServicesAndGovernmentTypeSelection
-        )
-      "
-    >
-      <b>Public Services and Governmentt</b></mat-checkbox
-    >
-    <div class="childern-checkboxes" *ngIf="publicServicesAndGovernmentChecked">
-      @for (type of publicServicesAndGovernmentTypeSelection; track type) {
-      <mat-checkbox
-        [checked]="type.selected"
-        (change)="type.selected = !type.selected"
-        >{{ type.type }}</mat-checkbox
-      >
-      }
-    </div>
-  </div>
-  <div class="travel-and-tourism-checkbox-group">
-    <mat-checkbox
-      (change)="toggleAllTravelAndTourism($event)"
-      [indeterminate]="
-        indeterminate(travelAndTourismChecked, travelAndTourismTypeSelection)
-      "
-    >
-      <b>Travel and Tourism</b></mat-checkbox
-    >
-    <div class="childern-checkboxes" *ngIf="travelAndTourismChecked">
-      @for (type of travelAndTourismTypeSelection; track type) {
-      <mat-checkbox
-        [checked]="type.selected"
-        (change)="type.selected = !type.selected"
-        >{{ type.type }}</mat-checkbox
-      >
-      }
-    </div>
-  </div>
-  <div class="home-and-garden-checkbox-group">
-    <mat-checkbox
-      (change)="toggleAllHomeAndGarden($event)"
-      [indeterminate]="
-        indeterminate(homeAndGardenChecked, homeAndGardenTypeSelection)
-      "
-    >
-      <b>Home and Garden</b></mat-checkbox
-    >
-    <div class="childern-checkboxes" *ngIf="homeAndGardenChecked">
-      @for (type of homeAndGardenTypeSelection; track type) {
-      <mat-checkbox
-        [checked]="type.selected"
-        (change)="type.selected = !type.selected"
-        >{{ type.type }}</mat-checkbox
-      >
-      }
-    </div>
-  </div>
-  <div class="religious-places-checkbox-group">
-    <mat-checkbox
-      (change)="toggleAllReligiousPlaces($event)"
-      [indeterminate]="
-        indeterminate(religiousPlacesChecked, religiousPlacesTypeSelection)
-      "
-    >
-      <b>Religious places</b></mat-checkbox
-    >
-    <div class="childern-checkboxes" *ngIf="religiousPlacesChecked">
-      @for (type of religiousPlacesTypeSelection; track type) {
-      <mat-checkbox
-        [checked]="type.selected"
-        (change)="type.selected = !type.selected"
-        >{{ type.type }}</mat-checkbox
-      >
-      }
-    </div>
-  </div>
-</div>
-
-<div class="nearby-button">
-  <button
-    mat-raised-button
-    color="accent"
-    (click)="getNearbyPlaces()"
-    [disabled]="areAllCheckboxesUnchecked()"
+  <google-map
+    #gmap="googleMap"
+    [options]="mapOptions"
+    [center]="mapCenter"
+    [style.height.px]="googleMapHeight"
+    height="100%"
+    width="100%"
   >
-    Search nearby places
-  </button>
+    <map-marker [options]="markerOptions" [position]="mapCenter"></map-marker>
+  </google-map>
 </div>
 
-<google-map
-  #gmap="googleMap"
-  [options]="mapOptions"
-  [center]="mapCenter"
-  height="100%"
-  width="100%"
+<div
+  class="nearby-place-header"
+  *ngIf="parsedNearbyPlaces && parsedNearbyPlaces.length > 0"
 >
-  <map-marker [options]="markerOptions" [position]="mapCenter"></map-marker>
-</google-map>
-
-<div class="nearby-place-header" *ngIf="parsedNearbyPlaces && parsedNearbyPlaces.length > 0">
   <div class="score-container">
-    <h3 class="score">15 minute city score: {{totalScore.toFixed(2)}}</h3>
-    <h4 class="score">Number of nearby places: {{parsedNearbyPlaces.length}}</h4>
+    <h3 class="score">15 minute city score: {{ totalScore.toFixed(2) }}</h3>
+    <h4 class="score">
+      Number of nearby places: {{ parsedNearbyPlaces.length }}
+    </h4>
   </div>
   <div class="category-scores">
-    <h4 *ngIf="financialServicesChecked">Financal score: {{financialServicesScore.toFixed(2)}}</h4>
-    <h4 *ngIf="foodAndBeverageChecked">Food and Beverage score: {{foodAndBeverageScore.toFixed(2)}}</h4>
-    <h4 *ngIf="healthAndWellnessChecked"> Health and Wellness score: {{healthAndWellnessScore.toFixed(2)}}</h4>
-    <h4 *ngIf="retailStoresChecked">Retail score: {{retailStoresScore.toFixed(2)}}</h4>
-    <h4 *ngIf="automotiveChecked">Automotive score: {{automotiveScore.toFixed(2)}}</h4>
-    <h4 *ngIf="entertainmentChecked">Entertainment score: {{entertainmentScore.toFixed(2)}}</h4>
-    <h4 *ngIf="publicServicesAndGovernmentChecked">Public services and Government score: {{publicServicesAndGovernmentScore.toFixed(2)}}</h4>
-    <h4 *ngIf="travelAndTourismChecked">Travel and tourism score: {{travelAndTourismScore.toFixed(2)}}</h4>
-    <h4 *ngIf="homeAndGardenChecked">Home and garden score: {{homeAndGardenScore.toFixed(2)}}</h4>
-    <h4 *ngIf="religiousPlacesChecked">Religious places score: {{religiousPlacesScore.toFixed(2)}}</h4>
+    <h4 *ngIf="financialServicesChecked">
+      Financal score: {{ financialServicesScore.toFixed(2) }}
+    </h4>
+    <h4 *ngIf="foodAndBeverageChecked">
+      Food and Beverage score: {{ foodAndBeverageScore.toFixed(2) }}
+    </h4>
+    <h4 *ngIf="healthAndWellnessChecked">
+      Health and Wellness score: {{ healthAndWellnessScore.toFixed(2) }}
+    </h4>
+    <h4 *ngIf="retailStoresChecked">
+      Retail score: {{ retailStoresScore.toFixed(2) }}
+    </h4>
+    <h4 *ngIf="automotiveChecked">
+      Automotive score: {{ automotiveScore.toFixed(2) }}
+    </h4>
+    <h4 *ngIf="entertainmentChecked">
+      Entertainment score: {{ entertainmentScore.toFixed(2) }}
+    </h4>
+    <h4 *ngIf="publicServicesAndGovernmentChecked">
+      Public services and Government score:
+      {{ publicServicesAndGovernmentScore.toFixed(2) }}
+    </h4>
+    <h4 *ngIf="travelAndTourismChecked">
+      Travel and tourism score: {{ travelAndTourismScore.toFixed(2) }}
+    </h4>
+    <h4 *ngIf="homeAndGardenChecked">
+      Home and garden score: {{ homeAndGardenScore.toFixed(2) }}
+    </h4>
+    <h4 *ngIf="religiousPlacesChecked">
+      Religious places score: {{ religiousPlacesScore.toFixed(2) }}
+    </h4>
   </div>
 </div>
-<div class="nearby-place-cards-container" *ngIf="parsedNearbyPlaces && parsedNearbyPlaces.length > 0">
+<div
+  class="nearby-place-cards-container"
+  *ngIf="parsedNearbyPlaces && parsedNearbyPlaces.length > 0"
+>
   @for (place of sortParsedPlaces(parsedNearbyPlaces); track place) {
   <nearby-place-card
     [mapCenter]="mapCenter"
