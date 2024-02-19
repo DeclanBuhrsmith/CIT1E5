@@ -25,6 +25,7 @@ import {
   TravelAndLodging,
 } from './enums/types';
 import { LocationService } from './services/location.service';
+import { PlaceService } from './services/place.service';
 
 @Component({
   selector: 'landing-page',
@@ -94,7 +95,8 @@ export class LandingPageComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private locationService: LocationService
+    private locationService: LocationService,
+    private placeService: PlaceService
   ) {
     this.mapOptions = {
       zoom: 15,
@@ -103,10 +105,6 @@ export class LandingPageComponent implements OnInit {
     this.markerOptions = {
       draggable: false,
     };
-
-    // this.googleMapsForm = this.fb.group({
-    //   mapTypes: [this.typesSelection], // Use an array to store the selected checkboxes
-    // });
   }
 
   ngOnInit() {
@@ -131,28 +129,9 @@ export class LandingPageComponent implements OnInit {
     });
   }
 
-  /**
-   * Retrieves the place autocomplete suggestions based on the user's input.
-   * If the user has allowed location, it uses the current location as the default.
-   * Otherwise, it prompts the user for location permission and retrieves the current location.
-   * It also sets the formatted address and centers the map on the selected address.
-   */
-  async getPlaceAutocomplete() {
-    // Ask for location first, and if they allow it, use that location as default.
-    if (!this.currentGeoLocation) {
-      await this.getCurrentGeolocation();
-      // The latter code doesn't need to run if the user has already allowed location.
-      return;
-    }
-
-    const autocomplete = new google.maps.places.Autocomplete(
-      this.addresstext.nativeElement
-    );
-    google.maps.event.addListener(autocomplete, 'place_changed', () => {
-      const place = autocomplete.getPlace();
-      this.address = place.formatted_address || '';
-      this.centerMapOnAddress();
-    });
+  async callPlaceAutocomplete() {
+    this.address = await this.placeService.getPlaceAutocomplete(this.currentGeoLocation, this.addresstext.nativeElement) || '';
+    this.centerMapOnAddress();
   }
 
   /**
@@ -419,26 +398,6 @@ export class LandingPageComponent implements OnInit {
   private convertNearbyPlacesParsedObject(
     results: google.maps.places.PlaceResult[]
   ) {
-    // Object will look like this.
-    //   {
-    //     "name": "Nicollet Island Inn",
-    //     "operational": true,
-    //     "location": {
-    //         "lng": -93.2605342,
-    //         "lat": 44.9858771
-    //     },
-    //     "rating": 4.6,
-    //     "types": [
-    //         "restaurant",
-    //         "night_club",
-    //         "bar",
-    //         "lodging",
-    //         "food",
-    //         "point_of_interest",
-    //         "establishment"
-    //     ],
-    //     "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/restaurant-71.png"
-    // }
     this.parsedNearbyPlaces = results.map((result) => {
       return {
         name: result.name || '',
@@ -660,3 +619,4 @@ export class LandingPageComponent implements OnInit {
     });
   }
 }
+
