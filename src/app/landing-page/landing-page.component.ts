@@ -94,6 +94,14 @@ export class LandingPageComponent implements OnInit {
   religiousPlacesScore = 0;
   totalScore = 0;
 
+  codeblock = `calculatePlaceScore(): number {
+      if (this.place?.duration && this.extractNumber(this.place.duration) <= 15) {
+        return (1 - (this.extractNumber(this.place.duration) - 1) / 15) * this.getWeightByTravelMode(this.travelMode);
+      }
+      return 0;
+    }`;
+  showCodeBlock = false;
+
   constructor(
     private fb: FormBuilder,
     private locationService: LocationService
@@ -359,7 +367,7 @@ export class LandingPageComponent implements OnInit {
     return nearbyPlaces;
   }
 
-  private getWeightByTravelMode(travelMode: TravelModeEnum): number {
+  public getWeightByTravelMode(travelMode: TravelModeEnum): number {
     switch (travelMode) {
       case TravelModeEnum.WALKING:
         return 1;
