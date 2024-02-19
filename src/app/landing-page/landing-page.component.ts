@@ -375,11 +375,11 @@ export class LandingPageComponent implements OnInit {
   private getTravelRadiusByTravelMode(travelMode: TravelModeEnum): number {
     switch (travelMode) {
       case TravelModeEnum.WALKING:
-        return 500;
-      case TravelModeEnum.BICYCLING:
         return 1500;
+      case TravelModeEnum.BICYCLING:
+        return 3000;
       case TravelModeEnum.TRANSIT:
-        return 2500;
+        return 4000;
       default:
         return 5000;
     }
