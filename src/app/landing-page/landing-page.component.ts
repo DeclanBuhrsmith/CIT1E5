@@ -25,6 +25,7 @@ import {
   TravelAndLodging,
 } from './enums/types';
 import { LocationService } from './services/location.service';
+import { Loader } from '@googlemaps/js-api-loader';
 
 @Component({
   selector: 'landing-page',
@@ -48,6 +49,8 @@ export class LandingPageComponent implements OnInit {
   nearbyPlaces: google.maps.places.PlaceResult[] | null = [];
   travelModes = Object.values(TravelModeEnum);
   selectedTravelMode = TravelModeEnum.WALKING;
+  loader: any;
+  map: any;
 
   checkbox = false;
   selectedTypes: string[] = [];
@@ -119,8 +122,9 @@ export class LandingPageComponent implements OnInit {
     // });
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.initializeTypesSelection();
+    await this.initMap();
   }
 
   /**
@@ -138,6 +142,22 @@ export class LandingPageComponent implements OnInit {
       } else {
         console.error('Geocoding failed:', status);
       }
+    });
+  }
+
+  async initMap() {
+    this.loader = new Loader({
+      apiKey: "AIzaSyC1eIkwT7XuSOYOEsiNGx1usz4-Ci8Yum8",
+      version: "weekly",
+      ...this.mapOptions,
+      libraries: [ "core", "maps", "places", "geocoding", "routes", "marker", "geometry", "elevation"]
+    });
+    this.loader.load().then(async () => {
+      const { Map } = await google.maps.importLibrary("maps") as google.maps.MapsLibrary;
+      this.map = new Map(document.getElementById("map") as HTMLElement, {
+        center: this.mapCenter,
+        zoom: 8,
+      });
     });
   }
 

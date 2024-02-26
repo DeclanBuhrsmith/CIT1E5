@@ -20,6 +20,7 @@ export class ScoreComponent {
   @Input() religiousPlacesScore: number = 0;
   @Input() totalScore: number = 0;
   @Input() nearbyPlaceCount: number = 0;
+  @Input() placesWithin15Minutes: number = 0;
 
   @Input() financialServicesChecked: boolean = false;
   @Input() foodAndBeverageChecked: boolean = false;
