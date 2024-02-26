@@ -2,8 +2,10 @@ import {
   AfterViewInit,
   Component,
   HostBinding,
+  OnChanges,
   OnInit,
   Output,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
@@ -38,9 +40,13 @@ export class LandingPageComponent implements OnInit {
   @ViewChild('checkboxContainer') checkboxContainer: any;
 
   address: string = '';
-  mapOptions: google.maps.MapOptions;
-  markerOptions: google.maps.MarkerOptions;
-  mapCenter: google.maps.LatLngLiteral = { lat: 45, lng: -93.19333 };
+  mapOptions: google.maps.MapOptions = {
+    zoom: 8
+  };
+  markerOptions: google.maps.MarkerOptions = {
+    draggable: false
+  };
+  mapCenter: google.maps.LatLngLiteral = { lat: 44.977753, lng: -93.2650108 };
   currentGeoLocation: any;
   googleMapHeight = 500;
 
@@ -105,23 +111,12 @@ export class LandingPageComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private locationService: LocationService
-  ) {
-    this.mapOptions = {
-      zoom: 15,
-    };
-
-    this.markerOptions = {
-      draggable: false,
-    };
-
-    // this.googleMapsForm = this.fb.group({
-    //   mapTypes: [this.typesSelection], // Use an array to store the selected checkboxes
-    // });
-  }
+  ) { }
 
   ngOnInit() {
     this.initializeTypesSelection();
   }
+
 
   /**
    * Centers the map on the specified address using the Google Maps API geocoding.
@@ -135,6 +130,9 @@ export class LandingPageComponent implements OnInit {
           lat: results[0].geometry.location.lat(),
           lng: results[0].geometry.location.lng(),
         };
+        this.mapOptions = {
+          zoom: 15
+        }
       } else {
         console.error('Geocoding failed:', status);
       }
@@ -151,8 +149,6 @@ export class LandingPageComponent implements OnInit {
     // Ask for location first, and if they allow it, use that location as default.
     if (!this.currentGeoLocation) {
       await this.getCurrentGeolocation();
-      // The latter code doesn't need to run if the user has already allowed location.
-      return;
     }
 
     const autocomplete = new google.maps.places.Autocomplete(
@@ -505,6 +501,7 @@ export class LandingPageComponent implements OnInit {
         categories: this.setPlaceCategories(result.types || []),
       };
     });
+    this.parsedNearbyPlaces.forEach(place => this.calculateDistanceFromNearbyPlaceToMapCenter(place));
   }
 
   private initializeTypesSelection() {
@@ -707,5 +704,36 @@ export class LandingPageComponent implements OnInit {
         }
       );
     });
+  }
+
+  private calculateDistanceFromNearbyPlaceToMapCenter(place: NearbyPlaces) {
+    if (place) {
+      new google.maps.DirectionsService()
+        .route({
+          origin: this.mapCenter,
+          destination: place.location,
+          travelMode: this.selectedTravelMode as any
+        })
+        .then((response) => {
+          const duration = response.routes[0]?.legs[0]?.duration?.text || '';
+          const distance = response.routes[0]?.legs[0]?.distance?.text || '';
+          if (place) {
+            place.duration = duration;
+            place.distance = distance;
+            place.score = this.calculatePlaceScore(place);
+          }
+        });
+    }
+  }
+
+  private calculatePlaceScore(place: NearbyPlaces): number {
+    if (place?.duration && this.extractNumber(place.duration) <= 15) {
+      return (1 - (this.extractNumber(place.duration) - 1) / 15) * this.getWeightByTravelMode(this.selectedTravelMode);
+    }
+    return 0;
+  }
+
+  private getMinimumDistanceBySelectedTypes(): number {
+    return 0;
   }
 }

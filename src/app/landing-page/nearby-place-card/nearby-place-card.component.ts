@@ -51,30 +51,30 @@ export class NearbyPlaceCardComponent implements OnInit, OnChanges {
     if (score <= 0) {
       return 'transparent';  // No highlight for score 0
     } else {
-      return `rgba(0, 0, 255, ${score * 0.5})`;  // Return a color in the RGB format
+      return `rgba(0, 255, 0, ${score * 0.5})`;  // Return a color in the RGB format
     }
   }
 
   private calculateDistanceFromNearbyPlacesToMapCenter() {
-    if (this.place) {
-      new google.maps.DirectionsService()
-        .route({
-          origin: this.mapCenter,
-          destination: this.place.location,
-          travelMode: this.travelMode as any,
-        })
-        .then((response) => {
-          this.routeResponse = response;
-          this.duration = response.routes[0]?.legs[0]?.duration?.text || '';
-          this.distance = response.routes[0]?.legs[0]?.distance?.text || '';
-          if (this.place) {
-            this.place.duration = this.duration;
-            this.place.distance = this.distance;
-            this.place.score = this.calculatePlaceScore();
-            this.setScoreForPlace.emit(this.place);
-          }
-        });
-    }
+    // if (this.place) {
+    //   new google.maps.DirectionsService()
+    //     .route({
+    //       origin: this.mapCenter,
+    //       destination: this.place.location,
+    //       travelMode: this.travelMode as any,
+    //     })
+    //     .then((response) => {
+    //       this.routeResponse = response;
+    //       this.duration = response.routes[0]?.legs[0]?.duration?.text || '';
+    //       this.distance = response.routes[0]?.legs[0]?.distance?.text || '';
+    //       if (this.place) {
+    //         this.place.duration = this.duration;
+    //         this.place.distance = this.distance;
+    //         this.place.score = this.calculatePlaceScore();
+    //         this.setScoreForPlace.emit(this.place);
+    //       }
+    //     });
+    // }
   }
 
   private calculatePlaceScore(): number {
