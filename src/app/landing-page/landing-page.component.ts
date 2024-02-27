@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   HostBinding,
   OnChanges,
@@ -41,10 +42,10 @@ export class LandingPageComponent implements OnInit {
 
   address: string = '';
   mapOptions: google.maps.MapOptions = {
-    zoom: 8
+    zoom: 8,
   };
   markerOptions: google.maps.MarkerOptions = {
-    draggable: false
+    draggable: false,
   };
   mapCenter: google.maps.LatLngLiteral = { lat: 44.977753, lng: -93.2650108 };
   currentGeoLocation: any;
@@ -110,13 +111,13 @@ export class LandingPageComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private locationService: LocationService
-  ) { }
+    private locationService: LocationService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
     this.initializeTypesSelection();
   }
-
 
   /**
    * Centers the map on the specified address using the Google Maps API geocoding.
@@ -131,8 +132,8 @@ export class LandingPageComponent implements OnInit {
           lng: results[0].geometry.location.lng(),
         };
         this.mapOptions = {
-          zoom: 15
-        }
+          zoom: 15,
+        };
       } else {
         console.error('Geocoding failed:', status);
       }
@@ -376,6 +377,44 @@ export class LandingPageComponent implements OnInit {
     }
   }
 
+  public async onChangeTravelMode() {
+    await Promise.all(this.parsedNearbyPlaces.map(async (place) => await this.calculateDistanceFromNearbyPlaceToMapCenter(place)));
+  }
+
+  private getNumberOfCheckboxesSelected(): number {
+    let selectedTypes: string[] = [
+      this.financialServicesTypeSelection,
+      this.foodAndBeverageTypeSelection,
+      this.retailStoresTypeSelection,
+      this.healthAndWellnessTypeSelection,
+      this.automotiveTypeSelection,
+      this.publicServicesAndGovernmentTypeSelection,
+      this.educationTypeSelection,
+      this.entertainmentTypeSelection,
+      this.travelAndTourismTypeSelection,
+      this.homeAndGardenTypeSelection,
+      this.religiousPlacesTypeSelection,
+    ].flatMap((typeSelection) => typeSelection.filter((type) => type.selected).map((type) => type.type));
+    return selectedTypes.length;
+  }
+
+  private getSelectedTypes(): string[] {
+    let selectedTypes: string[] = [
+      this.financialServicesTypeSelection,
+      this.foodAndBeverageTypeSelection,
+      this.retailStoresTypeSelection,
+      this.healthAndWellnessTypeSelection,
+      this.automotiveTypeSelection,
+      this.publicServicesAndGovernmentTypeSelection,
+      this.educationTypeSelection,
+      this.entertainmentTypeSelection,
+      this.travelAndTourismTypeSelection,
+      this.homeAndGardenTypeSelection,
+      this.religiousPlacesTypeSelection,
+    ].flatMap((typeSelection) => typeSelection.filter((type) => type.selected).map((type) => type.type));
+    return selectedTypes;
+  }
+
   private getTravelRadiusByTravelMode(travelMode: TravelModeEnum): number {
     switch (travelMode) {
       case TravelModeEnum.WALKING:
@@ -392,28 +431,28 @@ export class LandingPageComponent implements OnInit {
   private countCheckboxesChecked(): number {
     let count = 0;
     const values = [
-        this.financialServicesChecked,
-        this.foodAndBeverageChecked,
-        this.retailStoresChecked,
-        this.healthAndWellnessChecked,
-        this.automotiveChecked,
-        this.publicServicesAndGovernmentChecked,
-        this.educationChecked,
-        this.entertainmentChecked,
-        this.lodgingChecked,
-        this.travelAndTourismChecked,
-        this.homeAndGardenChecked,
-        this.religiousPlacesChecked
+      this.financialServicesChecked,
+      this.foodAndBeverageChecked,
+      this.retailStoresChecked,
+      this.healthAndWellnessChecked,
+      this.automotiveChecked,
+      this.publicServicesAndGovernmentChecked,
+      this.educationChecked,
+      this.entertainmentChecked,
+      this.lodgingChecked,
+      this.travelAndTourismChecked,
+      this.homeAndGardenChecked,
+      this.religiousPlacesChecked,
     ];
 
-    values.forEach(value => {
-        if (value === true) {
-            count++;
-        }
+    values.forEach((value) => {
+      if (value === true) {
+        count++;
+      }
     });
 
     return count;
-}
+  }
 
   private searchNearbyPlaces(
     service: google.maps.places.PlacesService,
@@ -428,7 +467,9 @@ export class LandingPageComponent implements OnInit {
             service.nearbySearch(
               {
                 location: this.mapCenter,
-                radius: this.getTravelRadiusByTravelMode(this.selectedTravelMode),
+                radius: this.getTravelRadiusByTravelMode(
+                  this.selectedTravelMode
+                ),
                 type: type.type,
               },
               (results, status) => {
@@ -460,7 +501,7 @@ export class LandingPageComponent implements OnInit {
     });
   }
 
-  private convertNearbyPlacesParsedObject(
+  private async convertNearbyPlacesParsedObject(
     results: google.maps.places.PlaceResult[]
   ) {
     // Object will look like this.
@@ -483,7 +524,7 @@ export class LandingPageComponent implements OnInit {
     //     ],
     //     "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/restaurant-71.png"
     // }
-    this.parsedNearbyPlaces = results.map((result) => {
+    let places = results.map((result) => {
       return {
         name: result.name || '',
         operational: result.business_status === 'OPERATIONAL',
@@ -501,7 +542,10 @@ export class LandingPageComponent implements OnInit {
         categories: this.setPlaceCategories(result.types || []),
       };
     });
-    this.parsedNearbyPlaces.forEach(place => this.calculateDistanceFromNearbyPlaceToMapCenter(place));
+
+    await Promise.all(places.map(async (place) => await this.calculateDistanceFromNearbyPlaceToMapCenter(place)));
+    places = this.sortParsedPlaces(places);
+    this.parsedNearbyPlaces = places;
   }
 
   private initializeTypesSelection() {
@@ -560,15 +604,11 @@ export class LandingPageComponent implements OnInit {
     );
   }
 
-  setScoreForPlace(place: NearbyPlaces) {
-    this.setScoreTotalScore(place);
-  }
-
   private toggleAllTypes(event: any, typeSelection: TypesSelection[]) {
     typeSelection.forEach((type) => {
       type.selected = event.checked;
     });
-    this.googleMapHeight = 500 + (this.countCheckboxesChecked() * 100);
+    this.googleMapHeight = 500 + this.countCheckboxesChecked() * 100;
   }
 
   private extractNumber(input: string): number {
@@ -629,37 +669,83 @@ export class LandingPageComponent implements OnInit {
   private setPlaceCategories(types: string[]): string[] {
     const categories: string[] = [];
 
-    if (types.some((type) => Object.values(FinancialServices).includes(type as FinancialServices))) {
+    if (
+      types.some((type) =>
+        Object.values(FinancialServices).includes(type as FinancialServices)
+      )
+    ) {
       categories.push('Financial Services');
     }
-    if (types.some((type) => Object.values(FoodAndBeverage).includes(type as FoodAndBeverage))) {
+    if (
+      types.some((type) =>
+        Object.values(FoodAndBeverage).includes(type as FoodAndBeverage)
+      )
+    ) {
       categories.push('Food and Beverage');
     }
-    if (types.some((type) => Object.values(RetailStores).includes(type as RetailStores))) {
+    if (
+      types.some((type) =>
+        Object.values(RetailStores).includes(type as RetailStores)
+      )
+    ) {
       categories.push('Retail Stores');
     }
-    if (types.some((type) => Object.values(HealthAndWellness).includes(type as HealthAndWellness))) {
+    if (
+      types.some((type) =>
+        Object.values(HealthAndWellness).includes(type as HealthAndWellness)
+      )
+    ) {
       categories.push('Health and Wellness');
     }
-    if (types.some((type) => Object.values(Automotive).includes(type as Automotive))) {
+    if (
+      types.some((type) =>
+        Object.values(Automotive).includes(type as Automotive)
+      )
+    ) {
       categories.push('Automotive');
     }
-    if (types.some((type) => Object.values(PublicServicesAndGovernment).includes(type as PublicServicesAndGovernment))) {
+    if (
+      types.some((type) =>
+        Object.values(PublicServicesAndGovernment).includes(
+          type as PublicServicesAndGovernment
+        )
+      )
+    ) {
       categories.push('Public Services and Government');
     }
-    if (types.some((type) => Object.values(Education).includes(type as Education))) {
+    if (
+      types.some((type) => Object.values(Education).includes(type as Education))
+    ) {
       categories.push('Education');
     }
-    if (types.some((type) => Object.values(EntertainmentAndRecreation).includes(type as EntertainmentAndRecreation))) {
+    if (
+      types.some((type) =>
+        Object.values(EntertainmentAndRecreation).includes(
+          type as EntertainmentAndRecreation
+        )
+      )
+    ) {
       categories.push('Entertainment and Recreation');
     }
-    if (types.some((type) => Object.values(TravelAndLodging).includes(type as TravelAndLodging))) {
+    if (
+      types.some((type) =>
+        Object.values(TravelAndLodging).includes(type as TravelAndLodging)
+      )
+    ) {
       categories.push('Travel and Tourism');
     }
-    if (types.some((type) => Object.values(HomeAndGarden).includes(type as HomeAndGarden))) {
+    if (
+      types.some((type) =>
+        Object.values(HomeAndGarden).includes(type as HomeAndGarden)
+      )
+    ) {
       categories.push('Home and Garden');
     }
-    if (types.some((type) => Object.values(ReligiousPlaces).includes(type as ReligiousPlaces))) {
+    if (
+      types.some((type) =>
+        Object.values(ReligiousPlaces).includes(type as ReligiousPlaces)
+      )
+    ) {
       categories.push('Religious Places');
     }
 
@@ -706,13 +792,13 @@ export class LandingPageComponent implements OnInit {
     });
   }
 
-  private calculateDistanceFromNearbyPlaceToMapCenter(place: NearbyPlaces) {
+  private async calculateDistanceFromNearbyPlaceToMapCenter(place: NearbyPlaces) {
     if (place) {
-      new google.maps.DirectionsService()
+      await new google.maps.DirectionsService()
         .route({
           origin: this.mapCenter,
           destination: place.location,
-          travelMode: this.selectedTravelMode as any
+          travelMode: this.selectedTravelMode as any,
         })
         .then((response) => {
           const duration = response.routes[0]?.legs[0]?.duration?.text || '';
@@ -721,19 +807,26 @@ export class LandingPageComponent implements OnInit {
             place.duration = duration;
             place.distance = distance;
             place.score = this.calculatePlaceScore(place);
+            this.setScoreTotalScore(place);
           }
         });
     }
+    return {
+      duration: place.duration,
+      distance: place.distance,
+      score: place.score,
+    };
   }
 
   private calculatePlaceScore(place: NearbyPlaces): number {
     if (place?.duration && this.extractNumber(place.duration) <= 15) {
-      return (1 - (this.extractNumber(place.duration) - 1) / 15) * this.getWeightByTravelMode(this.selectedTravelMode);
+      return (
+        (1 - (this.extractNumber(place.duration) - 1) / 15) *
+        this.getWeightByTravelMode(this.selectedTravelMode)
+      );
     }
     return 0;
   }
 
-  private getMinimumDistanceBySelectedTypes(): number {
-    return 0;
-  }
+
 }

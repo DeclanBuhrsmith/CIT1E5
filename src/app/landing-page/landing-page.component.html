@@ -304,12 +304,9 @@
   class="nearby-place-cards-container"
   *ngIf="parsedNearbyPlaces && parsedNearbyPlaces.length > 0"
 >
-  @for (place of sortParsedPlaces(parsedNearbyPlaces); track place) {
+  @for (place of parsedNearbyPlaces; track place) {
   <nearby-place-card
-    [mapCenter]="mapCenter"
     [place]="place"
-    [travelMode]="selectedTravelMode"
-    (setScoreForPlace)="setScoreForPlace($event)"
   ></nearby-place-card>
   }
 </div>
