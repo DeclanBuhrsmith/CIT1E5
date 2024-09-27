@@ -27,6 +27,14 @@ import {
   TravelAndLodging,
 } from './enums/types';
 import { LocationService } from './services/location.service';
+import Map from 'ol/Map.js';
+import { response } from 'express';
+import { View } from 'ol';
+import TileLayer from 'ol/layer/Tile';
+import { OSM } from 'ol/source';
+import { async } from 'rxjs';
+import { types } from 'util';
+
 
 @Component({
   selector: 'landing-page',
@@ -38,6 +46,8 @@ export class LandingPageComponent implements OnInit {
   @ViewChild('gmap') gmap: GoogleMap | undefined;
   @ViewChild('addressInput') addresstext: any;
   @ViewChild('checkboxContainer') checkboxContainer: any;
+
+  map: Map | undefined;
 
   address: string = '';
   mapOptions: google.maps.MapOptions = {
@@ -114,7 +124,19 @@ export class LandingPageComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.initializeTypesSelection();
+    //this.initializeTypesSelection();
+    this.map = new Map({
+      view: new View({
+        center: [0, 0],
+        zoom: 1,
+      }),
+      layers: [
+        new TileLayer({
+          source: new OSM(),
+        }),
+      ],
+      target: 'map'
+    });
   }
 
 
