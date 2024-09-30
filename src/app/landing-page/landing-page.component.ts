@@ -1,14 +1,10 @@
 import {
-  AfterViewInit,
   Component,
   HostBinding,
-  OnChanges,
   OnInit,
-  Output,
-  SimpleChanges,
   ViewChild,
 } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import { GoogleMap } from '@angular/google-maps';
 import { TypesSelection } from './interfaces/types-selection';
 import { NearbyPlaces } from './interfaces/nearby-places';
@@ -28,12 +24,9 @@ import {
 } from './enums/types';
 import { LocationService } from './services/location.service';
 import Map from 'ol/Map.js';
-import { response } from 'express';
 import { View } from 'ol';
 import TileLayer from 'ol/layer/Tile';
 import { OSM } from 'ol/source';
-import { async } from 'rxjs';
-import { types } from 'util';
 
 
 @Component({
@@ -124,7 +117,6 @@ export class LandingPageComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    //this.initializeTypesSelection();
     this.map = new Map({
       view: new View({
         center: [0, 0],
