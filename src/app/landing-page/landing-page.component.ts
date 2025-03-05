@@ -27,6 +27,7 @@ import Map from 'ol/Map.js';
 import { View } from 'ol';
 import TileLayer from 'ol/layer/Tile';
 import { OSM } from 'ol/source';
+import { ConvertAddressToLatLonService } from './services/convert-address-to-latlon.service';
 
 
 @Component({
@@ -113,14 +114,28 @@ export class LandingPageComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private locationService: LocationService
+    private locationService: LocationService,
+    private convertAddressToLatLonService: ConvertAddressToLatLonService
   ) { }
 
   ngOnInit() {
+    // Initialize the map
+    // Pillar Cafe Forum default location.
+    const defaultAddress = '2300 Central Ave NE, Minneapolis, MN 55418';
+    let defaultCoordinates = {
+      lat: 0,
+      lng: 0
+    }
+    this.convertAddressToLatLonService.convertAddressToLatLon(defaultAddress).then((result) => {
+      defaultCoordinates = {
+        lat: result.latitude,
+        lng: result.longitude
+      }
+    })
     this.map = new Map({
       view: new View({
-        center: [0, 0],
-        zoom: 1,
+        center: [defaultCoordinates.lat, defaultCoordinates.lng],
+        zoom: 10,
       }),
       layers: [
         new TileLayer({
@@ -137,20 +152,29 @@ export class LandingPageComponent implements OnInit {
    */
   centerMapOnAddress() {
     // Use Google Maps API to geocode the address
-    const geocoder = new google.maps.Geocoder();
-    geocoder.geocode({ address: this.address }, (results, status) => {
-      if (status === 'OK' && results) {
-        this.mapCenter = {
-          lat: results[0].geometry.location.lat(),
-          lng: results[0].geometry.location.lng(),
-        };
-        this.mapOptions = {
-          zoom: 15
-        }
-      } else {
-        console.error('Geocoding failed:', status);
-      }
-    });
+    // const geocoder = new google.maps.Geocoder();
+    // geocoder.geocode({ address: this.address }, (results, status) => {
+    //   if (status === 'OK' && results) {
+    //     this.mapCenter = {
+    //       lat: results[0].geometry.location.lat(),
+    //       lng: results[0].geometry.location.lng(),
+    //     };
+    //     this.mapOptions = {
+    //       zoom: 15
+    //     }
+    //   } else {
+    //     console.error('Geocoding failed:', status);
+    //   }
+    // });
+
+
+    // TODO: Uncomment this when we have a way to get the address from the user.
+    // this.convertAddressToLatLonService.convertAddressToLatLon(this.address).then((result) => {
+    //   this.map = {
+    //     lat: result.latitude,
+    //     lng: result.longitude
+    //   }
+    // })
   }
 
   /**
@@ -701,23 +725,23 @@ export class LandingPageComponent implements OnInit {
   }
 
   private async getCurrentGeolocation() {
-    await this.locationService.getCurrentLocation().then((location) => {
-      this.currentGeoLocation = location;
+    // await this.locationService.getCurrentLocation().then((location) => {
+    //   this.currentGeoLocation = location;
 
-      // Get the formatted address from the current location
-      const geocoder = new google.maps.Geocoder();
-      geocoder.geocode(
-        { location: this.currentGeoLocation },
-        (results, status) => {
-          if (status === 'OK' && results && results.length > 0) {
-            this.address = results[0].formatted_address;
-            this.centerMapOnAddress();
-          } else {
-            console.error('Geocoding failed:', status);
-          }
-        }
-      );
-    });
+    //   // Get the formatted address from the current location
+    //   const geocoder = new google.maps.Geocoder();
+    //   geocoder.geocode(
+    //     { location: this.currentGeoLocation },
+    //     (results, status) => {
+    //       if (status === 'OK' && results && results.length > 0) {
+    //         this.address = results[0].formatted_address;
+    //         this.centerMapOnAddress();
+    //       } else {
+    //         console.error('Geocoding failed:', status);
+    //       }
+    //     }
+    //   );
+    // });
   }
 
   private calculateDistanceFromNearbyPlaceToMapCenter(place: NearbyPlaces) {
