@@ -20,8 +20,8 @@ export class OpenStreetMapComponent {
 
   private initMap(): void {
     // Set the initial map center and zoom level
-    const initialCenter: L.LatLngExpression = [51.505, -0.09]; // London coordinates
-    const initialZoom: number = 13;
+    const initialCenter: L.LatLngExpression = [44, -93];
+    const initialZoom: number = 8;
 
     // Initialize the map
     this.map = L.map('map').setView(initialCenter, initialZoom);
