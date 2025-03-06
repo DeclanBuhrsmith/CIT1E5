@@ -1,2 +1,23 @@
-<search-form></search-form>
+<div class="container mt-5">
+  <h1 class="mb-4">Search Form</h1>
+
+  <search-form></search-form>
+
+  <div *ngIf="searchResults()" class="mt-4">
+    <h2>Search Results</h2>
+    <div *ngFor="let result of searchResults()" class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">{{ result.display_name }}</h5>
+        <p class="card-text">
+          <strong>Latitude:</strong> {{ result.lat }}<br />
+          <strong>Longitude:</strong> {{ result.lon }}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="errorMessage()" class="alert alert-danger mt-3">
+    {{ errorMessage() }}
+  </div>
+</div>
 <open-street-map></open-street-map>

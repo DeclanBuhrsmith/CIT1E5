@@ -1,12 +1,15 @@
 import { Component } from '@angular/core';
-import { OpenStreetMapComponent } from './open-street-map/open-street-map.component';
-import { SearchFormComponent } from './search-form/search-form.component';
+import { SearchStateService } from './services/search-state.service';
 
 @Component({
   selector: 'open-street-map-container',
-  standalone: true,
-  imports: [OpenStreetMapComponent, SearchFormComponent],
   templateUrl: './open-street-map-container.component.html',
-  styleUrl: './open-street-map-container.component.scss',
+  styleUrls: ['./open-street-map-container.component.scss'],
 })
-export class OpenStreetMapContainerComponent {}
+export class OpenStreetMapContainerComponent {
+  // Use signals to track the state
+  searchResults = this.searchStateService.nominatimResponse$;
+  errorMessage = this.searchStateService.error$;
+
+  constructor(private searchStateService: SearchStateService) {}
+}

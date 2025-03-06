@@ -4,10 +4,8 @@ import 'leaflet/dist/leaflet.css';
 
 @Component({
   selector: 'open-street-map',
-  standalone: true,
-  imports: [],
   templateUrl: './open-street-map.component.html',
-  styleUrl: './open-street-map.component.scss',
+  styleUrls: ['./open-street-map.component.scss'],
 })
 export class OpenStreetMapComponent {
   private map: L.Map | undefined;
