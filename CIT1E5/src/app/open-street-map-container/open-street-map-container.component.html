@@ -20,4 +20,11 @@
     {{ errorMessage() }}
   </div>
 </div>
-<open-street-map></open-street-map>
+<open-street-map
+  [latitude]="
+    searchResults() && searchResults()!.length ? searchResults()![0].lat : 0
+  "
+  [longitude]="
+    searchResults() && searchResults()!.length ? searchResults()![0].lon : 0
+  "
+></open-street-map>

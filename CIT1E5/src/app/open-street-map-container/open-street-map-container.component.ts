@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
-import { SearchStateService } from './services/search-state.service';
+import {
+  NominatimResponse,
+  SearchStateService,
+} from './services/search-state.service';
 
 @Component({
   selector: 'open-street-map-container',

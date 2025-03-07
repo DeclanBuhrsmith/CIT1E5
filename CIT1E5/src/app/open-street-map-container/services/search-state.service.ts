@@ -4,8 +4,8 @@ import { Observable, catchError, of, switchMap } from 'rxjs';
 
 // Define the structure of the Nominatim response
 export interface NominatimResponse {
-  lat: string;
-  lon: string;
+  lat: number;
+  lon: number;
   display_name: string;
   address: {
     city?: string;
@@ -37,20 +37,25 @@ export class SearchStateService {
 
   constructor(private http: HttpClient) {
     // React to changes in searchData and call the Nominatim API
-    effect(() => {
-      const searchData = this.searchData();
-      if (searchData) {
-        this.geocode(searchData.address).subscribe({
-          next: (response) => this.nominatimResponse.set(response),
-          error: (err) => {
-            this.errorMessage.set('An error occurred while fetching the data.');
-            console.error(err);
-          },
-        });
-      } else {
-        this.nominatimResponse.set(null);
-      }
-    });
+    effect(
+      () => {
+        const searchData = this.searchData();
+        if (searchData) {
+          this.geocode(searchData.address).subscribe({
+            next: (response) => this.nominatimResponse.set(response),
+            error: (err) => {
+              this.errorMessage.set(
+                'An error occurred while fetching the data.'
+              );
+              console.error(err);
+            },
+          });
+        } else {
+          this.nominatimResponse.set(null);
+        }
+      },
+      { allowSignalWrites: true }
+    );
   }
 
   setSearchData(address: string, transportationMode: string): void {
