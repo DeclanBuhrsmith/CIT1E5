@@ -59,7 +59,6 @@ export class SearchStateService {
   }
 
   setSearchData(address: string, transportationMode: string): void {
-    console.log('Setting search data:', address, transportationMode); // Debugging
     this.searchData.set({ address, transportationMode });
   }
 

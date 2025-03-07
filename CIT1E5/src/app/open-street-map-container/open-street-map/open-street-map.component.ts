@@ -1,4 +1,10 @@
-import { Component, Input, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  Input,
+  SimpleChanges,
+  Output,
+  EventEmitter,
+} from '@angular/core';
 import * as L from 'leaflet';
 import { LatLngExpression, Marker } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -11,6 +17,7 @@ import 'leaflet/dist/leaflet.css';
 export class OpenStreetMapComponent {
   @Input() latitude: number = 0;
   @Input() longitude: number = 0;
+  @Output() mapCenterUpdated = new EventEmitter<{ lat: number; lon: number }>();
 
   private map: L.Map | undefined;
   private mapCenterMarker: Marker | undefined;
@@ -22,9 +29,6 @@ export class OpenStreetMapComponent {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    //Called before any other lifecycle hook. Use it to inject dependencies, but avoid any serious work here.
-    //Add '${implements OnChanges}' to the class.
-    console.log(changes);
     if (changes['latitude'] && changes['longitude']) {
       this.updateMapCenter(this.latitude, this.longitude);
     }
@@ -37,6 +41,8 @@ export class OpenStreetMapComponent {
       this.map.panTo(center);
       // Add a marker
       this.mapCenterMarker = L.marker(center).addTo(this.map);
+      // Emit the mapCenterUpdated event
+      this.mapCenterUpdated.emit({ lat, lon: lng });
     }
   }
 

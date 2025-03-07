@@ -4,6 +4,9 @@ form {
   gap: 1rem;
   max-width: 400px;
   margin: 0 auto;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
 }
 
 div {
@@ -33,4 +36,9 @@ button {
 button:disabled {
   background-color: #cccccc;
   cursor: not-allowed;
+}
+
+.form-check {
+  display: inline-block;
+  margin-right: 1rem;
 }
