@@ -38,8 +38,8 @@
   <div *ngIf="placesNearby() && placesNearby()!.length" class="mt-4">
     <h2>Places Nearby</h2>
     <div *ngFor="let place of placesNearby()" class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">{{ place.tags.name }}</h5>
+      <div *ngIf="place.tags" class="card-body">
+        <h5 class="card-title">{{ place.tags["name"] }}</h5>
         <p class="card-text">
           <strong>Latitude:</strong> {{ place.lat }}<br />
           <strong>Longitude:</strong> {{ place.lon }}

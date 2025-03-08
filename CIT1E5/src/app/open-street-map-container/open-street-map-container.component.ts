@@ -21,7 +21,7 @@ export class OpenStreetMapContainerComponent {
 
   // Method to fetch places nearby using the Overpass API
   fetchPlacesNearby(lat: number, lon: number): void {
-    this.overpassService.getPlacesNearby(lat, lon);
+    this.overpassService.setSearchData(lat, lon);
   }
 
   // Method to handle the search event and call fetchPlacesNearby with the updated coordinates
