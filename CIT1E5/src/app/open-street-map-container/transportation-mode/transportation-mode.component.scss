@@ -1,0 +1,14 @@
+.radio-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+
+  .form-check {
+    display: flex;
+    align-items: center;
+  }
+
+  .form-check-input {
+    margin-right: 5px;
+  }
+}

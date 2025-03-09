@@ -17,7 +17,7 @@ export class OpenStreetMapContainerComponent {
   // Vars
   currentTransportationMode: TransportationMode = TransportationMode.Walk;
   places: OSMElement[] = [];
-  radius: number = 1200;
+  radius: number = 0;
 
   constructor(
     private searchStateService: SearchStateService,
@@ -33,6 +33,16 @@ export class OpenStreetMapContainerComponent {
 
   // Method to fetch places nearby using the Overpass API
   fetchPlacesNearby(lat: number, lon: number): void {
+    this.overpassService.setOverpassParams(lat, lon, this.radius);
+  }
+
+  // Method to handle the search event and call fetchPlacesNearby with the updated coordinates
+  mapCenterUpdated(lat: number, lon: number): void {
+    this.fetchPlacesNearby(lat, lon);
+  }
+
+  transportationModeUpdated(transportationMode: TransportationMode) {
+    this.currentTransportationMode = transportationMode;
     switch (this.currentTransportationMode) {
       case TransportationMode.Walk:
         this.radius = 1200;
@@ -45,15 +55,12 @@ export class OpenStreetMapContainerComponent {
         this.radius = 5000;
         break;
     }
-    this.overpassService.setOverpassParams(lat, lon, this.radius);
-  }
-
-  // Method to handle the search event and call fetchPlacesNearby with the updated coordinates
-  mapCenterUpdated(lat: number, lon: number): void {
-    this.fetchPlacesNearby(lat, lon);
-  }
-
-  transportationModeUpdated(transportationMode: TransportationMode) {
-    this.currentTransportationMode = transportationMode;
+    // When transportation mode is changed the radius is changed so the nearby results need to be updated
+    if (this.searchResults() && this.searchResults()![0]) {
+      this.fetchPlacesNearby(
+        this.searchResults()![0].lat,
+        this.searchResults()![0].lon
+      );
+    }
   }
 }
