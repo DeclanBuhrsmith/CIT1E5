@@ -3,6 +3,11 @@
     <div class="col-md-6">
       <h1 class="mb-4">CIT1E5</h1>
       <search-form></search-form>
+      <transportation-mode
+        (setSelectedTransportationMode)="
+          transportationModeUpdated($event.currentTransportationMode)
+        "
+      ></transportation-mode>
     </div>
     <div class="col-md-6">
       <div *ngIf="searchResults()" class="mt-4">
@@ -20,6 +25,22 @@
       <div *ngIf="errorMessage()" class="alert alert-danger mt-3">
         {{ errorMessage() }}
       </div>
+      <div *ngIf="places && places.length" class="mt-4">
+        <h2>Places Nearby</h2>
+        <div *ngFor="let place of places" class="card mb-3">
+          <div *ngIf="place.tags" class="card-body">
+            <h5 class="card-title">{{ place.tags["name"] }}</h5>
+            <p class="card-text">
+              <strong>Latitude:</strong> {{ place.lat }}<br />
+              <strong>Longitude:</strong> {{ place.lon }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="overpassError()" class="alert alert-danger mt-3">
+        {{ overpassError() }}
+      </div>
     </div>
   </div>
 </div>
@@ -32,23 +53,7 @@
     [longitude]="
       searchResults() && searchResults()!.length ? searchResults()![0].lon : 0
     "
-    (mapCenterUpdated)="onSearchTriggered($event.lat, $event.lon)"
+    [radius]="radius"
+    (mapCenterUpdated)="mapCenterUpdated($event.lat, $event.lon)"
   ></open-street-map>
-
-  <div *ngIf="placesNearby() && placesNearby()!.length" class="mt-4">
-    <h2>Places Nearby</h2>
-    <div *ngFor="let place of placesNearby()" class="card mb-3">
-      <div *ngIf="place.tags" class="card-body">
-        <h5 class="card-title">{{ place.tags["name"] }}</h5>
-        <p class="card-text">
-          <strong>Latitude:</strong> {{ place.lat }}<br />
-          <strong>Longitude:</strong> {{ place.lon }}
-        </p>
-      </div>
-    </div>
-  </div>
-
-  <div *ngIf="overpassError()" class="alert alert-danger mt-3">
-    {{ overpassError() }}
-  </div>
 </div>

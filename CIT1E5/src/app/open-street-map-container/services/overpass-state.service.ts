@@ -80,7 +80,7 @@ export class OverpassService {
     );
   }
 
-  setSearchData(lat: number, lng: number, radius: number = 1000): void {
+  setOverpassParams(lat: number, lng: number, radius: number): void {
     this.searchData.set({ lat, lng, radius });
   }
 

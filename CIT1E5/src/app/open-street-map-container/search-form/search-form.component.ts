@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component } from '@angular/core';
 import { SearchStateService } from '../services/search-state.service';
 
 @Component({
@@ -8,20 +8,15 @@ import { SearchStateService } from '../services/search-state.service';
 })
 export class SearchFormComponent {
   address: string = '';
-  selectedTransportationMode: string = '';
-  transportationModes: string[] = ['Walk', 'Bike', 'Transit', 'Drive'];
 
   constructor(private searchStateService: SearchStateService) {}
 
   onSearch(): void {
-    if (!this.address || !this.selectedTransportationMode) {
+    if (!this.address) {
       return;
     }
 
     // Update the search state using signals
-    this.searchStateService.setSearchData(
-      this.address,
-      this.selectedTransportationMode
-    );
+    this.searchStateService.setSearchData(this.address);
   }
 }

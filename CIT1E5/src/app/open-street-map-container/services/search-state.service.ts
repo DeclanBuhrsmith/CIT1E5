@@ -1,6 +1,7 @@
 import { Injectable, signal, effect } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, catchError, of, switchMap } from 'rxjs';
+import { TransportationMode } from '../transportation-mode/transportation-mode.component';
 
 // Define the structure of the Nominatim response
 export interface NominatimResponse {
@@ -25,7 +26,6 @@ export class SearchStateService {
   // Use signals to manage state
   private searchData = signal<{
     address: string;
-    transportationMode: string;
   } | null>(null);
   private nominatimResponse = signal<NominatimResponse[] | null>(null);
   private errorMessage = signal<string | null>(null);
@@ -58,8 +58,8 @@ export class SearchStateService {
     );
   }
 
-  setSearchData(address: string, transportationMode: string): void {
-    this.searchData.set({ address, transportationMode });
+  setSearchData(address: string): void {
+    this.searchData.set({ address });
   }
 
   // Method to call the Nominatim API

@@ -6,7 +6,7 @@ import {
   EventEmitter,
 } from '@angular/core';
 import * as L from 'leaflet';
-import { LatLngExpression, Marker } from 'leaflet';
+import { LatLngExpression, Marker, Circle } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
 @Component({
@@ -17,10 +17,12 @@ import 'leaflet/dist/leaflet.css';
 export class OpenStreetMapComponent {
   @Input() latitude: number = 0;
   @Input() longitude: number = 0;
+  @Input() radius: number = 0;
   @Output() mapCenterUpdated = new EventEmitter<{ lat: number; lon: number }>();
 
   private map: L.Map | undefined;
   private mapCenterMarker: Marker | undefined;
+  private radiusCircle: Circle | undefined;
 
   constructor() {}
 
@@ -31,6 +33,9 @@ export class OpenStreetMapComponent {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['latitude'] && changes['longitude']) {
       this.updateMapCenter(this.latitude, this.longitude);
+    }
+    if (changes['radius']) {
+      this.updateRadiusCircle(this.latitude, this.longitude, this.radius);
     }
   }
 
@@ -43,6 +48,14 @@ export class OpenStreetMapComponent {
       this.mapCenterMarker = L.marker(center).addTo(this.map);
       // Emit the mapCenterUpdated event
       this.mapCenterUpdated.emit({ lat, lon: lng });
+    }
+  }
+
+  updateRadiusCircle(lat: number, lng: number, radius: number) {
+    if (this.map) {
+      this.radiusCircle?.remove();
+      const center: LatLngExpression = [lat, lng];
+      this.radiusCircle = L.circle(center, { radius }).addTo(this.map);
     }
   }
 
