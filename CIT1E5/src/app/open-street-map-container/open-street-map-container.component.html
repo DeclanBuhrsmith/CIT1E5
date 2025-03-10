@@ -58,5 +58,6 @@
     "
     [radius]="radius"
     (mapCenterUpdated)="mapCenterUpdated($event.lat, $event.lon)"
+    (mapInitialized)="mapInitialized($event)"
   ></open-street-map>
 </div>

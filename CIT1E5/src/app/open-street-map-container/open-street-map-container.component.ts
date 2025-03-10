@@ -2,6 +2,7 @@ import { Component, effect } from '@angular/core';
 import { SearchStateService } from './services/search-state.service';
 import { OSMElement, OverpassService } from './services/overpass-state.service';
 import { TransportationMode } from './transportation-mode/transportation-mode.component';
+import { RoutingStateService } from './services/routing-state.service.ts.service';
 
 @Component({
   selector: 'open-street-map-container',
@@ -18,16 +19,27 @@ export class OpenStreetMapContainerComponent {
   currentTransportationMode: TransportationMode = TransportationMode.Walk;
   places: OSMElement[] = [];
   radius: number = 0;
+  map: L.Map | undefined;
+  mapCenter: { lat: number; lon: number } = { lat: 0, lon: 0 };
 
   constructor(
     private searchStateService: SearchStateService,
-    private overpassService: OverpassService
+    private overpassService: OverpassService,
+    private routingService: RoutingStateService
   ) {
     // React to changes in the placesNearby signal
     effect(() => {
       // Removes chatter from the overpass api
       this.places =
         this.placesNearby()?.filter((place) => !!place.tags?.['name']) || [];
+      this.places.forEach((place) =>
+        this.addRoutingToPlaces(
+          this.mapCenter.lat,
+          this.mapCenter.lon,
+          place.lat || 0,
+          place.lon || 0
+        )
+      );
     });
   }
 
@@ -39,6 +51,27 @@ export class OpenStreetMapContainerComponent {
   // Method to handle the search event and call fetchPlacesNearby with the updated coordinates
   mapCenterUpdated(lat: number, lon: number): void {
     this.fetchPlacesNearby(lat, lon);
+  }
+
+  mapInitialized(map: L.Map) {
+    this.map = map;
+  }
+
+  addRoutingToPlaces(
+    centerLat: number,
+    centerLon: number,
+    placeLat: number,
+    placeLon: number
+  ) {
+    if (this.map) {
+      this.routingService.calculateWalkingRoute(
+        centerLat,
+        centerLon,
+        placeLat,
+        placeLon,
+        this.map
+      );
+    }
   }
 
   transportationModeUpdated(transportationMode: TransportationMode) {
@@ -57,10 +90,11 @@ export class OpenStreetMapContainerComponent {
     }
     // When transportation mode is changed the radius is changed so the nearby results need to be updated
     if (this.searchResults() && this.searchResults()![0]) {
-      this.fetchPlacesNearby(
-        this.searchResults()![0].lat,
-        this.searchResults()![0].lon
-      );
+      this.mapCenter = {
+        lat: this.searchResults()![0].lat,
+        lon: this.searchResults()![0].lon,
+      };
+      this.fetchPlacesNearby(this.mapCenter.lat, this.mapCenter.lon);
     }
   }
 }
