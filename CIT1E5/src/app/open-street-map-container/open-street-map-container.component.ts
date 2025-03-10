@@ -2,7 +2,7 @@ import { Component, effect } from '@angular/core';
 import { SearchStateService } from './services/search-state.service';
 import { OSMElement, OverpassService } from './services/overpass-state.service';
 import { TransportationMode } from './transportation-mode/transportation-mode.component';
-import { RoutingStateService } from './services/routing-state.service.ts.service';
+import { RoutingStateService } from './services/routing-state.service';
 
 @Component({
   selector: 'open-street-map-container',
@@ -55,6 +55,7 @@ export class OpenStreetMapContainerComponent {
 
   mapInitialized(map: L.Map) {
     this.map = map;
+    this.routingService.setMap(this.map);
   }
 
   addRoutingToPlaces(
@@ -64,12 +65,12 @@ export class OpenStreetMapContainerComponent {
     placeLon: number
   ) {
     if (this.map) {
-      this.routingService.calculateWalkingRoute(
+      this.routingService.calculateDistanceAndDuration(
         centerLat,
         centerLon,
         placeLat,
         placeLon,
-        this.map
+        this.currentTransportationMode
       );
     }
   }
