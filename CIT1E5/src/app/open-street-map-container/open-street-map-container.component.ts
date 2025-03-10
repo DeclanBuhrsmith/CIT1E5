@@ -3,6 +3,7 @@ import { SearchStateService } from './services/search-state.service';
 import { OSMElement, OverpassService } from './services/overpass-state.service';
 import { TransportationMode } from './transportation-mode/transportation-mode.component';
 import { RoutingStateService } from './services/routing-state.service';
+import { LatLng } from 'leaflet';
 
 @Component({
   selector: 'open-street-map-container',
@@ -20,7 +21,7 @@ export class OpenStreetMapContainerComponent {
   places: OSMElement[] = [];
   radius: number = 0;
   map: L.Map | undefined;
-  mapCenter: { lat: number; lon: number } = { lat: 0, lon: 0 };
+  mapCenter: LatLng = new LatLng(0, 0);
 
   constructor(
     private searchStateService: SearchStateService,
@@ -30,49 +31,28 @@ export class OpenStreetMapContainerComponent {
     // React to changes in the placesNearby signal
     effect(() => {
       // Removes chatter from the overpass api
-      this.places =
-        this.placesNearby()?.filter((place) => !!place.tags?.['name']) || [];
-      this.places.forEach((place) =>
-        this.addRoutingToPlaces(
-          this.mapCenter.lat,
-          this.mapCenter.lon,
-          place.lat || 0,
-          place.lon || 0
-        )
-      );
+      this.places = this.formatPlaces(this.placesNearby() || []);
     });
   }
 
   // Method to fetch places nearby using the Overpass API
-  fetchPlacesNearby(lat: number, lon: number): void {
-    this.overpassService.setOverpassParams(lat, lon, this.radius);
+  fetchPlacesNearby(mapCenter: LatLng): void {
+    this.overpassService.setOverpassParams(
+      mapCenter.lat,
+      mapCenter.lng,
+      this.radius
+    );
   }
 
   // Method to handle the search event and call fetchPlacesNearby with the updated coordinates
-  mapCenterUpdated(lat: number, lon: number): void {
-    this.fetchPlacesNearby(lat, lon);
+  mapCenterUpdated(mapCenter: LatLng): void {
+    this.mapCenter = mapCenter;
+    this.fetchPlacesNearby(this.mapCenter);
   }
 
   mapInitialized(map: L.Map) {
     this.map = map;
-    this.routingService.setMap(this.map);
-  }
-
-  addRoutingToPlaces(
-    centerLat: number,
-    centerLon: number,
-    placeLat: number,
-    placeLon: number
-  ) {
-    if (this.map) {
-      this.routingService.calculateDistanceAndDuration(
-        centerLat,
-        centerLon,
-        placeLat,
-        placeLon,
-        this.currentTransportationMode
-      );
-    }
+    // this.routingService.setMap(this.map);
   }
 
   transportationModeUpdated(transportationMode: TransportationMode) {
@@ -90,12 +70,40 @@ export class OpenStreetMapContainerComponent {
         break;
     }
     // When transportation mode is changed the radius is changed so the nearby results need to be updated
-    if (this.searchResults() && this.searchResults()![0]) {
-      this.mapCenter = {
-        lat: this.searchResults()![0].lat,
-        lon: this.searchResults()![0].lon,
-      };
-      this.fetchPlacesNearby(this.mapCenter.lat, this.mapCenter.lon);
+    if (this.mapCenter && this.map) {
+      this.fetchPlacesNearby(this.map.getCenter());
+    }
+  }
+
+  private formatPlaces(places: OSMElement[]) {
+    places.filter((place) => !!place.tags?.['name']) || [];
+    places.forEach((place) => {
+      this.addDistanceToPlaces(place);
+    });
+
+    // TODO
+    // Sort places by distanceFromAddress
+    // places.sort((a, b) => {
+    //   const distanceA = a.tags?.['distanceFromAddress'];
+    //   const distanceB = b.tags?.['distanceFromAddress'];
+    //   if (typeof distanceA === 'number' && typeof distanceB === 'number') {
+    //     return distanceA - distanceB;
+    //   } else {
+    //     return 0;
+    //   }
+    // });
+
+    return places;
+  }
+
+  private addDistanceToPlaces(place: OSMElement) {
+    if (place.tags && this.map) {
+      place.tags['distanceFromAddress'] = this.map
+        .distance(
+          this.map.getCenter(),
+          new LatLng(place.lat || 0, place.lon || 0)
+        )
+        .toFixed(0);
     }
   }
 }

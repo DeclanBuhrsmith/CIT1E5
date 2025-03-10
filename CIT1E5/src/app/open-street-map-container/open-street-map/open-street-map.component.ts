@@ -18,7 +18,7 @@ export class OpenStreetMapComponent {
   @Input() latitude: number = 0;
   @Input() longitude: number = 0;
   @Input() radius: number = 0;
-  @Output() mapCenterUpdated = new EventEmitter<{ lat: number; lon: number }>();
+  @Output() mapCenterUpdated = new EventEmitter<L.LatLng>();
   @Output() mapInitialized = new EventEmitter<L.Map>();
 
   private map: L.Map | undefined;
@@ -48,7 +48,7 @@ export class OpenStreetMapComponent {
       // Add a marker
       this.mapCenterMarker = L.marker(center).addTo(this.map);
       // Emit the mapCenterUpdated event
-      this.mapCenterUpdated.emit({ lat, lon: lng });
+      this.mapCenterUpdated.emit(this.map.getCenter());
     }
   }
 

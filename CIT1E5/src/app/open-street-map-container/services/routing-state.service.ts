@@ -1,4 +1,4 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, effect } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet-routing-machine';
 import 'leaflet/dist/leaflet.css';
@@ -14,6 +14,9 @@ export class RoutingStateService {
   // Signal to store the route geometry (for displaying on the map)
   private routeGeometrySignal = signal<L.LatLng[] | null>(null);
 
+  // Signal to store the map instance
+  private mapSignal = signal<L.Map | null>(null);
+
   // Computed signal to get the distance in kilometers
   public distanceInKm = computed(() => {
     const distance = this.distanceSignal();
@@ -23,16 +26,26 @@ export class RoutingStateService {
   // Computed signal to get the route geometry
   public routeGeometry = computed(() => this.routeGeometrySignal());
 
-  private map: L.Map | undefined;
-
-  constructor() {}
+  constructor() {
+    // React to changes in routeGeometrySignal and add the route to the map
+    effect(
+      () => {
+        const map = this.mapSignal();
+        const routeGeometry = this.routeGeometrySignal();
+        if (map && routeGeometry) {
+          L.polyline(routeGeometry).addTo(map);
+        }
+      },
+      { allowSignalWrites: true }
+    );
+  }
 
   /**
    * Sets the map instance to be used by the routing service.
    * @param map The Leaflet map instance.
    */
   setMap(map: L.Map): void {
-    this.map = map;
+    this.mapSignal.set(map);
   }
 
   /**
@@ -50,7 +63,8 @@ export class RoutingStateService {
     endLng: number,
     mode: TransportationMode
   ): void {
-    if (!this.map) {
+    const map = this.mapSignal();
+    if (!map) {
       throw new Error('Map instance is not set.');
     }
 
@@ -93,17 +107,6 @@ export class RoutingStateService {
     });
 
     routingControl.route();
-  }
-
-  /**
-   * Adds the calculated route to the map.
-   * @param map The Leaflet map instance.
-   */
-  addRouteToMap(map: L.Map): void {
-    const routeGeometry = this.routeGeometrySignal();
-    if (routeGeometry) {
-      L.polyline(routeGeometry).addTo(map);
-    }
   }
 
   /**

@@ -4,7 +4,7 @@ import { catchError, of, switchMap } from 'rxjs';
 
 // Interface for the tags (key-value pairs) associated with an OSM element
 export interface OSMTags {
-  [key: string]: string; // Dynamic key-value pairs (e.g., "amenity": "cafe")
+  [key: string]: string | number; // Dynamic key-value pairs (e.g., "amenity": "cafe")
 }
 
 // Interface for a single OSM element (node, way, or relation)

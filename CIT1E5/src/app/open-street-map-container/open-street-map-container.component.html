@@ -27,6 +27,8 @@
             <h5 class="card-title">{{ place.tags["name"] }}</h5>
             <p class="card-text">
               <strong>Amenity:</strong> {{ place.tags["amenity"] }}<br />
+              <strong>Distance from Address:</strong>
+              {{ place.tags["distanceFromAddress"] }} meters<br />
               <strong>Latitude:</strong> {{ place.lat }}<br />
               <strong>Longitude:</strong> {{ place.lon }}
             </p>
@@ -57,7 +59,7 @@
       searchResults() && searchResults()!.length ? searchResults()![0].lon : 0
     "
     [radius]="radius"
-    (mapCenterUpdated)="mapCenterUpdated($event.lat, $event.lon)"
+    (mapCenterUpdated)="mapCenterUpdated($event)"
     (mapInitialized)="mapInitialized($event)"
   ></open-street-map>
 </div>
