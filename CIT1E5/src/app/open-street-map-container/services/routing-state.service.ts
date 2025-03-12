@@ -2,7 +2,7 @@ import { Injectable, signal, computed, effect } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet-routing-machine';
 import 'leaflet/dist/leaflet.css';
-import { TransportationMode } from '../transportation-mode/transportation-mode.component';
+import { TransportationMode } from '../search-form/search-preferences/search-preferences.component';
 
 @Injectable({
   providedIn: 'root',

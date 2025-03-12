@@ -1,7 +1,6 @@
 import { Injectable, signal, effect } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, catchError, of, switchMap } from 'rxjs';
-import { TransportationMode } from '../transportation-mode/transportation-mode.component';
 
 // Define the structure of the Nominatim response
 export interface NominatimResponse {

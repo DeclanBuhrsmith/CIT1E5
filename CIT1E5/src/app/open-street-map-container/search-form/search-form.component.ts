@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { SearchStateService } from '../services/search-state.service';
+import { TransportationMode } from './search-preferences/search-preferences.component';
 
 @Component({
   selector: 'search-form',
@@ -7,6 +8,9 @@ import { SearchStateService } from '../services/search-state.service';
   styleUrls: ['./search-form.component.scss'],
 })
 export class SearchFormComponent {
+  @Output() setSelectedTransportationMode = new EventEmitter<{
+    currentTransportationMode: TransportationMode;
+  }>();
   address: string = '';
 
   constructor(private searchStateService: SearchStateService) {}
@@ -18,5 +22,11 @@ export class SearchFormComponent {
 
     // Update the search state using signals
     this.searchStateService.setSearchData(this.address);
+  }
+
+  transportationModeUpdated(transportationMode: TransportationMode) {
+    this.setSelectedTransportationMode.emit({
+      currentTransportationMode: transportationMode,
+    });
   }
 }

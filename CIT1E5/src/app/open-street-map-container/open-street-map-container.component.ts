@@ -1,9 +1,9 @@
 import { Component, effect } from '@angular/core';
 import { SearchStateService } from './services/search-state.service';
 import { OSMElement, OverpassService } from './services/overpass-state.service';
-import { TransportationMode } from './transportation-mode/transportation-mode.component';
 import { RoutingStateService } from './services/routing-state.service';
 import { LatLng } from 'leaflet';
+import { TransportationMode } from './search-form/search-preferences/search-preferences.component';
 
 @Component({
   selector: 'open-street-map-container',
@@ -37,6 +37,7 @@ export class OpenStreetMapContainerComponent {
 
   // Method to fetch places nearby using the Overpass API
   fetchPlacesNearby(mapCenter: LatLng): void {
+    // if (this.searchResults() && this.searchResults()!.length)
     this.overpassService.setOverpassParams(
       mapCenter.lat,
       mapCenter.lng,
@@ -47,12 +48,10 @@ export class OpenStreetMapContainerComponent {
   // Method to handle the search event and call fetchPlacesNearby with the updated coordinates
   mapCenterUpdated(mapCenter: LatLng): void {
     this.mapCenter = mapCenter;
-    this.fetchPlacesNearby(this.mapCenter);
   }
 
   mapInitialized(map: L.Map) {
     this.map = map;
-    // this.routingService.setMap(this.map);
   }
 
   transportationModeUpdated(transportationMode: TransportationMode) {

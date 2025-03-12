@@ -8,11 +8,11 @@ export enum TransportationMode {
 }
 
 @Component({
-  selector: 'transportation-mode',
-  templateUrl: './transportation-mode.component.html',
-  styleUrls: ['./transportation-mode.component.scss'],
+  selector: 'search-preferences',
+  templateUrl: './search-preferences.component.html',
+  styleUrls: ['./search-preferences.component.scss'],
 })
-export class TransportationModeComponent {
+export class SearchPreferencesComponent {
   currentTransportationMode: string = '';
   transportationModes: TransportationMode[] = [
     TransportationMode.Walk,

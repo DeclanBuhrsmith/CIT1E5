@@ -7,7 +7,7 @@ import { AppComponent } from './app.component';
 import { OpenStreetMapContainerComponent } from './open-street-map-container/open-street-map-container.component';
 import { SearchFormComponent } from './open-street-map-container/search-form/search-form.component';
 import { OpenStreetMapComponent } from './open-street-map-container/open-street-map/open-street-map.component';
-import { TransportationModeComponent } from './open-street-map-container/transportation-mode/transportation-mode.component';
+import { SearchPreferencesComponent } from './open-street-map-container/search-form/search-preferences/search-preferences.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +15,7 @@ import { TransportationModeComponent } from './open-street-map-container/transpo
     OpenStreetMapContainerComponent,
     SearchFormComponent,
     OpenStreetMapComponent,
-    TransportationModeComponent,
+    SearchPreferencesComponent,
   ],
   imports: [
     BrowserModule,

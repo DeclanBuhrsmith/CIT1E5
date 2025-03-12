@@ -99,7 +99,7 @@ export class OpenStreetMapComponent {
 
   private initMap(): void {
     // Set the initial map center and zoom level
-    const initialCenter: L.LatLngExpression = [44, -93];
+    const initialCenter: L.LatLngExpression = [44.9778, -93.265];
     const initialZoom: number = 15;
 
     // Initialize the map
