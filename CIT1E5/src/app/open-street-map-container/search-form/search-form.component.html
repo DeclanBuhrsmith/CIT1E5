@@ -11,7 +11,8 @@
       required
     />
   </div>
-  <div class="container mt-4 p-4 border rounded">
+  <label for="address" class="form-label">Search Preferences</label>
+  <div class="container p-4 border rounded">
     <search-preferences
       (setSelectedTransportationMode)="
         transportationModeUpdated($event.currentTransportationMode)
