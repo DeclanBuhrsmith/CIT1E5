@@ -8,6 +8,7 @@ import {
 import * as L from 'leaflet';
 import { LatLngExpression, Marker, Circle } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import { OSMElement } from '../services/overpass-state.service';
 
 @Component({
   selector: 'open-street-map',
@@ -18,6 +19,7 @@ export class OpenStreetMapComponent {
   @Input() latitude: number = 0;
   @Input() longitude: number = 0;
   @Input() radius: number = 0;
+  @Input() nearByPlaces: OSMElement[] = [];
   @Output() mapCenterUpdated = new EventEmitter<L.LatLng>();
   @Output() mapInitialized = new EventEmitter<L.Map>();
 
@@ -37,6 +39,9 @@ export class OpenStreetMapComponent {
     }
     if (changes['radius']) {
       this.updateRadiusCircle(this.latitude, this.longitude, this.radius);
+    }
+    if (changes['nearByPlaces']) {
+      this.updatePlaceMarkers(this.nearByPlaces);
     }
   }
 
@@ -58,6 +63,38 @@ export class OpenStreetMapComponent {
       const center: LatLngExpression = [lat, lng];
       this.radiusCircle = L.circle(center, { radius }).addTo(this.map);
     }
+  }
+
+  updatePlaceMarkers(places: OSMElement[]): Marker[] {
+    const markers: Marker[] = [];
+    if (this.map) {
+      // Clear existing markers
+      this.map.eachLayer((layer) => {
+        if (layer instanceof L.Marker && layer !== this.mapCenterMarker) {
+          this.map?.removeLayer(layer);
+        }
+      });
+
+      // Add new markers
+      places.forEach((place) => {
+        if (place.lat && place.lon) {
+          if (this.map) {
+            const placeMarker: LatLngExpression = [place.lat, place.lon];
+            const marker = L.marker(placeMarker).addTo(this.map);
+
+            // Add popup to marker
+            const placeName = place.tags?.['name'] || 'Unknown';
+            const distance = place.tags?.['distanceFromAddress'] || 'Unknown';
+            marker.bindPopup(
+              `<b>${placeName}</b><br>Distance: ${distance} meters`
+            );
+
+            markers.push(marker);
+          }
+        }
+      });
+    }
+    return markers;
   }
 
   private initMap(): void {

@@ -59,6 +59,7 @@
       searchResults() && searchResults()!.length ? searchResults()![0].lon : 0
     "
     [radius]="radius"
+    [nearByPlaces]="places"
     (mapCenterUpdated)="mapCenterUpdated($event)"
     (mapInitialized)="mapInitialized($event)"
   ></open-street-map>
