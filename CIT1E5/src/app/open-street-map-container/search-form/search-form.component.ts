@@ -17,6 +17,7 @@ export class SearchFormComponent {
   @Output() setSelectedAmenities = new EventEmitter<{
     currentSelectedAmenities: AmenityType[];
   }>();
+  @Output() onFetchPlaces = new EventEmitter<{}>();
   address: string = '';
 
   constructor(private searchStateService: SearchStateService) {}
@@ -30,13 +31,13 @@ export class SearchFormComponent {
     this.searchStateService.setSearchData(this.address);
   }
 
-  transportationModeUpdated(transportationMode: TransportationMode) {
+  onTransportationModeUpdated(transportationMode: TransportationMode) {
     this.setSelectedTransportationMode.emit({
       currentTransportationMode: transportationMode,
     });
   }
 
-  amenitiesUpdated(amenities: AmenityType[]) {
+  onAmenitiesUpdated(amenities: AmenityType[]) {
     this.setSelectedAmenities.emit({
       currentSelectedAmenities: amenities as AmenityType[],
     });

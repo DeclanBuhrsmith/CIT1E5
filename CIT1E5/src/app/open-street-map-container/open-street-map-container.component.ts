@@ -50,16 +50,20 @@ export class OpenStreetMapContainerComponent {
     );
   }
 
+  onFetchPlaces() {
+    this.fetchPlacesNearby(this.mapCenter, this.currentAmenities);
+  }
+
   // Method to handle the search event and call fetchPlacesNearby with the updated coordinates
-  mapCenterUpdated(mapCenter: LatLng): void {
+  onMapCenterUpdated(mapCenter: LatLng): void {
     this.mapCenter = mapCenter;
   }
 
-  mapInitialized(map: L.Map) {
+  onMapInitialized(map: L.Map) {
     this.map = map;
   }
 
-  transportationModeUpdated(transportationMode: TransportationMode) {
+  onTransportationModeUpdated(transportationMode: TransportationMode) {
     this.currentTransportationMode = transportationMode;
     switch (this.currentTransportationMode) {
       case TransportationMode.Walk:
@@ -79,7 +83,7 @@ export class OpenStreetMapContainerComponent {
     // }
   }
 
-  amenitiesUpdated(amenities: AmenityType[]) {
+  onAmenitiesUpdated(amenities: AmenityType[]) {
     this.currentAmenities = amenities;
   }
 

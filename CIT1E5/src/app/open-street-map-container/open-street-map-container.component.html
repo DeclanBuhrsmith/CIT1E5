@@ -4,8 +4,12 @@
       <h1 class="mb-4">CIT1E5</h1>
       <search-form
         (setSelectedTransportationMode)="
-          transportationModeUpdated($event.currentTransportationMode)
+          onTransportationModeUpdated($event.currentTransportationMode)
         "
+        (setSelectedAmenities)="
+          onAmenitiesUpdated($event.currentSelectedAmenities)
+        "
+        (onFetchPlaces)="onFetchPlaces()"
       ></search-form>
     </div>
     <div class="col-md-6">
@@ -22,8 +26,8 @@
         "
         [radius]="radius"
         [nearByPlaces]="places"
-        (mapCenterUpdated)="mapCenterUpdated($event)"
-        (mapInitialized)="mapInitialized($event)"
+        (onMapCenterUpdated)="onMapCenterUpdated($event)"
+        (onMapInitialized)="onMapInitialized($event)"
       ></open-street-map>
     </div>
   </div>

@@ -32,6 +32,11 @@ export interface OverpassResponse {
   elements: OSMElement[]; // List of OSM elements
 }
 
+interface AmenityTypeWithSubtypes {
+  amenity: string;
+  types: string[];
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -44,9 +49,171 @@ export class OverpassService {
     lat: number;
     lng: number;
     radius: number;
+    amenities: AmenityType[];
   } | null>(null);
   private placesNearby = signal<OSMElement[] | null>(null);
   private errorMessage = signal<string | null>(null);
+
+  private amenityTypeMap: { [key in AmenityType]: string[] } = {
+    [AmenityType.Other]: [
+      'animal_boarding',
+      'animal_breeding',
+      'animal_shelter',
+      'baking_oven',
+      'childcare',
+      'crematorium',
+      'dive_centre',
+      'funeral_hall',
+      'grave_yard',
+      'grit_bin',
+      'hunting_stand',
+      'internet_cafe',
+      'kitchen',
+      'kneipp_water_cure',
+      'lounger',
+      'marketplace',
+      'monastery',
+      'photo_booth',
+      'place_of_mourning',
+      'public_bath',
+      'public_building',
+      'refugee_site',
+      'vending_machine',
+      'waste_transfer_station',
+      'watering_place',
+      'water_point',
+    ],
+    [AmenityType.Education]: [
+      'college',
+      'kindergarten',
+      'language_school',
+      'library',
+      'music_school',
+      'school',
+      'university',
+      'research_institute',
+    ],
+    [AmenityType.Healthcare]: [
+      'clinic',
+      'dentist',
+      'doctors',
+      'hospital',
+      'nursing_home',
+      'pharmacy',
+      'social_facility',
+      'veterinary',
+    ],
+    [AmenityType.Transportation]: [
+      'bicycle_parking',
+      'bicycle_repair_station',
+      'bicycle_rental',
+      'boat_sharing',
+      'bus_station',
+      'car_rental',
+      'car_sharing',
+      'car_wash',
+      'charging_station',
+      'ferry_terminal',
+      'fuel',
+      'grit_bin',
+      'motorcycle_parking',
+      'parking',
+      'parking_entrance',
+      'parking_space',
+      'taxi',
+    ],
+    [AmenityType.FoodAndDrink]: [
+      'bar',
+      'bbq',
+      'biergarten',
+      'cafe',
+      'drinking_water',
+      'fast_food',
+      'food_court',
+      'ice_cream',
+      'pub',
+      'restaurant',
+    ],
+    [AmenityType.Shopping]: [
+      'marketplace',
+      'supermarket',
+      'convenience',
+      'mall',
+      'bakery',
+      'butcher',
+      'greengrocer',
+    ],
+    [AmenityType.RecreationAndLeisure]: [
+      'arts_centre',
+      'brothel',
+      'casino',
+      'cinema',
+      'community_centre',
+      'conference_centre',
+      'events_venue',
+      'fountain',
+      'gambling',
+      'love_hotel',
+      'nightclub',
+      'planetarium',
+      'public_bookcase',
+      'social_centre',
+      'stripclub',
+      'studio',
+      'swingerclub',
+      'theatre',
+    ],
+    [AmenityType.PublicServices]: [
+      'courthouse',
+      'embassy',
+      'fire_station',
+      'police',
+      'post_box',
+      'post_depot',
+      'post_office',
+      'prison',
+      'ranger_station',
+      'townhall',
+    ],
+    [AmenityType.Religious]: [
+      'church',
+      'mosque',
+      'monastery',
+      'place_of_worship',
+      'shrine',
+      'temple',
+    ],
+    [AmenityType.Accommodation]: [
+      'apartment',
+      'camp_site',
+      'caravan_site',
+      'chalet',
+      'guest_house',
+      'hostel',
+      'hotel',
+      'motel',
+    ],
+    [AmenityType.FinancialServices]: ['atm', 'bank', 'bureau_de_change'],
+    [AmenityType.Utilities]: [
+      'bench',
+      'clock',
+      'compressed_air',
+      'dumpster',
+      'emergency_phone',
+      'fire_hydrant',
+      'hunting_stand',
+      'parcel_locker',
+      'post_box',
+      'recycling',
+      'shelter',
+      'shower',
+      'telephone',
+      'toilets',
+      'waste_basket',
+      'waste_disposal',
+      'watering_place',
+    ],
+  };
 
   // Expose signals as read-only
   searchData$ = this.searchData.asReadonly();
@@ -62,7 +229,8 @@ export class OverpassService {
           this.fetchPlacesNearby(
             searchData.lat,
             searchData.lng,
-            searchData.radius
+            searchData.radius,
+            searchData.amenities
           ).subscribe({
             next: (response) =>
               this.placesNearby.set(response ? response.elements : []),
@@ -87,15 +255,20 @@ export class OverpassService {
     radius: number,
     amenities: AmenityType[]
   ): void {
-    this.searchData.set({ lat, lng, radius });
+    this.searchData.set({ lat, lng, radius, amenities });
   }
 
   // Method to call the Overpass API
-  private fetchPlacesNearby(lat: number, lng: number, radius: number) {
+  private fetchPlacesNearby(
+    lat: number,
+    lng: number,
+    radius: number,
+    amenities: AmenityType[]
+  ) {
     // Define the Overpass QL query
     const query = `
       [out:json][timeout:25];
-      node["${this.setQuery(amenities)}"](around:${radius}, ${lat}, ${lng});
+      node[${this.setQuery(amenities)}](around:${radius}, ${lat}, ${lng});
       out body;
       >;
       out skel qt;
@@ -115,10 +288,21 @@ export class OverpassService {
       );
   }
 
-  private setQuery(amenities: AmenityType): string {
+  private setQuery(amenities: AmenityType[]): string {
+    let query = '"amenity"';
     if (amenities.length === Object.keys(AmenityType).length) {
-      return 'amenity';
+      return query;
     } else {
+      let subTypes = '';
+      amenities.forEach((amenity: AmenityType) => {
+        subTypes += this.setAmenitySubTypes(amenity);
+      });
+      query += `~"${subTypes}"`;
+      return query;
     }
+  }
+
+  private setAmenitySubTypes(amenity: AmenityType): string {
+    return this.amenityTypeMap[amenity]?.join('|') || '';
   }
 }

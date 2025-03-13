@@ -20,8 +20,8 @@ export class OpenStreetMapComponent {
   @Input() longitude: number = 0;
   @Input() radius: number = 0;
   @Input() nearByPlaces: OSMElement[] = [];
-  @Output() mapCenterUpdated = new EventEmitter<L.LatLng>();
-  @Output() mapInitialized = new EventEmitter<L.Map>();
+  @Output() onMapCenterUpdated = new EventEmitter<L.LatLng>();
+  @Output() onMapInitialized = new EventEmitter<L.Map>();
 
   private map: L.Map | undefined;
   private mapCenterMarker: Marker | undefined;
@@ -52,8 +52,8 @@ export class OpenStreetMapComponent {
       this.map.panTo(center);
       // Add a marker
       this.mapCenterMarker = L.marker(center).addTo(this.map);
-      // Emit the mapCenterUpdated event
-      this.mapCenterUpdated.emit(this.map.getCenter());
+      // Emit the onMapCenterUpdated event
+      this.onMapCenterUpdated.emit(this.map.getCenter());
     }
   }
 
@@ -112,7 +112,7 @@ export class OpenStreetMapComponent {
 
     this.mapCenterMarker = L.marker(initialCenter).addTo(this.map);
 
-    // Emit the mapInitialized event
-    this.mapInitialized.emit(this.map);
+    // Emit the onMapInitialized event
+    this.onMapInitialized.emit(this.map);
   }
 }

@@ -18,11 +18,18 @@
     <label for="address" class="form-label">Search Preferences</label>
     <search-preferences
       (setSelectedTransportationMode)="
-        transportationModeUpdated($event.currentTransportationMode)
+        onTransportationModeUpdated($event.currentTransportationMode)
       "
-      (setSelectedAmenities)="amenitiesUpdated($event.currentSelectedAmenities)"
+      (setSelectedAmenities)="
+        onAmenitiesUpdated($event.currentSelectedAmenities)
+      "
     ></search-preferences>
-    <button type="submit" class="btn btn-primary" [disabled]="!address">
+    <button
+      type="submit"
+      class="btn btn-primary"
+      (click)="onFetchPlaces.emit()"
+      [disabled]="!address"
+    >
       Update Query
     </button>
   </div>
