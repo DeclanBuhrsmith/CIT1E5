@@ -3,7 +3,10 @@ import { SearchStateService } from './services/search-state.service';
 import { OSMElement, OverpassService } from './services/overpass-state.service';
 import { RoutingStateService } from './services/routing-state.service';
 import { LatLng } from 'leaflet';
-import { TransportationMode } from './search-form/search-preferences/search-preferences.component';
+import {
+  AmenityType,
+  TransportationMode,
+} from './search-form/search-preferences/search-preferences.component';
 
 @Component({
   selector: 'open-street-map-container',
@@ -22,6 +25,7 @@ export class OpenStreetMapContainerComponent {
   radius: number = 0;
   map: L.Map | undefined;
   mapCenter: LatLng = new LatLng(0, 0);
+  currentAmenities: AmenityType[] = [];
 
   constructor(
     private searchStateService: SearchStateService,
@@ -36,12 +40,13 @@ export class OpenStreetMapContainerComponent {
   }
 
   // Method to fetch places nearby using the Overpass API
-  fetchPlacesNearby(mapCenter: LatLng): void {
+  fetchPlacesNearby(mapCenter: LatLng, amenities: AmenityType[]): void {
     // if (this.searchResults() && this.searchResults()!.length)
     this.overpassService.setOverpassParams(
       mapCenter.lat,
       mapCenter.lng,
-      this.radius
+      this.radius,
+      amenities
     );
   }
 
@@ -68,10 +73,14 @@ export class OpenStreetMapContainerComponent {
         this.radius = 5000;
         break;
     }
-    // When transportation mode is changed the radius is changed so the nearby results need to be updated
-    if (this.mapCenter && this.map) {
-      this.fetchPlacesNearby(this.map.getCenter());
-    }
+    // // When transportation mode is changed the radius is changed so the nearby results need to be updated
+    // if (this.mapCenter && this.map) {
+    //   this.fetchPlacesNearby(this.map.getCenter());
+    // }
+  }
+
+  amenitiesUpdated(amenities: AmenityType[]) {
+    this.currentAmenities = amenities;
   }
 
   private formatPlaces(places: OSMElement[]) {

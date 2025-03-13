@@ -1,6 +1,7 @@
 import { Injectable, signal, effect } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, of, switchMap } from 'rxjs';
+import { AmenityType } from '../search-form/search-preferences/search-preferences.component';
 
 // Interface for the tags (key-value pairs) associated with an OSM element
 export interface OSMTags {
@@ -80,7 +81,12 @@ export class OverpassService {
     );
   }
 
-  setOverpassParams(lat: number, lng: number, radius: number): void {
+  setOverpassParams(
+    lat: number,
+    lng: number,
+    radius: number,
+    amenities: AmenityType[]
+  ): void {
     this.searchData.set({ lat, lng, radius });
   }
 
@@ -89,7 +95,7 @@ export class OverpassService {
     // Define the Overpass QL query
     const query = `
       [out:json][timeout:25];
-      node["amenity"](around:${radius}, ${lat}, ${lng});
+      node["${this.setQuery(amenities)}"](around:${radius}, ${lat}, ${lng});
       out body;
       >;
       out skel qt;
@@ -107,5 +113,12 @@ export class OverpassService {
           return of(null);
         })
       );
+  }
+
+  private setQuery(amenities: AmenityType): string {
+    if (amenities.length === Object.keys(AmenityType).length) {
+      return 'amenity';
+    } else {
+    }
   }
 }

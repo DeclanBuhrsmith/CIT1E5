@@ -1,5 +1,5 @@
 <form (ngSubmit)="onSearch()" class="mt-4 p-4 border rounded">
-  <div class="mb-3">
+  <div class="container p-4 border rounded">
     <label for="address" class="form-label">Address</label>
     <input
       id="address"
@@ -10,16 +10,20 @@
       placeholder="Enter an address"
       required
     />
+    <button type="submit" class="btn btn-primary" [disabled]="!address">
+      Search
+    </button>
   </div>
-  <label for="address" class="form-label">Search Preferences</label>
   <div class="container p-4 border rounded">
+    <label for="address" class="form-label">Search Preferences</label>
     <search-preferences
       (setSelectedTransportationMode)="
         transportationModeUpdated($event.currentTransportationMode)
       "
+      (setSelectedAmenities)="amenitiesUpdated($event.currentSelectedAmenities)"
     ></search-preferences>
+    <button type="submit" class="btn btn-primary" [disabled]="!address">
+      Update Query
+    </button>
   </div>
-  <button type="submit" class="btn btn-primary" [disabled]="!address">
-    Search
-  </button>
 </form>

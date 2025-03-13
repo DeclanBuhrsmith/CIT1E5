@@ -7,13 +7,42 @@
         id="{{ mode }}"
         name="transportationMode"
         class="form-check-input"
+        data-bs-toggle="tooltip"
+        data-bs-placement="top"
+        data-bs-title="Tooltip on top"
         [(ngModel)]="currentTransportationMode"
         [value]="mode"
         (change)="onModeChange()"
         required
       />
       <label for="{{ mode }}" class="form-check-label">
-        <i class="bi bi-walk"></i> {{ mode }}
+        <i
+          [ngClass]="{
+            'bi bi-person-walking': mode === 'Walk',
+            'bi bi-bicycle': mode === 'Bike',
+            'bi bi-bus-front': mode === 'Transit',
+            'bi bi-car-front': mode === 'Drive'
+          }"
+        ></i>
+      </label>
+    </div>
+  </div>
+  <label class="form-label">Desired Amenities:</label>
+
+  <div class="amenitiy-checkboxes">
+    <div *ngFor="let amenity of amenities" class="form-check">
+      <input
+        type="checkbox"
+        id="{{ amenity }}"
+        name="amenities"
+        class="form-check-input"
+        [value]="amenity"
+        [checked]="true"
+        (change)="onAmenityChange(amenity, $event)"
+        required
+      />
+      <label for="{{ amenity }}" class="form-check-label">
+        <i class="bi bi-walk"></i> {{ amenity }}
       </label>
     </div>
   </div>

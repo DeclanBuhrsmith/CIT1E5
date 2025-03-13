@@ -1,6 +1,9 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { SearchStateService } from '../services/search-state.service';
-import { TransportationMode } from './search-preferences/search-preferences.component';
+import {
+  AmenityType,
+  TransportationMode,
+} from './search-preferences/search-preferences.component';
 
 @Component({
   selector: 'search-form',
@@ -10,6 +13,9 @@ import { TransportationMode } from './search-preferences/search-preferences.comp
 export class SearchFormComponent {
   @Output() setSelectedTransportationMode = new EventEmitter<{
     currentTransportationMode: TransportationMode;
+  }>();
+  @Output() setSelectedAmenities = new EventEmitter<{
+    currentSelectedAmenities: AmenityType[];
   }>();
   address: string = '';
 
@@ -27,6 +33,12 @@ export class SearchFormComponent {
   transportationModeUpdated(transportationMode: TransportationMode) {
     this.setSelectedTransportationMode.emit({
       currentTransportationMode: transportationMode,
+    });
+  }
+
+  amenitiesUpdated(amenities: AmenityType[]) {
+    this.setSelectedAmenities.emit({
+      currentSelectedAmenities: amenities as AmenityType[],
     });
   }
 }
