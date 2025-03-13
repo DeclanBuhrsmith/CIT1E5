@@ -1,6 +1,6 @@
-<div class="container mt-5">
+<div class="container-fluid mt-5">
   <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-4">
       <h1 class="mb-4">CIT1E5</h1>
       <search-form
         (setSelectedTransportationMode)="
@@ -13,26 +13,24 @@
       ></search-form>
     </div>
     <div class="col-md-6">
-      <open-street-map
-        [latitude]="
-          searchResults() && searchResults()!.length
-            ? searchResults()![0].lat
-            : 0
-        "
-        [longitude]="
-          searchResults() && searchResults()!.length
-            ? searchResults()![0].lon
-            : 0
-        "
-        [radius]="radius"
-        [nearByPlaces]="places"
-        (onMapCenterUpdated)="onMapCenterUpdated($event)"
-        (onMapInitialized)="onMapInitialized($event)"
-      ></open-street-map>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-6">
+      <div class="p-4 border rounded">
+        <open-street-map
+          [latitude]="
+            searchResults() && searchResults()!.length
+              ? searchResults()![0].lat
+              : 0
+          "
+          [longitude]="
+            searchResults() && searchResults()!.length
+              ? searchResults()![0].lon
+              : 0
+          "
+          [radius]="radius"
+          [nearByPlaces]="places"
+          (onMapCenterUpdated)="onMapCenterUpdated($event)"
+          (onMapInitialized)="onMapInitialized($event)"
+        ></open-street-map>
+      </div>
       <div *ngIf="searchResults()" class="mt-4">
         <h2>Searched Address</h2>
         <div *ngFor="let result of searchResults()" class="card mb-3">
@@ -48,6 +46,15 @@
       <div *ngIf="errorMessage()" class="alert alert-danger mt-3">
         {{ errorMessage() }}
       </div>
+      <score
+        *ngIf="places.length > 0"
+        [nearbyPlaces]="places"
+        [selectedAmenities]="currentAmenities"
+      ></score>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
       <div *ngIf="places && places.length" class="mt-4">
         <h2>Places Nearby</h2>
         <div *ngFor="let place of places" class="card mb-3">

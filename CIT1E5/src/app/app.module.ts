@@ -8,6 +8,7 @@ import { OpenStreetMapContainerComponent } from './open-street-map-container/ope
 import { SearchFormComponent } from './open-street-map-container/search-form/search-form.component';
 import { OpenStreetMapComponent } from './open-street-map-container/open-street-map/open-street-map.component';
 import { SearchPreferencesComponent } from './open-street-map-container/search-form/search-preferences/search-preferences.component';
+import { ScoreComponent } from './open-street-map-container/score/score.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { SearchPreferencesComponent } from './open-street-map-container/search-f
     BrowserModule,
     FormsModule,
     HttpClientModule,
-    RouterModule, // Add RouterModule to imports
+    RouterModule,
+    ScoreComponent,
   ],
   providers: [],
   bootstrap: [AppComponent],

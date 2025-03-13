@@ -45,7 +45,6 @@ export class SearchPreferencesComponent {
     AmenityType.PublicServices,
     AmenityType.Religious,
     AmenityType.Accommodation,
-    AmenityType.Accommodation,
     AmenityType.FinancialServices,
     AmenityType.Utilities,
     AmenityType.Other,
@@ -60,7 +59,6 @@ export class SearchPreferencesComponent {
     AmenityType.PublicServices,
     AmenityType.Religious,
     AmenityType.Accommodation,
-    AmenityType.Accommodation,
     AmenityType.FinancialServices,
     AmenityType.Utilities,
     AmenityType.Other,
@@ -72,6 +70,13 @@ export class SearchPreferencesComponent {
   @Output() setSelectedAmenities = new EventEmitter<{
     currentSelectedAmenities: AmenityType[];
   }>();
+
+  ngOnInit(): void {
+    // Sets the currentSelectedAmenities to be completed selected by default
+    this.setSelectedAmenities.emit({
+      currentSelectedAmenities: this.selectedAmenities as AmenityType[],
+    });
+  }
 
   onModeChange(): void {
     this.setSelectedTransportationMode.emit({
