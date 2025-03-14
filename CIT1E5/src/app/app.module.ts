@@ -9,6 +9,7 @@ import { SearchFormComponent } from './open-street-map-container/search-form/sea
 import { OpenStreetMapComponent } from './open-street-map-container/open-street-map/open-street-map.component';
 import { SearchPreferencesComponent } from './open-street-map-container/search-form/search-preferences/search-preferences.component';
 import { ScoreComponent } from './open-street-map-container/score/score.component';
+import { SearchResultsComponent } from './open-street-map-container/search-results/search-results.component';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { ScoreComponent } from './open-street-map-container/score/score.componen
     SearchFormComponent,
     OpenStreetMapComponent,
     SearchPreferencesComponent,
+    SearchResultsComponent,
   ],
   imports: [
     BrowserModule,

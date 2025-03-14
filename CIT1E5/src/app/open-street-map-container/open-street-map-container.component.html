@@ -13,6 +13,21 @@
       ></search-form>
     </div>
     <div class="col-md-6">
+      <search-results
+        [places]="places"
+        [searchResults]="searchResults()"
+        [errorMessage]="errorMessage()"
+        [overpassError]="overpassError()"
+      ></search-results>
+      <score
+        *ngIf="places.length > 0"
+        [nearbyPlaces]="places"
+        [selectedAmenities]="currentAmenities"
+      ></score>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12 mt-4">
       <div class="p-4 border rounded">
         <open-street-map
           [latitude]="
@@ -30,48 +45,6 @@
           (onMapCenterUpdated)="onMapCenterUpdated($event)"
           (onMapInitialized)="onMapInitialized($event)"
         ></open-street-map>
-      </div>
-      <div *ngIf="searchResults()" class="mt-4">
-        <h2>Searched Address</h2>
-        <div *ngFor="let result of searchResults()" class="card mb-3">
-          <div class="card-body">
-            <h5 class="card-title">{{ result.display_name }}</h5>
-            <p class="card-text">
-              <strong>Latitude:</strong> {{ result.lat }}<br />
-              <strong>Longitude:</strong> {{ result.lon }}
-            </p>
-          </div>
-        </div>
-      </div>
-      <div *ngIf="errorMessage()" class="alert alert-danger mt-3">
-        {{ errorMessage() }}
-      </div>
-      <score
-        *ngIf="places.length > 0"
-        [nearbyPlaces]="places"
-        [selectedAmenities]="currentAmenities"
-      ></score>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-6">
-      <div *ngIf="places && places.length" class="mt-4">
-        <h2>Places Nearby</h2>
-        <div *ngFor="let place of places" class="card mb-3">
-          <div *ngIf="place.tags" class="card-body">
-            <h5 class="card-title">{{ place.tags["name"] }}</h5>
-            <p class="card-text">
-              <strong>Amenity:</strong> {{ place.tags["amenity"] }}<br />
-              <strong>Distance from Address:</strong>
-              {{ place.tags["distanceFromAddress"] }} meters<br />
-              <strong>Latitude:</strong> {{ place.lat }}<br />
-              <strong>Longitude:</strong> {{ place.lon }}
-            </p>
-          </div>
-        </div>
-      </div>
-      <div *ngIf="overpassError()" class="alert alert-danger mt-3">
-        {{ overpassError() }}
       </div>
     </div>
   </div>
