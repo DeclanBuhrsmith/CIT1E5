@@ -54,7 +54,7 @@ export class OverpassService {
   private placesNearby = signal<OSMElement[] | null>(null);
   private errorMessage = signal<string | null>(null);
 
-  private amenityTypeMap: { [key in AmenityType]: string[] } = {
+  public amenityTypeMap: { [key in AmenityType]: string[] } = {
     [AmenityType.Other]: [
       'animal_boarding',
       'animal_breeding',

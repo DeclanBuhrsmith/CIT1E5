@@ -1,7 +1,7 @@
-<div class="container-fluid mt-5">
+<div class="container-fluid mt-4">
   <div class="row">
     <div class="col-md-4">
-      <h1 class="mb-4">CIT1E5</h1>
+      <h1 class="">CIT1E5</h1>
       <search-form
         (setSelectedTransportationMode)="
           onTransportationModeUpdated($event.currentTransportationMode)
@@ -12,22 +12,7 @@
         (onFetchPlaces)="onFetchPlaces()"
       ></search-form>
     </div>
-    <div class="col-md-6">
-      <search-results
-        [places]="places"
-        [searchResults]="searchResults()"
-        [errorMessage]="errorMessage()"
-        [overpassError]="overpassError()"
-      ></search-results>
-      <score
-        *ngIf="places.length > 0"
-        [nearbyPlaces]="places"
-        [selectedAmenities]="currentAmenities"
-      ></score>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-12 mt-4">
+    <div class="col-md-8 mb-4">
       <div class="p-4 border rounded">
         <open-street-map
           [latitude]="
@@ -46,6 +31,21 @@
           (onMapInitialized)="onMapInitialized($event)"
         ></open-street-map>
       </div>
+    </div>
+    <div class="col-md-4">
+      <score
+        *ngIf="places.length > 0"
+        [nearbyPlaces]="places"
+        [selectedAmenities]="currentAmenities"
+      ></score>
+    </div>
+    <div class="col-md-8">
+      <search-results
+        [places]="places"
+        [searchResults]="searchResults()"
+        [errorMessage]="errorMessage()"
+        [overpassError]="overpassError()"
+      ></search-results>
     </div>
   </div>
 </div>
