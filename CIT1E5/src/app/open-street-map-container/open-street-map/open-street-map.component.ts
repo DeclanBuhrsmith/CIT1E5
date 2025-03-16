@@ -18,7 +18,8 @@ import { OSMElement } from '../services/overpass-state.service';
 export class OpenStreetMapComponent {
   @Input() latitude: number = 0;
   @Input() longitude: number = 0;
-  @Input() radius: number = 0;
+  @Input() radius: number = 1200;
+  @Input() showBoundaries: boolean = false;
   @Input() nearByPlaces: OSMElement[] = [];
   @Output() onMapCenterUpdated = new EventEmitter<L.LatLng>();
   @Output() onMapInitialized = new EventEmitter<L.Map>();
@@ -37,8 +38,13 @@ export class OpenStreetMapComponent {
     if (changes['latitude'] && changes['longitude']) {
       this.updateMapCenter(this.latitude, this.longitude);
     }
-    if (changes['radius']) {
-      this.updateRadiusCircle(this.latitude, this.longitude, this.radius);
+    if (changes['radius'] || changes['showBoundaries']) {
+      this.updateRadiusCircle(
+        this.latitude,
+        this.longitude,
+        this.radius,
+        this.showBoundaries
+      );
     }
     if (changes['nearByPlaces']) {
       this.updatePlaceMarkers(this.nearByPlaces);
@@ -57,11 +63,20 @@ export class OpenStreetMapComponent {
     }
   }
 
-  updateRadiusCircle(lat: number, lng: number, radius: number) {
+  updateRadiusCircle(
+    lat: number,
+    lng: number,
+    radius: number,
+    showBoundaries: boolean
+  ) {
     if (this.map) {
-      this.radiusCircle?.remove();
-      const center: LatLngExpression = [lat, lng];
-      this.radiusCircle = L.circle(center, { radius }).addTo(this.map);
+      if (showBoundaries) {
+        this.radiusCircle?.remove();
+        const center: LatLngExpression = [lat, lng];
+        this.radiusCircle = L.circle(center, { radius }).addTo(this.map);
+      } else {
+        this.radiusCircle?.removeFrom(this.map);
+      }
     }
   }
 
@@ -109,8 +124,6 @@ export class OpenStreetMapComponent {
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors',
     }).addTo(this.map);
-
-    this.mapCenterMarker = L.marker(initialCenter).addTo(this.map);
 
     // Emit the onMapInitialized event
     this.onMapInitialized.emit(this.map);

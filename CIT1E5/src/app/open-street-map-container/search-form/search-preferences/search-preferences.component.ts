@@ -28,13 +28,13 @@ export enum AmenityType {
   styleUrls: ['./search-preferences.component.scss'],
 })
 export class SearchPreferencesComponent {
-  currentTransportationMode: string = '';
   transportationModes: TransportationMode[] = [
     TransportationMode.Walk,
     TransportationMode.Bike,
     TransportationMode.Transit,
     TransportationMode.Drive,
   ];
+  currentTransportationMode: TransportationMode = this.transportationModes[0];
   selectedAmenities: AmenityType[] = [
     AmenityType.Education,
     AmenityType.Healthcare,

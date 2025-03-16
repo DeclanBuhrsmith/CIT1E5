@@ -18,9 +18,11 @@ export class SearchFormComponent {
     currentSelectedAmenities: AmenityType[];
   }>();
   @Output() onFetchPlaces = new EventEmitter<{}>();
+  @Output() toggleBoundaries = new EventEmitter<boolean>();
   address: string = '';
   currentTransportationMode: TransportationMode | undefined;
   currentSelectedAmenities: AmenityType[] | undefined;
+  showBoundaries: boolean = false;
 
   constructor(private searchStateService: SearchStateService) {}
 
@@ -45,5 +47,9 @@ export class SearchFormComponent {
     this.setSelectedAmenities.emit({
       currentSelectedAmenities: amenities as AmenityType[],
     });
+  }
+
+  onToggleBoundaries(): void {
+    this.toggleBoundaries.emit(this.showBoundaries);
   }
 }

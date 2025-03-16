@@ -9,13 +9,13 @@
         class="form-check-input"
         data-bs-toggle="tooltip"
         data-bs-placement="top"
-        data-bs-title="Tooltip on top"
+        title="{{ mode }}"
         [(ngModel)]="currentTransportationMode"
         [value]="mode"
         (change)="onModeChange()"
         required
       />
-      <label for="{{ mode }}" class="form-check-label">
+      <label for="{{ mode }}" class="form-check-label" title="{{ mode }}">
         <i
           [ngClass]="{
             'bi bi-person-walking': mode === 'Walk',

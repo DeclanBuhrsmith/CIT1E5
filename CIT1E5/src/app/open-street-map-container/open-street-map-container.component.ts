@@ -22,10 +22,11 @@ export class OpenStreetMapContainerComponent {
   // Vars
   currentTransportationMode: TransportationMode = TransportationMode.Walk;
   places: OSMElement[] = [];
-  radius: number = 0;
+  radius: number = 1200;
   map: L.Map | undefined;
   mapCenter: LatLng = new LatLng(0, 0);
   currentAmenities: AmenityType[] = [];
+  showBoundaries: boolean = false;
 
   constructor(
     private searchStateService: SearchStateService,
@@ -85,6 +86,10 @@ export class OpenStreetMapContainerComponent {
 
   onAmenitiesUpdated(amenities: AmenityType[]) {
     this.currentAmenities = amenities;
+  }
+
+  onToggleBoundaries(show: boolean): void {
+    this.showBoundaries = show;
   }
 
   private formatPlaces(places: OSMElement[]) {
