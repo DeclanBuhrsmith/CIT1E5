@@ -27,6 +27,29 @@
       </label>
     </div>
   </div>
+  <div
+    *ngIf="
+      currentTransportationMode === 'Walk' ||
+      currentTransportationMode === 'Bike'
+    "
+  >
+    <label class="form-label mt-3"
+      >{{ currentTransportationMode }} Speed:
+      <strong>{{
+        currentTransportationMode === "Walk" ? speed / 2 : speed * 2.5
+      }}</strong>
+      km/h</label
+    >
+    <input
+      type="range"
+      class="form-range"
+      min="5"
+      max="10"
+      [(ngModel)]="speed"
+      (change)="onSpeedChange()"
+    />
+  </div>
+
   <label class="form-label">Desired Amenities:</label>
 
   <div class="amenitiy-checkboxes">

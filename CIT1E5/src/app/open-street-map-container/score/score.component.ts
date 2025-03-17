@@ -14,38 +14,19 @@ import {
 })
 export class ScoreComponent {
   @Input() selectedAmenities: AmenityType[] = [];
-  @Input() nearbyPlaces: OSMElement[] = [];
+  @Input() places: OSMElement[] = [];
 
   constructor(private overpassService: OverpassService) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['selectedAmenities']) {
-      console.log(this.selectedAmenities);
     }
-    if (changes['nearbyPlaces']) {
-      console.log(this.nearbyPlaces);
+    if (changes['places']) {
+      this.calculateScore15(this.selectedAmenities, this.places);
     }
-    this.calculateScore15(this.selectedAmenities, this.nearbyPlaces);
   }
 
   calculateScore15(amenities: AmenityType[], places: OSMElement[]) {
-    places.forEach((place) => {
-      if (place.tags) {
-        let scoreCount = 0;
-        amenities.forEach((amenity) => {
-          if (place.tags) {
-            if (
-              this.overpassService.amenityTypeMap[amenity].includes(
-                place.tags['amenity'].toString()
-              )
-            ) {
-              scoreCount++;
-              return;
-            }
-          }
-        });
-        console.log(scoreCount);
-      }
-    });
+    console.log(amenities);
   }
 }

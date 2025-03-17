@@ -1,4 +1,6 @@
 import { Component, effect } from '@angular/core';
+import { BehaviorSubject, combineLatest } from 'rxjs';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { SearchStateService } from './services/search-state.service';
 import { OSMElement, OverpassService } from './services/overpass-state.service';
 import { RoutingStateService } from './services/routing-state.service';
@@ -27,6 +29,7 @@ export class OpenStreetMapContainerComponent {
   mapCenter: LatLng = new LatLng(0, 0);
   currentAmenities: AmenityType[] = [];
   showBoundaries: boolean = false;
+  speed$ = new BehaviorSubject<number>(5);
 
   constructor(
     private searchStateService: SearchStateService,
@@ -37,6 +40,14 @@ export class OpenStreetMapContainerComponent {
     effect(() => {
       // Removes chatter from the overpass api
       this.places = this.formatPlaces(this.placesNearby() || []);
+    });
+
+    // Convert Signal to Observable
+    const placesNearby$ = toObservable(this.placesNearby);
+
+    // Reactively update duration when speed or places change
+    combineLatest([this.speed$, placesNearby$]).subscribe(([speed, places]) => {
+      this.updateDuration(speed, places || []);
     });
   }
 
@@ -78,10 +89,8 @@ export class OpenStreetMapContainerComponent {
         this.radius = 5000;
         break;
     }
-    // // When transportation mode is changed the radius is changed so the nearby results need to be updated
-    // if (this.mapCenter && this.map) {
-    //   this.fetchPlacesNearby(this.map.getCenter());
-    // }
+    // Trigger speed change to update durations
+    this.onSpeedChange(this.speed$.value);
   }
 
   onAmenitiesUpdated(amenities: AmenityType[]) {
@@ -92,28 +101,21 @@ export class OpenStreetMapContainerComponent {
     this.showBoundaries = show;
   }
 
+  onSpeedChange(speed: number) {
+    this.speed$.next(speed);
+  }
+
   private formatPlaces(places: OSMElement[]) {
     places.filter((place) => !!place.tags?.['name']) || [];
     places.forEach((place) => {
-      this.addDistanceToPlaces(place);
+      this.addDistanceToPlace(place);
+      this.addCategoryToPlace(place);
     });
-
-    // TODO
-    // Sort places by distanceFromAddress
-    // places.sort((a, b) => {
-    //   const distanceA = a.tags?.['distanceFromAddress'];
-    //   const distanceB = b.tags?.['distanceFromAddress'];
-    //   if (typeof distanceA === 'number' && typeof distanceB === 'number') {
-    //     return distanceA - distanceB;
-    //   } else {
-    //     return 0;
-    //   }
-    // });
 
     return places;
   }
 
-  private addDistanceToPlaces(place: OSMElement) {
+  private addDistanceToPlace(place: OSMElement) {
     if (place.tags && this.map) {
       place.tags['distanceFromAddress'] = this.map
         .distance(
@@ -121,6 +123,36 @@ export class OpenStreetMapContainerComponent {
           new LatLng(place.lat || 0, place.lon || 0)
         )
         .toFixed(0);
+    }
+  }
+
+  private updateDuration(speed: number, places: OSMElement[]) {
+    const speedInMetersPerSecond = (speed * 1000) / 3600;
+    places.forEach((place) => {
+      const distanceInMeters = Number(place.tags?.['distanceFromAddress']);
+      if (!isNaN(distanceInMeters)) {
+        const durationInSeconds = distanceInMeters / speedInMetersPerSecond;
+        const minutes = Math.floor(durationInSeconds / 60);
+        const seconds = Math.floor(durationInSeconds % 60);
+        if (place.tags) {
+          place.tags['duration'] = `${minutes} min ${seconds} sec`;
+          place.tags['durationInSeconds'] = durationInSeconds.toFixed(0);
+          console.log(place.tags['duration'], place.tags['durationInSeconds']);
+        }
+      }
+    });
+  }
+
+  private addCategoryToPlace(place: OSMElement) {
+    if (place.tags && place.tags['amenity']) {
+      for (const [amenityType, amenities] of Object.entries(
+        this.overpassService.amenityTypeMap
+      )) {
+        if (amenities.includes(place.tags['amenity'].toString())) {
+          place.tags['amenity_type'] = amenityType;
+          break;
+        }
+      }
     }
   }
 }

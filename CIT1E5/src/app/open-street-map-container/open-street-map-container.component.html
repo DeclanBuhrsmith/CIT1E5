@@ -11,6 +11,7 @@
         "
         (onFetchPlaces)="onFetchPlaces()"
         (toggleBoundaries)="onToggleBoundaries($event)"
+        (speedChange)="onSpeedChange($event)"
       ></search-form>
     </div>
     <div class="col-md-8 mb-4">
@@ -37,7 +38,7 @@
     <div class="col-md-4">
       <score
         *ngIf="places.length > 0"
-        [nearbyPlaces]="places"
+        [places]="places"
         [selectedAmenities]="currentAmenities"
       ></score>
     </div>

@@ -19,8 +19,9 @@ export class SearchFormComponent {
   }>();
   @Output() onFetchPlaces = new EventEmitter<{}>();
   @Output() toggleBoundaries = new EventEmitter<boolean>();
+  @Output() speedChange = new EventEmitter<number>();
   address: string = '';
-  currentTransportationMode: TransportationMode | undefined;
+  currentTransportationMode: TransportationMode = TransportationMode.Walk;
   currentSelectedAmenities: AmenityType[] | undefined;
   showBoundaries: boolean = false;
 
@@ -51,5 +52,9 @@ export class SearchFormComponent {
 
   onToggleBoundaries(): void {
     this.toggleBoundaries.emit(this.showBoundaries);
+  }
+
+  onSpeedChange(speed: number): void {
+    this.speedChange.emit(speed);
   }
 }

@@ -8,7 +8,7 @@ export enum TransportationMode {
 }
 
 export enum AmenityType {
-  Education = 'Education ',
+  Education = 'Education',
   Healthcare = 'Healthcare',
   Transportation = 'Transportation',
   FoodAndDrink = 'Food and Drink',
@@ -63,6 +63,7 @@ export class SearchPreferencesComponent {
     AmenityType.Utilities,
     AmenityType.Other,
   ];
+  speed: number = 5; // default speed
 
   @Output() setSelectedTransportationMode = new EventEmitter<{
     currentTransportationMode: TransportationMode;
@@ -70,6 +71,7 @@ export class SearchPreferencesComponent {
   @Output() setSelectedAmenities = new EventEmitter<{
     currentSelectedAmenities: AmenityType[];
   }>();
+  @Output() speedChange = new EventEmitter<number>();
 
   ngOnInit(): void {
     // Sets the currentSelectedAmenities to be completed selected by default
@@ -83,6 +85,8 @@ export class SearchPreferencesComponent {
       currentTransportationMode: this
         .currentTransportationMode as TransportationMode,
     });
+    // Trigger speed change to update durations
+    this.onSpeedChange();
   }
 
   onAmenityChange(amenity: AmenityType, event: Event): void {
@@ -97,5 +101,13 @@ export class SearchPreferencesComponent {
     this.setSelectedAmenities.emit({
       currentSelectedAmenities: this.selectedAmenities as AmenityType[],
     });
+  }
+
+  onSpeedChange(): void {
+    this.speedChange.emit(
+      this.currentTransportationMode === TransportationMode.Walk
+        ? this.speed / 2
+        : this.speed * 2
+    );
   }
 }

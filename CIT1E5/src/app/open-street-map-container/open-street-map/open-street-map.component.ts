@@ -10,6 +10,21 @@ import { LatLngExpression, Marker, Circle } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { OSMElement } from '../services/overpass-state.service';
 
+enum AmenityIconEnum {
+  'Education' = 'school|#FF5733',
+  'Healthcare' = 'local_hospital|#C70039',
+  'Transportation' = 'train|#900C3F',
+  'Food and Drink' = 'fastfood|#F19E39',
+  'Shopping' = 'shopping_cart|#DAF7A6',
+  'Recreation and Leisure' = 'nature_people|#581845',
+  'Public Services' = 'info|#1F618D',
+  'Religious' = 'church|#6C3483',
+  'Accommodation' = 'hotel|#2874A6',
+  'Financial Services' = 'attach_money|#239B56',
+  'Utilities' = 'electrical_services|#EA33F7',
+  'Other' = 'not_listed_location|#AAB7B8',
+}
+
 @Component({
   selector: 'open-street-map',
   templateUrl: './open-street-map.component.html',
@@ -55,9 +70,17 @@ export class OpenStreetMapComponent {
     if (this.map) {
       this.mapCenterMarker?.remove();
       const center: LatLngExpression = [lat, lng];
+      const centerIcon = L.divIcon({
+        className: 'custom-div-icon', // Optional: Add a custom class for styling
+        html: `<span class="material-icons" style="font-size: 32px; color: red;">home</span>`, // Google Icon
+        iconSize: [24, 24], // Size of the icon
+        iconAnchor: [12, 24], // Anchor point of the icon
+      });
       this.map.panTo(center);
       // Add a marker
-      this.mapCenterMarker = L.marker(center).addTo(this.map);
+      this.mapCenterMarker = L.marker(center, { icon: centerIcon }).addTo(
+        this.map
+      );
       // Emit the onMapCenterUpdated event
       this.onMapCenterUpdated.emit(this.map.getCenter());
     }
@@ -95,11 +118,14 @@ export class OpenStreetMapComponent {
         if (place.lat && place.lon) {
           if (this.map) {
             const placeMarker: LatLngExpression = [place.lat, place.lon];
-            const marker = L.marker(placeMarker).addTo(this.map);
+            const marker = L.marker(placeMarker, {
+              icon: this.setMarkerIcon(place),
+            }).addTo(this.map);
 
             // Add popup to marker
-            const placeName = place.tags?.['name'] || 'Unknown';
-            const distance = place.tags?.['distanceFromAddress'] || 'Unknown';
+            const placeName = place.tags?.['name'] || place.tags?.['amenity'];
+            const distance =
+              place.tags?.['distanceFromAddress'] || place.tags?.['amenity'];
             marker.bindPopup(
               `<b>${placeName}</b><br>Distance: ${distance} meters`
             );
@@ -110,6 +136,22 @@ export class OpenStreetMapComponent {
       });
     }
     return markers;
+  }
+
+  setMarkerIcon(place: OSMElement): L.DivIcon {
+    const amenityType = place.tags?.[
+      'amenity_type'
+    ] as keyof typeof AmenityIconEnum;
+    const [iconName, color] = AmenityIconEnum[amenityType]?.split('|') || [
+      'place',
+      'blue',
+    ];
+    return L.divIcon({
+      className: 'custom-div-icon', // Optional: Add a custom class for styling
+      html: `<span class="material-icons" style="font-size: 32px; color: ${color};">${iconName}</span>`, // Google Icon
+      iconSize: [24, 24], // Size of the icon
+      iconAnchor: [12, 24], // Anchor point of the icon
+    });
   }
 
   private initMap(): void {

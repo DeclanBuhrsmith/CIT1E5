@@ -14,7 +14,7 @@
   {{ errorMessage }}
 </div> -->
 <div *ngIf="places.length" class="nearby-list">
-  <h3>Nearby amenities:</h3>
+  <h3>Nearby amenities ({{ places.length }}):</h3>
   <div class="places-container">
     <div *ngFor="let place of places" class="card mb-3">
       <div *ngIf="place.tags" class="card-body">
