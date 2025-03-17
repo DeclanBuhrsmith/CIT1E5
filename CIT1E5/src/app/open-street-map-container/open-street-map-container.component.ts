@@ -29,7 +29,8 @@ export class OpenStreetMapContainerComponent {
   mapCenter: LatLng = new LatLng(0, 0);
   currentAmenities: AmenityType[] = [];
   showBoundaries: boolean = false;
-  speed$ = new BehaviorSubject<number>(5);
+  speed$ = new BehaviorSubject<number>(this.currentTransportationMode === TransportationMode.Walk ? 5 / 2 : 5 * 2);
+  placesUnder15: OSMElement[] = [];
 
   constructor(
     private searchStateService: SearchStateService,
@@ -48,6 +49,7 @@ export class OpenStreetMapContainerComponent {
     // Reactively update duration when speed or places change
     combineLatest([this.speed$, placesNearby$]).subscribe(([speed, places]) => {
       this.updateDuration(speed, places || []);
+      this.placesUnder15 = this.showPlaces15MinutesOrLessAway(places || []);
     });
   }
 
@@ -112,6 +114,13 @@ export class OpenStreetMapContainerComponent {
       this.addCategoryToPlace(place);
     });
 
+    // Sort places by distanceFromAddress in ascending order
+    places.sort((a, b) => {
+      const distanceA = Number(a.tags?.['distanceFromAddress']);
+      const distanceB = Number(b.tags?.['distanceFromAddress']);
+      return distanceA - distanceB;
+    });
+
     return places;
   }
 
@@ -137,7 +146,6 @@ export class OpenStreetMapContainerComponent {
         if (place.tags) {
           place.tags['duration'] = `${minutes} min ${seconds} sec`;
           place.tags['durationInSeconds'] = durationInSeconds.toFixed(0);
-          console.log(place.tags['duration'], place.tags['durationInSeconds']);
         }
       }
     });
@@ -154,5 +162,15 @@ export class OpenStreetMapContainerComponent {
         }
       }
     }
+  }
+
+  private showPlaces15MinutesOrLessAway(places: OSMElement[]): OSMElement[] {
+    return places.filter((place) => {
+      if (place.tags) {
+        const durationInSeconds = Number(place.tags['durationInSeconds']);
+        return !isNaN(durationInSeconds) && durationInSeconds <= (15 * 60);
+      }
+      return false;
+    });
   }
 }

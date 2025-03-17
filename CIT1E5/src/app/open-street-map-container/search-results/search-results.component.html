@@ -13,18 +13,17 @@
 <div *ngIf="errorMessage" class="alert alert-danger mt-3">
   {{ errorMessage }}
 </div> -->
-<div *ngIf="places.length" class="nearby-list">
-  <h3>Nearby amenities ({{ places.length }}):</h3>
+<div *ngIf="placesUnder15.length" class="nearby-list">
+  <h3>Nearby amenities ({{ placesUnder15.length }}):</h3>
   <div class="places-container">
-    <div *ngFor="let place of places" class="card mb-3">
+    <div *ngFor="let place of placesUnder15" class="card mb-3">
       <div *ngIf="place.tags" class="card-body">
         <h5 class="card-title">{{ place.tags["name"] }}</h5>
         <p class="card-text">
           <strong>Amenity:</strong> {{ place.tags["amenity"] }}<br />
           <strong>Distance from Address:</strong>
           {{ place.tags["distanceFromAddress"] }} meters<br />
-          <strong>Latitude:</strong> {{ place.lat }}<br />
-          <strong>Longitude:</strong> {{ place.lon }}
+          <strong>Travel duration:</strong> {{ place.tags["duration"] }}<br />
         </p>
       </div>
     </div>

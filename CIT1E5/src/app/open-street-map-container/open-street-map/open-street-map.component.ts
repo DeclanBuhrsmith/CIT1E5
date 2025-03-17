@@ -35,7 +35,7 @@ export class OpenStreetMapComponent {
   @Input() longitude: number = 0;
   @Input() radius: number = 1200;
   @Input() showBoundaries: boolean = false;
-  @Input() nearByPlaces: OSMElement[] = [];
+  @Input() placesUnder15: OSMElement[] = [];
   @Output() onMapCenterUpdated = new EventEmitter<L.LatLng>();
   @Output() onMapInitialized = new EventEmitter<L.Map>();
 
@@ -61,8 +61,8 @@ export class OpenStreetMapComponent {
         this.showBoundaries
       );
     }
-    if (changes['nearByPlaces']) {
-      this.updatePlaceMarkers(this.nearByPlaces);
+    if (changes['placesUnder15']) {
+      this.updatePlaceMarkers(this.placesUnder15);
     }
   }
 

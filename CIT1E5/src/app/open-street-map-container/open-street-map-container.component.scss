@@ -1,9 +1,20 @@
 open-street-map {
-  height: 41em;
+  height: 45em;
   width: 100%;
   display: flex;
 }
 
-.p-4.border.rounded {
+.container-fluid {
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  display: flex;
+}
+
+.leftside, .rightside {
+  display: flex;
+  flex-direction: column;
   height: 100%;
 }

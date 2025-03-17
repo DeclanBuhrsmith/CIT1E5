@@ -19,13 +19,13 @@ import { SearchResultsComponent } from './open-street-map-container/search-resul
     OpenStreetMapComponent,
     SearchPreferencesComponent,
     SearchResultsComponent,
+    ScoreComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpClientModule,
     RouterModule,
-    ScoreComponent,
   ],
   providers: [],
   bootstrap: [AppComponent],
