@@ -1,0 +1,72 @@
+<div class="mb-3">
+  <label class="form-label">Transportation Mode:</label>
+  <div class="radio-buttons">
+    <div *ngFor="let mode of transportationModes" class="form-check">
+      <input
+        type="radio"
+        id="{{ mode }}"
+        name="transportationMode"
+        class="form-check-input"
+        data-bs-toggle="tooltip"
+        data-bs-placement="top"
+        title="{{ mode }}"
+        [(ngModel)]="currentTransportationMode"
+        [value]="mode"
+        (change)="onModeChange()"
+        required
+      />
+      <label for="{{ mode }}" class="form-check-label" title="{{ mode }}">
+        <i
+          [ngClass]="{
+            'bi bi-person-walking': mode === 'Walk',
+            'bi bi-bicycle': mode === 'Bike',
+            'bi bi-bus-front': mode === 'Transit',
+            'bi bi-car-front': mode === 'Drive'
+          }"
+        ></i>
+      </label>
+    </div>
+  </div>
+  <div
+    *ngIf="
+      currentTransportationMode === 'Walk' ||
+      currentTransportationMode === 'Bike'
+    "
+  >
+    <label class="form-label mt-3"
+      >{{ currentTransportationMode }} Speed:
+      <strong>{{
+        currentTransportationMode === "Walk" ? speed / 2 : speed * 2.5
+      }}</strong>
+      km/h</label
+    >
+    <input
+      type="range"
+      class="form-range"
+      min="5"
+      max="10"
+      [(ngModel)]="speed"
+      (change)="onSpeedChange()"
+    />
+  </div>
+
+  <label class="form-label">Desired Amenities:</label>
+
+  <div class="amenitiy-checkboxes">
+    <div *ngFor="let amenity of amenities" class="form-check">
+      <input
+        type="checkbox"
+        id="{{ amenity }}"
+        name="amenities"
+        class="form-check-input"
+        [value]="amenity"
+        [checked]="true"
+        (change)="onAmenityChange(amenity, $event)"
+        required
+      />
+      <label for="{{ amenity }}" class="form-check-label">
+        <i class="bi bi-walk"></i> {{ amenity }}
+      </label>
+    </div>
+  </div>
+</div>

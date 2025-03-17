@@ -1,0 +1,53 @@
+<div class="container-fluid mt-4">
+  <div class="row">
+    <div class="col-md-4 leftside">
+      <search-form
+        (setSelectedTransportationMode)="
+          onTransportationModeUpdated($event.currentTransportationMode)
+        "
+        (setSelectedAmenities)="
+          onAmenitiesUpdated($event.currentSelectedAmenities)
+        "
+        (onFetchPlaces)="onFetchPlaces()"
+        (toggleBoundaries)="onToggleBoundaries($event)"
+        (speedChange)="onSpeedChange($event)"
+      ></search-form>
+    </div>
+    <div class="col-md-8 rightside">
+      <div class="p-4 border rounded">
+        <open-street-map
+          [latitude]="
+            searchResults() && searchResults()!.length
+              ? searchResults()![0].lat
+              : 0
+          "
+          [longitude]="
+            searchResults() && searchResults()!.length
+              ? searchResults()![0].lon
+              : 0
+          "
+          [radius]="radius"
+          [placesUnder15]="placesUnder15"
+          [showBoundaries]="showBoundaries"
+          (onMapCenterUpdated)="onMapCenterUpdated($event)"
+          (onMapInitialized)="onMapInitialized($event)"
+        ></open-street-map>
+      </div>
+    </div>
+    <div class="col-md-4 mt-3">
+      <score
+        *ngIf="places.length > 0"
+        [placesUnder15]="placesUnder15"
+        [selectedAmenities]="currentAmenities"
+      ></score>
+    </div>
+    <div class="col-md-8">
+      <search-results
+        [placesUnder15]="placesUnder15"
+        [searchResults]="searchResults()"
+        [errorMessage]="errorMessage()"
+        [overpassError]="overpassError()"
+      ></search-results>
+    </div>
+  </div>
+</div>

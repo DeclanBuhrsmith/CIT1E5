@@ -1,0 +1,34 @@
+<!-- <div *ngIf="searchResults" class="mt-4">
+  <h2>Searched Address</h2>
+  <div *ngFor="let result of searchResults" class="card mb-3">
+    <div class="card-body">
+      <h5 class="card-title">{{ result.display_name }}</h5>
+      <p class="card-text">
+        <strong>Latitude:</strong> {{ result.lat }}<br />
+        <strong>Longitude:</strong> {{ result.lon }}
+      </p>
+    </div>
+  </div>
+</div>
+<div *ngIf="errorMessage" class="alert alert-danger mt-3">
+  {{ errorMessage }}
+</div> -->
+<div *ngIf="placesUnder15.length" class="nearby-list">
+  <h3>Nearby amenities ({{ placesUnder15.length }}):</h3>
+  <div class="places-container">
+    <div *ngFor="let place of placesUnder15" class="card mb-3">
+      <div *ngIf="place.tags" class="card-body">
+        <h5 class="card-title">{{ place.tags["name"] }}</h5>
+        <p class="card-text">
+          <strong>Amenity:</strong> {{ place.tags["amenity"] }}<br />
+          <strong>Distance from Address:</strong>
+          {{ place.tags["distanceFromAddress"] }} meters<br />
+          <strong>Travel duration:</strong> {{ place.tags["duration"] }}<br />
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="overpassError" class="alert alert-danger mt-3">
+  {{ overpassError }}
+</div>

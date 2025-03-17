@@ -1,0 +1,15 @@
+<div>
+  <h3>CIT1E5 Score: {{ score }} out of {{selectedAmenities.length}}</h3>
+  <div class="score-card__header">
+    <div class="score-container">
+      <div *ngFor="let amenityScore of scoreAmenities" class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">{{ amenityScore.amenity }}</h5>
+          <p class="card-text">
+            <strong>Found:</strong> {{ amenityScore.amenityFound }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

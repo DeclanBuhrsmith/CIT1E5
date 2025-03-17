@@ -1,0 +1,20 @@
+open-street-map {
+  height: 45em;
+  width: 100%;
+  display: flex;
+}
+
+.container-fluid {
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  display: flex;
+}
+
+.leftside, .rightside {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
