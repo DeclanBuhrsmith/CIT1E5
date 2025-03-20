@@ -22,7 +22,7 @@ enum AmenityIconEnum {
   'Accommodation' = 'hotel|#2874A6',
   'Financial Services' = 'attach_money|#239B56',
   'Utilities' = 'electrical_services|#EA33F7',
-  'Other' = 'not_listed_location|#AAB7B8',
+  'Other' = 'not_listed_location|#4AB7B8',
 }
 
 @Component({
