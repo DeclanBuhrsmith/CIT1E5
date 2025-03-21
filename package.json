@@ -1,12 +1,13 @@
 {
-  "name": "cit1-e5",
+  "name": "cit1e5",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "deploy": "ng deploy"
   },
   "private": true,
   "dependencies": {
