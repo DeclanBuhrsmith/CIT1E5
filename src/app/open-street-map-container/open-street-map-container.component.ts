@@ -1,4 +1,4 @@
-import { Component, effect } from '@angular/core';
+import { Component, effect, ViewChild } from '@angular/core';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { SearchStateService } from './services/search-state.service';
@@ -9,6 +9,7 @@ import {
   AmenityType,
   TransportationMode,
 } from './search-form/search-preferences/search-preferences.component';
+import { OpenStreetMapComponent } from './open-street-map/open-street-map.component';
 
 @Component({
   selector: 'open-street-map-container',
@@ -16,6 +17,8 @@ import {
   styleUrls: ['./open-street-map-container.component.scss'],
 })
 export class OpenStreetMapContainerComponent {
+  @ViewChild(OpenStreetMapComponent) mapComponent!: OpenStreetMapComponent;
+
   // Use signals to track the state
   searchResults = this.searchStateService.nominatimResponse$;
   errorMessage = this.searchStateService.error$;

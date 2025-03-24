@@ -1,2 +1,14 @@
 /* You can add global styles to this file, and also import other style files */
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+
+body.dark-mode {
+  background-color: #3b3b3b;
+  color: #ffffff;
+}
+
+body.dark-mode .card {
+  background-color: #4a4a4a;
+  color: #ffffff;
+  border: 1px solid #5c5c5c;
+}
+

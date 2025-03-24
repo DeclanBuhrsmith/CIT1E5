@@ -43,6 +43,16 @@ export class OpenStreetMapComponent {
   private mapCenterMarker: Marker | undefined;
   private radiusCircle: Circle | undefined;
 
+  private lightTileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors',
+  });
+
+  private darkTileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    attribution: '© OpenStreetMap contributors © CARTO',
+    subdomains: 'abcd',
+    maxZoom: 19,
+  });
+
   constructor() {}
 
   ngAfterViewInit(): void {
@@ -163,11 +173,21 @@ export class OpenStreetMapComponent {
     this.map = L.map('map').setView(initialCenter, initialZoom);
 
     // Add the OpenStreetMap tile layer
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors',
-    }).addTo(this.map);
+    this.lightTileLayer.addTo(this.map);
 
     // Emit the onMapInitialized event
     this.onMapInitialized.emit(this.map);
+  }
+
+  toggleMapDarkMode(isDarkMode: boolean): void {
+    if (this.map) {
+      if (isDarkMode) {
+        this.map.removeLayer(this.lightTileLayer);
+        this.darkTileLayer.addTo(this.map);
+      } else {
+        this.map.removeLayer(this.darkTileLayer);
+        this.lightTileLayer.addTo(this.map);
+      }
+    }
   }
 }
